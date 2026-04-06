@@ -476,10 +476,10 @@ struct _AppStatus {
 	int AimingButton = 0;
 	bool BTReset = true;
 	bool JoyconRumbleMerge = false;
-	int DrivingToggleButton = 0;
-	int AimingToggleButton = 0;
-	int AimingModeToggleButton = 0;        // переключение mouse/stick
-	bool AimingByPressingMode = true;
+	int DrivingToggleButton = 0;		// Toggle Hotkey
+	int AimingToggleButton = 0;			// Toggle Hotkey
+	int AimingModeToggleButton = 0;		// Toggle Hotkey
+	bool AimingByPressingMode = true;	// switch MotionAimingModeOnlyPressed/	MotionAimingMode
 
 	struct _HotKeys
 	{
@@ -556,8 +556,8 @@ struct _CurrentXboxProfile {
 	unsigned int DSEdgeR4 = 0;
 	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;   // по умолчанию оставляем LT (совместимость)
 	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;  // по умолчанию оставляем RT (совместимость)
-	unsigned int HOME = 0;   // добавлено для Joy-Con HOME
-	unsigned int CAPTURE = 0;
+	unsigned int HOME = 0;   // Joy-Con HOME
+	unsigned int CAPTURE = 0;// Joy-Con Capture
 };
 _CurrentXboxProfile CurrentXboxProfile;
 
@@ -1059,7 +1059,7 @@ int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	else
 		return 0;
 }*/
-
+	// для двухкнопочного биндинга
 	size_t plusPos = KeyName.find('+');
 	if (plusPos != std::string::npos) {
 		std::string key1 = KeyName.substr(0, plusPos);

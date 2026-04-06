@@ -182,7 +182,7 @@ static void EncodeRumble(unsigned char* data, float freq, float amp) {
 }
 
 // https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp
-void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
+/*void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
 {
 	unsigned char outputReport[64] = { 0 };
 
@@ -211,6 +211,45 @@ void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorVa
 	}
 
 	hid_write(jcHandle, outputReport, sizeof(outputReport));
+}*/
+
+// Fix Rumble #1  PacketCounter теперь для Primary и Secondary; rumbleStrength теперь от нужного геймпада; RumbleSkipCounter как у Pro
+void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue, AdvancedGamepad &Gamepad)
+{
+	if (Gamepad.RumbleSkipCounter > 0) {
+		Gamepad.RumbleSkipCounter--;
+		return;
+	}
+
+	unsigned char outputReport[64] = { 0 };
+	outputReport[0] = 0x10;
+	outputReport[1] = Gamepad.PacketCounter++ & 0x0f;   // ← теперь используем Gamepad.PacketCounter
+
+	if (IsLeft) {
+		if (MotorValue == 0) {
+			outputReport[2] = 0x00;
+			outputReport[3] = 0x01;
+			outputReport[4] = 0x40;
+			outputReport[5] = 0x40;
+		}
+		else
+			EncodeRumble(&outputReport[2], MotorFreqFromStrength(MotorValue),
+			(MotorValue * Gamepad.RumbleStrength * 0.9f) / 25500.0f);  // ← Gamepad.RumbleStrength
+	}
+	else {
+		if (MotorValue == 0) {
+			outputReport[6] = 0x00;
+			outputReport[7] = 0x01;
+			outputReport[8] = 0x40;
+			outputReport[9] = 0x40;
+		}
+		else
+			EncodeRumble(&outputReport[6], MotorFreqFromStrength(MotorValue),
+			(MotorValue * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
+	}
+
+	if (hid_write(jcHandle, outputReport, sizeof(outputReport)) < 0) {
+	}
 }
 
 void GamepadSetState(AdvancedGamepad &Gamepad)
@@ -548,7 +587,7 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 		}
 
 	}
-	else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
+	/*else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
 		
 		if (Gamepad.RumbleStrength != 0) {
 			// Left JoyCon
@@ -590,13 +629,33 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 					EncodeRumble(&outputReportRight[6], MotorFreqFromStrength(Gamepad.OutState.SmallMotor), (Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
 
 				hid_write(Gamepad.HidHandle2, outputReportRight, sizeof(outputReportRight));
-			}*/
+			}
 			if (Gamepad.HidHandle != NULL)
 				JoyConSimpleRumble(Gamepad.HidHandle, true, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2);
 			if (Gamepad.HidHandle2)
 				JoyConSimpleRumble(Gamepad.HidHandle2, false, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.SmallMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2);
 		}
+	}*/
+
+	// rumble Fix  #1-2
+	else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
+		// Добавляем счётчик пропуска (как у Pro-контроллера)
+		if (Gamepad.RumbleSkipCounter > 0)
+			Gamepad.RumbleSkipCounter--;
+
+		if (Gamepad.RumbleStrength != 0) {
+			if (Gamepad.HidHandle != NULL)
+				JoyConSimpleRumble(Gamepad.HidHandle, true,
+					AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2,
+					Gamepad);   // ← передаём Gamepad
+
+			if (Gamepad.HidHandle2 != NULL)
+				JoyConSimpleRumble(Gamepad.HidHandle2, false,
+					AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.SmallMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2,
+					Gamepad);   // ← передаём Gamepad
+		}
 	}
+
 	else if (Gamepad.ControllerType == NINTENDO_SWITCH_PRO) { // && !Gamepad.USBConnection
 		//printf("rumble\n");
 		//JslSetRumble(0, (unsigned int)Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength / 100, (unsigned int)Gamepad.OutState.SmallMotor * Gamepad.RumbleStrength / 100);
@@ -981,7 +1040,7 @@ void LoadXboxProfile(std::string ProfileFile) {
 	// Additional gamepad buttons
 	CurrentXboxProfile.JCSL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SL", "NONE"));
 	CurrentXboxProfile.JCSR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SR", "NONE"));
-	CurrentXboxProfile.ZL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZL", "LT"));	//Новые триггеры
+	CurrentXboxProfile.ZL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZL", "LT"));	//Новые "триггеры" и доп. кнопки
 	CurrentXboxProfile.ZR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZR", "RT"));
 	CurrentXboxProfile.HOME = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "HOME", "NONE"));
 	CurrentXboxProfile.CAPTURE = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "CAPTURE", "NONE"));
@@ -1005,9 +1064,9 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.ButtonsStates.RightStick.KeyCode = KeyNameToKeyCode(IniFile.ReadString("XBOX", "RS_KM", "NONE"));
 	PrimaryGamepad.ButtonsStates.JCSL.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "SL_KM", "NONE"));
 	PrimaryGamepad.ButtonsStates.JCSR.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "SR_KM", "NONE"));
-	PrimaryGamepad.ButtonsStates.ZL.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "ZL_KM", "NONE"));	//новые триггеры joy-con
+	PrimaryGamepad.ButtonsStates.ZL.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "ZL_KM", "NONE"));	//новые "триггеры" joy-con
 	PrimaryGamepad.ButtonsStates.ZR.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "ZR_KM", "NONE"));
-	//PrimaryGamepad.ButtonsStates.HOME.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "HOME_KM", "NONE"));	//Home
+	//PrimaryGamepad.ButtonsStates.HOME.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "HOME_KM", "NONE"));	// Home и Captue висят на хоткеях, лучше не юзать
 	//PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode = KeyNameToKeyCode(IniFile.ReadString("JOYCONS", "CAPTURE_KM", "NONE"));
 	PrimaryGamepad.ButtonsStates.DSEdgeL4.KeyCode = KeyNameToKeyCode(IniFile.ReadString("DUALSENSE-EDGE", "L4_KM", "NONE"));
 	PrimaryGamepad.ButtonsStates.DSEdgeR4.KeyCode = KeyNameToKeyCode(IniFile.ReadString("DUALSENSE-EDGE", "R4_KM", "NONE"));
@@ -1120,9 +1179,9 @@ void DefaultMainText() {
 			printf_s(" Emulation: Keyboard and mouse, game profile: \"%s\".\n Change profiles with \"ALT + Up/Down\" or \"PS/Home + DPAD Up/Down\".\n", KMProfiles[KMProfileIndex].substr(0, KMProfiles[KMProfileIndex].size() - 4).c_str());
 	}
 	printf(" Press \"ALT + Q/Left/Right\", \"PS/Home + DPAD Left/Right\" to switch emulation.\n");
-	printf(" Bind Toggle modes buttons in Coonfig.ini or Press touchpad areas buttons to change operating modes.\n");
+	printf(" Bind Hotkeys in Coonfig.ini or Press touchpad areas buttons to change operating modes.\n");
 	printf(" If there's no touch panel, switch using a touchpad press (enabled in the config) or use \"ALT + 1/2\".\n");
-	printf(" Pressing AimingToggleButton or \"ALT + 2\" switches gyro aim mode (by pressing AIMbutton, always, off) .\n");
+	printf(" Pressing AimingToggleButton or \"ALT + 2\" switches gyro On/Off (off by default).\n");			//  вывести кнопки из Config 
 	if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) {
 		printf(" Adaptive triggers mode: ");
 		switch (PrimaryGamepad.AdaptiveTriggersMode) {
@@ -1175,7 +1234,7 @@ void DefaultMainText() {
 		printf(" External pedals Arduino connected.\n");
 
 	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Mouse"); else printf("\n Aiming mode = Mouse-Joystick");
-	printf(", press AimingModeToggleButton or \"ALT + A\" to switch.\n");
+	printf(", press AimingModeToggleButton or \"ALT + A\" to switch.\n");	//  вывести кнопки из Config 
 
 	printf(" Rumble strength is %d%%, press \"ALT + </>\", \"PS + Options\", or \"Capture + Plus\" to adjust.\n", PrimaryGamepad.RumbleStrength);
 
@@ -1932,13 +1991,14 @@ int main(int argc, char **argv)
 			MainTextUpdate();
 		}
 
-		/*// === AimingMode (мышь / стик) — теперь настраивается ===
-		if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
+		// AimingMode (мышь / стик) — устар. для одной кнопки 
+		/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
 			AppStatus.AimMode = !AppStatus.AimMode;
 			MainTextUpdate();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}*/
-
+		
+		// AimingMode (мышь / стик) с поддержкой двухкнопочного bind
 		if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingModeToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) == AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
 			AppStatus.AimMode = !AppStatus.AimMode;
 			MainTextUpdate();
@@ -2281,7 +2341,7 @@ int main(int argc, char **argv)
 		report.bLeftTrigger = DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255;
 		report.bRightTrigger = DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255;
 
-		// === отключаем аналоговые триггеры для ZL/ZR Joy-Con, если они переназначены ===
+		//  отключаем триггеры для ZL/ZR Joy-Con, если они переназначены 
 		if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
 			if ((PrimaryGamepad.InputState.buttons&JSMASK_ZL) && CurrentXboxProfile.ZL != XINPUT_GAMEPAD_LEFT_TRIGGER) {
 				report.bLeftTrigger = 0;
@@ -2378,7 +2438,6 @@ int main(int argc, char **argv)
 		} else if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
 			report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;
 			report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
-			//report.wButtons |= PrimaryGamepad.InputState.buttons&JSMASK_HOME ? CurrentXboxProfile.HOME : 0;
 		}
 
 		if (!(PrimaryGamepad.InputState.buttons & JSMASK_PS && PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE && PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE)) { // During special functions, nothing is pressed in the game
@@ -2396,7 +2455,7 @@ int main(int argc, char **argv)
 			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_S ? CurrentXboxProfile.A : 0;
 			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_E ? CurrentXboxProfile.B : 0;
 
-			// Aditional buttons SL SR ZL ZR 
+			// Aditional buttons SL SR ZL ZR HOME CAPTURE 
 			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
 				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_FNL ? CurrentXboxProfile.DSEdgeL4 : 0;
 				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_FNR ? CurrentXboxProfile.DSEdgeR4 : 0;
@@ -2571,13 +2630,13 @@ int main(int argc, char **argv)
 			}
 		}
 
-			// Nintendo controllers buttons: Capture & Home - changing working mode + another controllers (with additional buttons with keyboard emulation)
+		// Nintendo controllers buttons: Capture & Home - changing working mode + another controllers (with additional buttons with keyboard emulation)
 		if ((IsKeyPressed(VK_MENU) && IsKeyPressed('1')) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')) ||
 			JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER ||
 			JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT ||
 			JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
 
-			// === Driving-режим (SteeringWheel) ===
+			// Driving Mode Hotkey устар. для оной кнопки
 			/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.DrivingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('1')))) {
 				if (PrimaryGamepad.GamepadActionMode == 1)
 					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
@@ -2585,7 +2644,8 @@ int main(int argc, char **argv)
 					PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
-
+			
+			// Driving Mode Hotkey с поддержкой двухкнопочного bind
 			if (AppStatus.SkipPollCount == 0 && ((AppStatus.DrivingToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.DrivingToggleButton) == AppStatus.DrivingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('1')))) {
 				if (PrimaryGamepad.GamepadActionMode == 1)
 					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
@@ -2595,7 +2655,7 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}
 
-			// === Aiming-режим — ТОЛЬКО MotionAimingModeOnlyPressed (твой новый вариант) ===
+			// Aiming-режим — ТОЛЬКО MotionAimingModeOnlyPressed  устар. для одной кнопки
 			/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.AimingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
 				if (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed)
 				{
@@ -2608,7 +2668,8 @@ int main(int argc, char **argv)
 				}
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
-
+			
+			// AimingToggleButton (Gyro on\off ) Hotkey с поддержкой двухкнопочного bind
 			/*if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingToggleButton) == AppStatus.AimingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
 				if (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed) {
 					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
@@ -2619,7 +2680,8 @@ int main(int argc, char **argv)
 				}
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
-
+			
+			// AimingToggleButton (Gyro on\off ) Hotkey с поддержкой двухкнопочного bind и AimingByPressingMode в Config
 			if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingToggleButton != 0 && (PrimaryGamepad.InputState.buttons&AppStatus.AimingToggleButton) == AppStatus.AimingToggleButton&&AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
 				int targetAimingMode = AppStatus.AimingByPressingMode ? MotionAimingModeOnlyPressed : MotionAimingMode;
 
@@ -2653,6 +2715,7 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
 
+			// на всякий случай, т.к. новый парсинг
 			if (AppStatus.SkipPollCount == 0 && AppStatus.JoyconChangeModesWithButton != 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.JoyconChangeModesWithButton) == AppStatus.JoyconChangeModesWithButton)) {
 				if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
 					if (PrimaryGamepad.GamepadActionMode == MotionAimingMode) {
@@ -2685,8 +2748,6 @@ int main(int argc, char **argv)
 			if (PrimaryGamepad.PSReleasedCount > 0) PrimaryGamepad.PSReleasedCount--;
 		}
 
-		// HOME отвязана — теперь только PSOnlyCheckCount (как для DualSense)
-		//KeyPress(VK_GAMEBAR, (PrimaryGamepad.PSOnlyCheckCount == 1 && PrimaryGamepad.PSOnlyPressed), &PrimaryGamepad.ButtonsStates.PS, false);
 		KeyPress(VK_GAMEBAR, (PrimaryGamepad.PSOnlyCheckCount == 1 && PrimaryGamepad.PSOnlyPressed) || (PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE && PrimaryGamepad.InputState.buttons & JSMASK_HOME), &PrimaryGamepad.ButtonsStates.PS, false);
 
 		if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
@@ -2700,7 +2761,6 @@ int main(int argc, char **argv)
 
 		// Screenshot / record key
 		bool IsSharePressed = PrimaryGamepad.InputState.buttons & JSMASK_MIC || ((PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_S); // + DualShock 4 & Nintendo
-		//bool IsSharePressed = PrimaryGamepad.InputState.buttons & JSMASK_MIC || (PrimaryGamepad.InputState.buttons & JSMASK_PS && PrimaryGamepad.InputState.buttons & JSMASK_S);
 		bool IsScreenshotPressed = false;
 		bool IsRecordPressed = false;
 
@@ -3066,7 +3126,7 @@ int main(int argc, char **argv)
 			KeyPress(PrimaryGamepad.ButtonsStates.WheelRight.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelRight.IsPressed, &PrimaryGamepad.ButtonsStates.WheelRight, true);
 		}
 
-		// === Дополнительная обработка клавиатурных биндов из XboxProfile (работает в Xbox-режиме) ===
+		//  Доп. обработка клавиатурных биндов из XboxProfile (работает в Xbox-режиме)
 		if (AppStatus.GamepadEmulationMode == EmuGamepadEnabled || AppStatus.GamepadEmulationMode == EmuGamepadOnlyDriving) {
 			bool DontResetInputState = !(PrimaryGamepad.InputState.buttons & JSMASK_PS || IsSharePressed || IsRecordPressed);
 			if (PrimaryGamepad.InputState.buttons)
@@ -3102,7 +3162,7 @@ int main(int argc, char **argv)
 			// Aditional кнопки ZL/ZR/CApture/Home
 			KeyPress(PrimaryGamepad.ButtonsStates.ZL.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_ZL, &PrimaryGamepad.ButtonsStates.ZL, true);
 			KeyPress(PrimaryGamepad.ButtonsStates.ZR.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_ZR, &PrimaryGamepad.ButtonsStates.ZR, true);
-			//KeyPress(PrimaryGamepad.ButtonsStates.HOME.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_HOME, &PrimaryGamepad.ButtonsStates.HOME, true);
+			//KeyPress(PrimaryGamepad.ButtonsStates.HOME.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_HOME, &PrimaryGamepad.ButtonsStates.HOME, true); висят на жестких биндах, не юзаем
 			//KeyPress(PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_CAPTURE, &PrimaryGamepad.ButtonsStates.CAPTURE, true);
 			KeyPress(PrimaryGamepad.ButtonsStates.DSEdgeL4.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_FNL, &PrimaryGamepad.ButtonsStates.DSEdgeL4, true);
 			KeyPress(PrimaryGamepad.ButtonsStates.DSEdgeR4.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons & JSMASK_FNR, &PrimaryGamepad.ButtonsStates.DSEdgeR4, true);
