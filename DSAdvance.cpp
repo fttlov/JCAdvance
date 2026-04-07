@@ -182,7 +182,7 @@ static void EncodeRumble(unsigned char* data, float freq, float amp) {
 }
 
 // https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp
-/*void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
+void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
 {
 	unsigned char outputReport[64] = { 0 };
 
@@ -211,45 +211,6 @@ static void EncodeRumble(unsigned char* data, float freq, float amp) {
 	}
 
 	hid_write(jcHandle, outputReport, sizeof(outputReport));
-}*/
-
-// Fix Rumble #1  PacketCounter теперь для Primary и Secondary; rumbleStrength теперь от нужного геймпада; RumbleSkipCounter как у Pro
-void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue, AdvancedGamepad &Gamepad)
-{
-	if (Gamepad.RumbleSkipCounter > 0) {
-		Gamepad.RumbleSkipCounter--;
-		return;
-	}
-
-	unsigned char outputReport[64] = { 0 };
-	outputReport[0] = 0x10;
-	outputReport[1] = Gamepad.PacketCounter++ & 0x0f;   // ← теперь используем Gamepad.PacketCounter
-
-	if (IsLeft) {
-		if (MotorValue == 0) {
-			outputReport[2] = 0x00;
-			outputReport[3] = 0x01;
-			outputReport[4] = 0x40;
-			outputReport[5] = 0x40;
-		}
-		else
-			EncodeRumble(&outputReport[2], MotorFreqFromStrength(MotorValue),
-			(MotorValue * Gamepad.RumbleStrength * 0.9f) / 25500.0f);  // ← Gamepad.RumbleStrength
-	}
-	else {
-		if (MotorValue == 0) {
-			outputReport[6] = 0x00;
-			outputReport[7] = 0x01;
-			outputReport[8] = 0x40;
-			outputReport[9] = 0x40;
-		}
-		else
-			EncodeRumble(&outputReport[6], MotorFreqFromStrength(MotorValue),
-			(MotorValue * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
-	}
-
-	if (hid_write(jcHandle, outputReport, sizeof(outputReport)) < 0) {
-	}
 }
 
 void GamepadSetState(AdvancedGamepad &Gamepad)
@@ -587,7 +548,7 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 		}
 
 	}
-	/*else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
+	else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
 		
 		if (Gamepad.RumbleStrength != 0) {
 			// Left JoyCon
@@ -629,33 +590,13 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 					EncodeRumble(&outputReportRight[6], MotorFreqFromStrength(Gamepad.OutState.SmallMotor), (Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
 
 				hid_write(Gamepad.HidHandle2, outputReportRight, sizeof(outputReportRight));
-			}
+			}*/
 			if (Gamepad.HidHandle != NULL)
 				JoyConSimpleRumble(Gamepad.HidHandle, true, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2);
 			if (Gamepad.HidHandle2)
 				JoyConSimpleRumble(Gamepad.HidHandle2, false, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.SmallMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2);
 		}
-	}*/
-
-	// rumble Fix  #1-2
-	else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
-		// Добавляем счётчик пропуска (как у Pro-контроллера)
-		if (Gamepad.RumbleSkipCounter > 0)
-			Gamepad.RumbleSkipCounter--;
-
-		if (Gamepad.RumbleStrength != 0) {
-			if (Gamepad.HidHandle != NULL)
-				JoyConSimpleRumble(Gamepad.HidHandle, true,
-					AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2,
-					Gamepad);   // ← передаём Gamepad
-
-			if (Gamepad.HidHandle2 != NULL)
-				JoyConSimpleRumble(Gamepad.HidHandle2, false,
-					AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.SmallMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2,
-					Gamepad);   // ← передаём Gamepad
-		}
 	}
-
 	else if (Gamepad.ControllerType == NINTENDO_SWITCH_PRO) { // && !Gamepad.USBConnection
 		//printf("rumble\n");
 		//JslSetRumble(0, (unsigned int)Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength / 100, (unsigned int)Gamepad.OutState.SmallMotor * Gamepad.RumbleStrength / 100);
@@ -1135,7 +1076,8 @@ void DefaultMainText() {
 			printf(", the second gamepad is disabled in the config");
 		printf(".");
 	}
-	printf("\n Press \"CTRL + R\" or \"%s\" to reset/search for controllers, and \"ALT + V\" to swap the first and second ones.\n", AppStatus.HotKeys.ResetKeyName.c_str());
+	printf("\n Press \"%s\" or \"CTRL + R\" to reset/search for controllers\n", AppStatus.HotKeys.ResetKeyName.c_str());
+	printf("\n Press \"ALT + V\" to swap the first and second ones.\n"); 
 	if (AppStatus.ControllerCount > 0 && AppStatus.ShowBatteryStatus) {
 		printf(" Controller 1");
 		if (PrimaryGamepad.USBConnection) printf(" wired"); else printf(" wireless");
@@ -1179,9 +1121,11 @@ void DefaultMainText() {
 			printf_s(" Emulation: Keyboard and mouse, game profile: \"%s\".\n Change profiles with \"ALT + Up/Down\" or \"PS/Home + DPAD Up/Down\".\n", KMProfiles[KMProfileIndex].substr(0, KMProfiles[KMProfileIndex].size() - 4).c_str());
 	}
 	printf(" Press \"ALT + Q/Left/Right\", \"PS/Home + DPAD Left/Right\" to switch emulation.\n");
-	printf(" Bind Hotkeys in Coonfig.ini or Press touchpad areas buttons to change operating modes.\n");
-	printf(" If there's no touch panel, switch using a touchpad press (enabled in the config) or use \"ALT + 1/2\".\n");
-	printf(" Pressing AimingToggleButton or \"ALT + 2\" switches gyro On/Off (off by default).\n");			//  вывести кнопки из Config 
+	printf(" Bind Hotkey buttons in Config.ini to operating modes or Press touchpad areas buttons.\n");
+	printf(" If there's no touch panel, switch using a touchpad press (see config.ini) or use \"ALT + 1/2\".\n");
+	//printf(" Pressing AimingToggleButton or \"ALT + 2\" switches Gyro On/Off (off by default).\n");	old	
+	printf(" Press \"%s\" or \"ALT + 2\" to Enable \ Disable Gyro Aiming (default is off).\n", AppStatus.AimingToggleButtonName.c_str()); //  вывод кнопки из Config
+	printf(" Set Gyro Aiming Behavior in Config.ini, 1 = only by pressing AimButton, 0 = always on.\n");
 	if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) {
 		printf(" Adaptive triggers mode: ");
 		switch (PrimaryGamepad.AdaptiveTriggersMode) {
@@ -1233,8 +1177,10 @@ void DefaultMainText() {
 	if (AppStatus.ExternalPedalsArduinoConnected)
 		printf(" External pedals Arduino connected.\n");
 
-	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Mouse"); else printf("\n Aiming mode = Mouse-Joystick");
-	printf(", press AimingModeToggleButton or \"ALT + A\" to switch.\n");	//  вывести кнопки из Config 
+	//if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Mouse"); else printf("\n Aiming mode = Mouse-Joystick"); /old
+	//printf(", press \"ALT + A\" or \"PS/Capture + R1\" to switch.\n");
+	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Gyro Mouse"); else printf("\n Aiming mode = Gyro Stick");
+	printf(", press \"%s\" or \"ALT + A\" to switch.\n", AppStatus.AimingModeToggleButtonName.c_str());	//  вывод кнопки из Config 
 
 	printf(" Rumble strength is %d%%, press \"ALT + </>\", \"PS + Options\", or \"Capture + Plus\" to adjust.\n", PrimaryGamepad.RumbleStrength);
 
@@ -1656,10 +1602,12 @@ int main(int argc, char **argv)
 	AppStatus.JoyconRumbleMerge = IniFile.ReadBoolean("Gamepad", "JoyconRumbleMerge", false);
 	// Новые бинды для переключения режимов (по умолчанию для одиночных кнопок, но сейчас юзаем новый парсинг в .h + условия активации toggle-функций в main (buttons & mask) == mask. )
 	AppStatus.DrivingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Motion", "DrivingToggleButton", "NONE"));
-	AppStatus.AimingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Motion", "AimingToggleButton", "NONE"));
-	AppStatus.AimingModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Motion", "AimingModeToggleButton", "NONE"));
+	//AppStatus.AimingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Motion", "AimingToggleButton", "NONE"));
+	AppStatus.AimingToggleButtonName = IniFile.ReadString("Motion", "AimingToggleButton", "NONE");			//для вывода в консоль
+	AppStatus.AimingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingToggleButtonName);
+	AppStatus.AimingModeToggleButtonName = (IniFile.ReadString("Motion", "AimingModeToggleButton", "NONE"));//для вывода в консоль
+	AppStatus.AimingModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingModeToggleButtonName);
 	AppStatus.AimingByPressingMode = IniFile.ReadBoolean("Motion", "AimingByPressingMode", true); // переключаем gyro by pressed или always
-
 	PrimaryGamepad.Motion.SteeringWheelAngle = IniFile.ReadFloat("Motion", "SteeringWheelAngle", 150) / 2.0f;
 	PrimaryGamepad.Motion.AircraftEnabled = IniFile.ReadBoolean("Motion", "AircraftEnabled", false);
 	PrimaryGamepad.Motion.AircraftPitchAngle = IniFile.ReadFloat("Motion", "AircraftPitchAngle", 45) / 2.0f;
@@ -1991,14 +1939,14 @@ int main(int argc, char **argv)
 			MainTextUpdate();
 		}
 
-		// AimingMode (мышь / стик) — устар. для одной кнопки 
+		// AimingMode (мышь / стик) — устар. для одной кнопки  старый парсинг
 		/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
 			AppStatus.AimMode = !AppStatus.AimMode;
 			MainTextUpdate();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}*/
 		
-		// AimingMode (мышь / стик) с поддержкой двухкнопочного bind
+		// AimingMode (мышь / стик)  двухкнопочный bind новый парсинг
 		if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingModeToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) == AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
 			AppStatus.AimMode = !AppStatus.AimMode;
 			MainTextUpdate();
@@ -2636,7 +2584,7 @@ int main(int argc, char **argv)
 			JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT ||
 			JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
 
-			// Driving Mode Hotkey устар. для оной кнопки
+			// Driving Mode Hotkey устар. бинд для оной кнопки старый парсинг
 			/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.DrivingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('1')))) {
 				if (PrimaryGamepad.GamepadActionMode == 1)
 					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
@@ -2645,17 +2593,16 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
 			
-			// Driving Mode Hotkey с поддержкой двухкнопочного bind
+			// Driving Mode Hotkey двухкнопочный бинд новый парсинг
 			if (AppStatus.SkipPollCount == 0 && ((AppStatus.DrivingToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.DrivingToggleButton) == AppStatus.DrivingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('1')))) {
 				if (PrimaryGamepad.GamepadActionMode == 1)
 					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
 				else
 					PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
-
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}
 
-			// Aiming-режим — ТОЛЬКО MotionAimingModeOnlyPressed  устар. для одной кнопки
+			// Aiming-режим — ТОЛЬКО MotionAimingModeOnlyPressed  устар. для одной кнопки старый парсинг
 			/*if (AppStatus.SkipPollCount == 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.AimingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
 				if (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed)
 				{
@@ -2669,19 +2616,7 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}*/
 			
-			// AimingToggleButton (Gyro on\off ) Hotkey с поддержкой двухкнопочного bind
-			/*if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingToggleButton) == AppStatus.AimingToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
-				if (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed) {
-					PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
-				}
-				else {
-					PrimaryGamepad.GamepadActionMode = MotionAimingModeOnlyPressed;
-					PrimaryGamepad.LastMotionAIMMode = MotionAimingModeOnlyPressed;
-				}
-				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-			}*/
-			
-			// AimingToggleButton (Gyro on\off ) Hotkey с поддержкой двухкнопочного bind и AimingByPressingMode в Config
+			// AimingToggleButton (Gyro on\off ) двухкнопочный bind новый парсинг и AimingByPressingMode (больше не жмем Cature 2 раза) в Config
 			if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingToggleButton != 0 && (PrimaryGamepad.InputState.buttons&AppStatus.AimingToggleButton) == AppStatus.AimingToggleButton&&AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')))) {
 				int targetAimingMode = AppStatus.AimingByPressingMode ? MotionAimingModeOnlyPressed : MotionAimingMode;
 
@@ -2697,7 +2632,7 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}
 
-			/*// Change modes on one Joycon
+			// Change modes on one Joycon
 			if (AppStatus.SkipPollCount == 0 && AppStatus.JoyconChangeModesWithButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.JoyconChangeModesWithButton)) {
 				if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
 
@@ -2713,10 +2648,10 @@ int main(int argc, char **argv)
 					PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
 
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-			}*/
+			}
 
-			// на всякий случай, т.к. новый парсинг
-			if (AppStatus.SkipPollCount == 0 && AppStatus.JoyconChangeModesWithButton != 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.JoyconChangeModesWithButton) == AppStatus.JoyconChangeModesWithButton)) {
+			// на всякий случай, включить если проблемы т.к. новый парсинг
+			/*if (AppStatus.SkipPollCount == 0 && AppStatus.JoyconChangeModesWithButton != 0 && ((PrimaryGamepad.InputState.buttons & AppStatus.JoyconChangeModesWithButton) == AppStatus.JoyconChangeModesWithButton)) {
 				if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
 					if (PrimaryGamepad.GamepadActionMode == MotionAimingMode) {
 						PrimaryGamepad.GamepadActionMode = MotionAimingModeOnlyPressed;
@@ -2731,7 +2666,7 @@ int main(int argc, char **argv)
 					PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
 
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-			}
+			}*/
 
 			// Sony
 		} else {

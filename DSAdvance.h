@@ -476,10 +476,12 @@ struct _AppStatus {
 	int AimingButton = 0;
 	bool BTReset = true;
 	bool JoyconRumbleMerge = false;
-	int DrivingToggleButton = 0;		// Toggle Hotkey
-	int AimingToggleButton = 0;			// Toggle Hotkey
-	int AimingModeToggleButton = 0;		// Toggle Hotkey
-	bool AimingByPressingMode = true;	// switch MotionAimingModeOnlyPressed/	MotionAimingMode
+	int DrivingToggleButton = 0;			// Toggle Hotkey
+	int AimingToggleButton = 0;				// Toggle Hotkey
+	std::string AimingToggleButtonName;		// для: читаемое название кнопок в консоли
+	int AimingModeToggleButton = 0;			// Toggle Hotkey
+	std::string AimingModeToggleButtonName;
+	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
 
 	struct _HotKeys
 	{
