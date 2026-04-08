@@ -473,14 +473,16 @@ struct _AppStatus {
 	int MicCustomKey = 0;
 	std::string SteamScrKeyName = "NONE";
 	int SteamScrKey = 0;
-	int AimingButton = 0;
 	bool BTReset = true;
 	bool JoyconRumbleMerge = false;
+	int AimingButton = 0;					// Gyro button
+	std::string AimingButtonName;			// в консоль
 	int DrivingToggleButton = 0;			// Toggle Hotkey
+	std::string DrivingToggleButtonName;	// в консоль
 	int AimingToggleButton = 0;				// Toggle Hotkey
-	std::string AimingToggleButtonName;		// для: читаемое название кнопок в консоли
+	std::string AimingToggleButtonName;		// в консоль
 	int AimingModeToggleButton = 0;			// Toggle Hotkey
-	std::string AimingModeToggleButtonName;
+	std::string AimingModeToggleButtonName;// в консоль
 	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
 
 	struct _HotKeys
@@ -1061,7 +1063,7 @@ int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	else
 		return 0;
 }*/
-	// для двухкнопочного биндинга
+	// для двухкнопочного биндинга X+Y
 	size_t plusPos = KeyName.find('+');
 	if (plusPos != std::string::npos) {
 		std::string key1 = KeyName.substr(0, plusPos);
