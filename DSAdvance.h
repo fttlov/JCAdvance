@@ -1,5 +1,16 @@
 ﻿#pragma once
 
+// Library for VSCode
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
+#include <windows.h>
+#include "IniReader/IniReader.h"
+#include "JoyShockLibrary/JoyShockLibrary.h"
+#include "ViGEm/Client.h"
+#include "hidapi.h"
+
 // Controllers
 #define EMPTY_CONTROLLER				0
 #define SONY_DUALSHOCK4					27
@@ -155,16 +166,16 @@
 #define ADAPTIVE_TRIGGERS_BOW_MODE			5
 #define ADAPTIVE_TRIGGERS_CAR_MODE			6
 
-bool ExternalPedalsConnected = false;
-HANDLE hSerial;
-std::thread *pArduinoReadThread = NULL;
-float PedalsValues[2];
+inline bool ExternalPedalsConnected = false;
+inline HANDLE hSerial;
+inline std::thread *pArduinoReadThread = NULL;
+inline float PedalsValues[2];
 
-std::vector <std::string> KMProfiles;
-int KMProfileIndex = 0;
-int KMGameProfileIndex = 0;
-std::vector <std::string> XboxProfiles;
-int XboxProfileIndex = 0;
+inline std::vector<std::string> KMProfiles;
+inline int KMProfileIndex = 0;
+inline int KMGameProfileIndex = 0;
+inline std::vector<std::string> XboxProfiles;
+inline int XboxProfileIndex = 0;
 
 struct InputOutState {
 	unsigned char LEDRed;
@@ -234,7 +245,7 @@ struct _ButtonsState {
 	// Aditional buttons
 	Button JCSL;
 	Button JCSR;
-	Button ZL;
+	Button ZL;		//@101
 	Button ZR;
 	Button HOME;
 	Button CAPTURE;
@@ -275,6 +286,7 @@ struct AdvancedGamepad {
 	unsigned char DefaultLEDBrightness = 0;
 	unsigned char RumbleStrength = 100;
 	unsigned char PacketCounter = 0;
+	unsigned char PacketCounter2 = 0; //@106 Отдельный счетчик для правого джойкона (HidHandle2)
 	int RumbleSkipCounter = 300; // Nintendo Pro controller conflict with JoyShockLibrary (waiting after initialization)
 
 	int PSOnlyCheckCount = 0;
@@ -368,6 +380,8 @@ struct AdvancedGamepad {
 		bool WheelActive = false;
 		float WheelAccumX = 0;
 		float WheelAccumY = 0;
+		int WheelXboxHoldTimer = 0;		//@105
+		WORD WheelXboxHoldButton = 0; 
 	};
 	_Motion Motion;
 
@@ -446,6 +460,8 @@ struct _AppStatus {
 	bool LeftStickPressOnce = false;
 	bool ChangeModesWithClick = false;
 	bool ChangeModesWithoutAreas = false;
+	bool DisableAiming = false;
+	bool DisableDriving = false;
 	int JoyconChangeModesWithButton = 0;
 	bool ShowBatteryStatus = false;
 	int BackOutStateCounter = 0;
@@ -475,7 +491,7 @@ struct _AppStatus {
 	int SteamScrKey = 0;
 	bool BTReset = true;
 	bool JoyconRumbleMerge = false;
-	int AimingButton = 0;					// Gyro button
+	int AimingButton = 0;					// Gyro button		//@102
 	std::string AimingButtonName;			// в консоль
 	int DrivingToggleButton = 0;			// Toggle Hotkey
 	std::string DrivingToggleButtonName;	// в консоль
@@ -484,6 +500,9 @@ struct _AppStatus {
 	int AimingModeToggleButton = 0;			// Toggle Hotkey
 	std::string AimingModeToggleButtonName;// в консоль
 	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
+	bool ShowFullMenu = false;		//@107 Alt+Z
+	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
+	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh
 
 	struct _HotKeys
 	{
@@ -558,8 +577,8 @@ struct _CurrentXboxProfile {
 
 	unsigned int DSEdgeL4 = 0;
 	unsigned int DSEdgeR4 = 0;
-	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;   // по умолчанию оставляем LT (совместимость)
-	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;  // по умолчанию оставляем RT (совместимость)
+	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;   //@103 по умолчанию оставляем LT (совместимость)	
+	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;
 	unsigned int HOME = 0;   // Joy-Con HOME
 	unsigned int CAPTURE = 0;// Joy-Con Capture
 };
@@ -611,7 +630,7 @@ WORD VkToScan(WORD vk) {
 }
 
 // Check if a key is extended (EXTENDEDKEY flag required) / Проверка, расширенная ли клавиша (нужен флаг EXTENDEDKEY)
-bool IsExtendedKey(WORD vk) {
+inline bool IsExtendedKey(WORD vk) {
 	switch (vk) {
 	case VK_UP:
 	case VK_DOWN:
@@ -633,7 +652,7 @@ bool IsExtendedKey(WORD vk) {
 	}
 }
 
-void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool SendInputAPI) {
+inline void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool SendInputAPI) {
 	if (KeyCode == 0) return;
 	else if (KeyCode == VK_MOUSE_LEFT || KeyCode == VK_MOUSE_MIDDLE ||
 		KeyCode == VK_MOUSE_RIGHT || KeyCode == VK_MOUSE_WHEEL_UP ||
@@ -807,7 +826,7 @@ void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool SendInp
 	}
 }
 
-int KeyNameToKeyCode(std::string KeyName) {
+inline int KeyNameToKeyCode(std::string KeyName) {
 	std::transform(KeyName.begin(), KeyName.end(), KeyName.begin(), ::toupper);
 
 	std::unordered_map<std::string, int> KeyMap = {
@@ -1020,7 +1039,7 @@ int XboxKeyNameToXboxKeyCode(std::string KeyName) {
 		return 0;
 }
 
-int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
+inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	std::transform(KeyName.begin(), KeyName.end(), KeyName.begin(), ::toupper);
 
 	std::unordered_map<std::string, int> KeyMap = {
@@ -1042,8 +1061,10 @@ int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 		{"TRIANGLE", JSMASK_N}, // Y
 		{"L2", JSMASK_ZL},
 		{"R2", JSMASK_ZR},
-		{"L4", JSOFFSET_FNL},
-		{"R4", JSOFFSET_FNR},
+		{"L4", JSMASK_FNL},
+		{"R4", JSMASK_FNR},
+		{"L", JSMASK_L},	//@110 Нет L1 у joycon блять
+		{"R", JSMASK_R},
 		{"ZL", JSMASK_ZL},
 		{"ZR", JSMASK_ZR},
 		{"B", JSMASK_S}, // A
@@ -1055,7 +1076,7 @@ int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 		{"SL", JSMASK_SL},
 		{"SR", JSMASK_SR},
 		{"CAPTURE", JSMASK_CAPTURE},
-		{"HOME", JSMASK_HOME},
+		{"HOME", JSMASK_HOME}
 	};
 
 	/*if (KeyMap.find(KeyName) != KeyMap.end())
@@ -1063,7 +1084,7 @@ int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	else
 		return 0;
 }*/
-	// для двухкнопочного биндинга X+Y
+	// Новый парсинг для двухкнопочного биндинга аля "R1+HOME"	//@104
 	size_t plusPos = KeyName.find('+');
 	if (plusPos != std::string::npos) {
 		std::string key1 = KeyName.substr(0, plusPos);
@@ -1202,11 +1223,11 @@ uint32_t crc_32(unsigned char* buf, int length) {
 	return result ^ 0xFFFFFFFF;
 }
 
-bool IsKeyPressed(int KeyCode) {
+inline bool IsKeyPressed(int KeyCode) {
 	return (GetAsyncKeyState(KeyCode) & 0x8000) != 0;
 }
 
-unsigned int WebColorToRGB(const std::string& webColor) {
+inline unsigned int WebColorToRGB(const std::string& webColor) {
 	if (webColor.empty() || webColor[0] == '#' || webColor.length() != 6) return 0;
 
 	unsigned char red, green, blue;
@@ -1224,7 +1245,7 @@ unsigned int WebColorToRGB(const std::string& webColor) {
 	return (red << 16) | (green << 8) | blue;
 }
 
-float ClampFloat(float Value, float Min, float Max)
+inline float ClampFloat(float Value, float Min, float Max)
 {
 	if (Value > Max)
 		Value = Max;
@@ -1233,7 +1254,7 @@ float ClampFloat(float Value, float Min, float Max)
 	return Value;
 }
 
-float DeadZoneAxis(float StickAxis, float DeadZoneValue) // Possibly wrong
+inline float DeadZoneAxis(float StickAxis, float DeadZoneValue) // Possibly wrong
 {
 	if (StickAxis > 0) {
 		StickAxis -= DeadZoneValue;
@@ -1252,7 +1273,7 @@ float DeadZoneAxis(float StickAxis, float DeadZoneValue) // Possibly wrong
 	return Rad / 3.14159265358979323846 * 180.0;
 }*/
 
-double OffsetYPR(double Angle1, double Angle2) // CalcMotionStick
+inline double OffsetYPR(double Angle1, double Angle2) // CalcMotionStick
 {
 	Angle1 -= Angle2;
 	if (Angle1 < -3.14159265358979323846)
@@ -1272,7 +1293,7 @@ double OffsetYPR(double Angle1, double Angle2) // CalcMotionStick
 	return LeftAxisX;
 }*/
 
-float CalcMotionStick(float gravA, float gravB, float wheelAngle, float offsetAxis) {
+inline float CalcMotionStick(float gravA, float gravB, float wheelAngle, float offsetAxis) {
 	float angleRadians = wheelAngle * (3.14159f / 180.0f); // To radians
 
 	float normalizedValue = OffsetYPR(atan2f(gravA, gravB), offsetAxis) / angleRadians;
@@ -1285,7 +1306,7 @@ float CalcMotionStick(float gravA, float gravB, float wheelAngle, float offsetAx
 	return normalizedValue;
 }
 
-void WindowToCenter() {
+inline  void WindowToCenter() {
 	HWND hWndConsole = GetConsoleWindow();
 	//if (hWndConsole == NULL) return 1;
 
