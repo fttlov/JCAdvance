@@ -7,7 +7,7 @@ Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone
 r57zone has done a really great job and thank him for that.
 
 # JCAdvance
-Like a DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.
+Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
 # What's the difference:
