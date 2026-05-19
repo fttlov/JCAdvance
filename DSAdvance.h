@@ -147,7 +147,7 @@
 
 // Aiming
 //#define FrameTime						0.0166666666666667f // 1.f / 60.f
-#define Tightening						2.f
+//#define Tightening						2.f
 
 // Mic LED status
 #define MIC_LED_ON						0x01
@@ -245,7 +245,7 @@ struct _ButtonsState {
 	// Aditional buttons
 	Button JCSL;
 	Button JCSR;
-	Button ZL;		//@101
+	Button ZL;		//@101 additional joy-con buttons for mapping
 	Button ZR;
 	Button HOME;
 	Button CAPTURE;
@@ -374,14 +374,20 @@ struct AdvancedGamepad {
 		int AircraftPitchInverted = 0;
 		float AircraftRollSens = 0;
 		float CustomMulSens = 1.0f;
+		float MouseSmooth = 0.0f;	//@111 EMA Filter
+		float JoySmooth = 0.0f;
+		float EmaGyroX = 0.0f;
+		float EmaGyroY = 0.0f;
+		float EmaGyroZ = 0.0f;
+		float Tightening = 2.0f; // now in config.ini
 
 		float MotionWheelButtonsDeadZone = 0;
 		int WheelCounter = 0;
 		bool WheelActive = false;
 		float WheelAccumX = 0;
 		float WheelAccumY = 0;
-		int WheelXboxHoldTimer = 0;		//@105
-		WORD WheelXboxHoldButton = 0; 
+		int WheelXboxHoldTimer = 0;		//@105 защита от пропуска нажатия Xbox кнопок в Wheel
+		WORD WheelXboxHoldButton = 0;
 	};
 	_Motion Motion;
 
@@ -500,9 +506,9 @@ struct _AppStatus {
 	int AimingModeToggleButton = 0;			// Toggle Hotkey
 	std::string AimingModeToggleButtonName;// в консоль
 	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
-	bool ShowFullMenu = false;		//@107 Alt+Z
+	bool ShowFullMenu = false;		//@107 Alt+Z change Menu Layers
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
-	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh
+	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnsct
 
 	struct _HotKeys
 	{
@@ -578,9 +584,9 @@ struct _CurrentXboxProfile {
 	unsigned int DSEdgeL4 = 0;
 	unsigned int DSEdgeR4 = 0;
 	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;   //@103 по умолчанию оставляем LT (совместимость)	
-	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;
-	unsigned int HOME = 0;   // Joy-Con HOME
-	unsigned int CAPTURE = 0;// Joy-Con Capture
+	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;	// пока не переназначим
+	unsigned int HOME = 0;		//@101 additional joy-con buttons for mapping
+	unsigned int CAPTURE = 0;
 };
 _CurrentXboxProfile CurrentXboxProfile;
 
@@ -1063,7 +1069,7 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 		{"R2", JSMASK_ZR},
 		{"L4", JSMASK_FNL},
 		{"R4", JSMASK_FNR},
-		{"L", JSMASK_L},	//@110 Нет L1 у joycon блять
+		{"L", JSMASK_L},	//@110 Нет L1 R1 у joycon блять
 		{"R", JSMASK_R},
 		{"ZL", JSMASK_ZL},
 		{"ZR", JSMASK_ZR},
@@ -1084,7 +1090,7 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	else
 		return 0;
 }*/
-	// Новый парсинг для двухкнопочного биндинга аля "R1+HOME"	//@104
+	//@104 Новый парсинг для двухкнопочного биндинга аля "R1+HOME"
 	size_t plusPos = KeyName.find('+');
 	if (plusPos != std::string::npos) {
 		std::string key1 = KeyName.substr(0, plusPos);
