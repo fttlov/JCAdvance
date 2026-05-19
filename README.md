@@ -29,10 +29,9 @@ You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is ba
   <img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/Screenshot_Main.png"/>
 </details>
 
-- You can map <u>any Joy-con button</u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
-<sub>
-*For Sony gamepads you can do the same wihou GUI, by editing XboxProfiles\Default.ini
-</sub>
+- You can map <u> any Joy-con button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
+<sub>For Sony gamepads you can do the same wihou GUI, by editing XboxProfiles\Default.ini</sub>
+
 - Fully configurable hotkeys to activate Gyro modes with two-buttons combination support (R+HOME)
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
 
