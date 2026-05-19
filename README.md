@@ -1,10 +1,10 @@
 [![EN](https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png)](https://github.com/fttlov/JCAdvance/) 
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
 ← Choose language | Выберите язык
-<small>
+
 Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
 r57zone has done a really great job and thank him for that.
-</small>
+
 # JCAdvance
 Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
@@ -37,7 +37,7 @@ Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
 - Fiexed Battery Info (ALT+I) for 2nd Joy-con
 
 If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
-</small>
+
 ## Credits
 * Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
 * [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
