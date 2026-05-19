@@ -62,8 +62,8 @@ Tightening code has been rewritten (Gyro Stick part only) with add ImuState func
 
 ## Building
 1. Download the sources and unzip them
-2. Download VIsual Studio 17 and [install](https://github.com/fttlov/JCAdvance/blob/main/Icon/VS17_Install.png) with these components
-3. Download Windows SDK 10.0.1776.x and [install](https://github.com/fttlov/JCAdvance/blob/main/Icon/SDK_Install.png) with these components
+2. Download VIsual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png?token=GHSAT0AAAAAADYRJAGYXVW5TUCNT2QJLEOU2QML4CA) with these components
+3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/SDK_Install.png?token=GHSAT0AAAAAADYRJAGZXLP2JUHLXWREPIBM2QML43A) with these components
 4. Choose the `Release` build type  and `x86`, then compile the project
 5. For compile Config use Ahk2exe, base file: v2 U32 (x86 only). Script reading JoyShockLibrary.dll and icon ftom \Icon folder
 
