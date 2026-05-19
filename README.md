@@ -5,16 +5,16 @@
 Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
 r57zone has done a really great job and thank him for that.
 
-# JCAdvance
+<b> JCAdvance</b>
 Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
-# What's the difference:
-In coception of use. <br>
+<b> What's the difference:</b>
+In conception of use. <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
 You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
 
-# What's new:
+<b> What's new:/<b>
 - Config.exe. All primary settings, mapping buttons now can be configured via GUI
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to old menu)
 - You can map Any Joy-con button to emulate any of Xbox, Keyboard or Mouse key in one main profile <br>
@@ -22,7 +22,7 @@ For sony gamepads you can do the same, but wihou GUI, by editing XboxProfiles\De
 - Fully configurable hotkeys to activate Gyro modes with two-buttons combination support (R+HOME)
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
 
-# Technical changes and bug fixes
+<b> Technical changes and bug fixes</b>
 
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage has risen dramatically from 0.30% to 0.40% :)<br>
 Due to certain limitations by some functions in code, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement of the Gyro Mouse <br>
