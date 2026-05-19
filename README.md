@@ -16,6 +16,11 @@ You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is ba
 
 ## <b> What's new:/<b>
 - Config.exe. All primary settings, mapping buttons now can be configured via GUI
+<details>
+  <summary><b>Spoiler</b></summary>
+  
+  <img src="[https://example.com/image.png](https://github.com/fttlov/JCAdvance/blob/main/Icon/Screenshot_Config.png)" alt="Config.exe" />
+</details>
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to old menu)
 - You can map Any Joy-con button to emulate any of Xbox, Keyboard or Mouse key in one main profile <br>
 For sony gamepads you can do the same, but wihou GUI, by editing XboxProfiles\Default.ini
