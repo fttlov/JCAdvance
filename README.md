@@ -68,7 +68,7 @@ Tightening code has been rewritten (Gyro Stick part only) with add ImuState func
 5. For compile Config use Ahk2exe, base file: v2 U32 (x86 only). Script reading JoyShockLibrary.dll and icon ftom \Icon folder
 
 ## Editing
-Added support files for use modern VS Code with clangd for editing
+Added support files for edit code in modern VS Code + clangd
 
 ## Feedback
 `fttlkov@gmail.com`
