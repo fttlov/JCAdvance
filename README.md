@@ -12,7 +12,7 @@ All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, E
 ## What's the difference:
 In conception of use. <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
-You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
+I assume that Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
 
 ## What's new:
 - Config.exe. All primary settings, mapping buttons and hotkeys now can be configured via GUI
