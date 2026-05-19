@@ -43,13 +43,13 @@ Limitations: Wheel and Tightening function, both has been rewritten. For Wheel a
 - Fixed Gyro Joysctick issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis).
 Tightening code has been rewritten (Gyro Stick part only) with add ImuState function
 - Added EMA filter (not necessary, but why not?)
-Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
+- Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
 - Fixed connect and disconnect time, specialy for second joy-con
 - Fixed a crash that occurred when two joy-cons were disconnected at the same time
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
 - Fiexed Battery Info (ALT+I) for 2nd Joy-con
 
-## If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
+# If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
 
 ## Credits
 * Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
