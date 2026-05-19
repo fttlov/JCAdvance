@@ -1,4 +1,4 @@
-[![EN](https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png)](https://github.com/fttlov/JCAdvance/) 
+<small>[![EN](https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png)](https://github.com/fttlov/JCAdvance/) 
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
 ← Choose language | Выберите язык
 
@@ -10,6 +10,7 @@ Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced feature
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
 # What's the difference:
+In coception of use. <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
 You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
 
@@ -57,4 +58,4 @@ If you’d like to explore all the features, please visit https://github.com/r57
 Added support files for use modern VS Code with clangd for editing
 
 ## Feedback
-`fttlkov[at]gmail.com`
+`fttlkov[at]gmail.com`</small>
