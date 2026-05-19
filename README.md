@@ -15,7 +15,7 @@ DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, a
 You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
 
 ## What's new:
-- Config.exe. All primary settings, mapping buttons now can be configured via GUI
+- Config.exe. All primary settings, mapping buttons and hotkeys now can be configured via GUI
 <details>
   <summary><b>Spoiler</b></summary>
   
