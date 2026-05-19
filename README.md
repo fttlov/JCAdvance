@@ -40,7 +40,7 @@ You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is ba
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage has risen dramatically from 0.30% to 0.40% :) App uses a surprisingly small amount of PC resources<br>
 Due to certain limitations by some functions in code, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement of the Gyro Mouse <br>
 Limitations: Wheel and Tightening function, both has been rewritten. For Wheel added WheelXboxHoldTimer, for Tightening see below:
-- Fixed Gyro Joysctick issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) <br>
+- Fixed Gyro Joysctick issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis).
 Tightening code has been rewritten (Gyro Stick part only) and add ImuState function
 - Added EMA filter (not necessary, but why not?)
 Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
