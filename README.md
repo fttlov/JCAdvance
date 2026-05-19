@@ -5,16 +5,16 @@
 Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
 r57zone has done a really great job and thank him for that.
 
-## <b> JCAdvance</b>
+## What is it
 Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
-## <b> What's the difference:</b>
+## What's the difference:
 In conception of use. <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
 You have to admit, Gyro aiming with a two-handed gamepad and with Joy-Cons is based on different concepts. Two handed: "Fine-tuning", adjustment by gyro for classic aiming. Joy-con's - free hand full Gyro aiming.
 
-## <b> What's new:/<b>
+## What's new:
 - Config.exe. All primary settings, mapping buttons now can be configured via GUI
 <details>
   <summary><b>Spoiler</b></summary>
