@@ -28,7 +28,7 @@ I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on dif
 - Add Poling rate option (see more in Technical changes)  
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
 - Add Smooth Filter
-- External pedal now working with almost known dinput wheels\pedals (not just Arduino)
+- (Experimental) External pedal now working with almost known dinput wheels\pedals (not just Arduino) (realy experimental)
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to old menu)
 <details>
   <summary><b>Spoiler</b></summary>
@@ -48,7 +48,13 @@ Limitations: Wheel function did not work properly when Sleeptimeout < 15 and has
 - Fixed a crash that occurred when two joy-cons were disconnected at the same time
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
 - Fixed Battery Info (ALT+I) for 2nd Joy-con
-- Fixed External Pedals.  
+
+- (Experemental) fixes for ExternalPedals function. I expect to receive the highest number of issues reports right here.
+Original code has made for Arduino pedal project(i du no what is it). I couldn't get the other steering wheels/pedals to work. Code has been rewritten for: set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
+a) Pedal1Axis - in Widows by default pedals maapping to z, z-rotation. Try others axis
+b) change DeviceName: Value 'Auto' is a sort of 'smart filter'—which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.
+
+I have old "Logitech Wingman Wheel" and testing pedals to triggers axis for them.  
 
 # If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
 
