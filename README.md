@@ -25,7 +25,8 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
 <sub>For Sony gamepads you can do the same, but wihou GUI by editing [Keyboard-Mouse] section in \XboxProfile\Default.ini</sub>
 
 - Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (R+HOME)
-- Add Poling rate option (see more in Technical changes)  
+- Add Gyro Space option - an extremely important option for aiming (see more in Technical changes)
+- Add Poling rate option (see more in Technical changes)
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
 - Add Smooth Filter
 - (Experimental) External pedal now working with almost known dinput wheels\pedals (not just Arduino) (realy experimental)
