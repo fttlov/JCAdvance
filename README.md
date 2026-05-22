@@ -9,7 +9,7 @@ JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-co
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
 ## What's the difference:
-In conception of use Gyro Motion and user friendly GUI <br>
+In conception of use Gyro Motion, user friendly GUI and bugfixes <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
 I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) is a relic of the past.
 
