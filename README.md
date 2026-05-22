@@ -39,16 +39,16 @@ I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on dif
 ## <b> Technical changes and bug fixes</b>
 
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage has risen dramatically from 0.30% to 0.40% :) App uses a surprisingly small amount of PC resources<br>
-Due to certain limitations by some functions in code, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement of the Gyro Mouse <br>
-Limitations: Wheel and Tightening function, both has been rewritten. For Wheel added WheelXboxHoldTimer, for Tightening see below:
-- Fixed Gyro Joysctick issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis).
-Tightening code has been rewritten (Gyro Stick part only) with add ImuState function
-- Added EMA filter (not necessary, but why not?)
+Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement of the Gyro Mouse <br>
+Limitations: Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten , added WheelXboxHoldTimer 
+- Fixed Gyro Joysctick mode issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) by fixed some bugs in JoyshokLibrary
+- Added EMA motion smoothing filter. Careful: add input latency. For 60fps games (value - latency): 25   ~2.7ms;  50   ~8ms;  75   ~24ms
 - Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
 - Fixed connect and disconnect time, specialy for second joy-con
 - Fixed a crash that occurred when two joy-cons were disconnected at the same time
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
-- Fiexed Battery Info (ALT+I) for 2nd Joy-con
+- Fixed Battery Info (ALT+I) for 2nd Joy-con
+- Fixed External Pedals.  
 
 # If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
 
