@@ -11,7 +11,7 @@ All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, E
 ## What's the difference:
 In conception of use Gyro Motion, user friendly GUI and bugfixes <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
-I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) in FPS is a relic of the past.
+I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) in FPS is a relic of the past.
 
 ## What's new:
 - Config.exe. All primary settings, mapping buttons and hotkeys now can be configured via GUI
@@ -24,7 +24,7 @@ I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on dif
 - You can map <u> any Joy-con button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
 <sub>For Sony gamepads you can do the same, but wihou GUI by editing [Keyboard-Mouse] section in \XboxProfile\Default.ini</sub>
 
-- Fully configurable hotkeys to activate Gyro modes with two-buttons combination support (R+HOME)
+- Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (R+HOME)
 - Add Poling rate option (see more in Technical changes)  
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
 - Add Smooth Filter
