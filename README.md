@@ -3,16 +3,15 @@
 ← Choose language | Выберите язык
 
 Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
-r57zone has done a really great job and thank him for that.
 
 ## What is it
-Just like DSAdvance, JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
+JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
 All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
 
 ## What's the difference:
-In conception of use. <br>
+In conception of use Gyro Motion and user friendly GUI <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
-I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming. Right stick for looking(aiming) is relic of the past, just a another way to look around in 3D world with cinematic fluidity of movement.
+I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) is a relic of the past.
 
 ## What's new:
 - Config.exe. All primary settings, mapping buttons and hotkeys now can be configured via GUI
@@ -26,7 +25,10 @@ I assume that Gyro aiming with a two-handed gamepad and Joy-Cons is based on dif
 <sub>For Sony gamepads you can do the same, but wihou GUI by editing [Keyboard-Mouse] section in \XboxProfile\Default.ini</sub>
 
 - Fully configurable hotkeys to activate Gyro modes with two-buttons combination support (R+HOME)
+- Add Poling rate option (see more in Technical changes)  
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
+- Add Smooth Filter
+- External pedal now working with almost known dinput wheels\pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to old menu)
 <details>
   <summary><b>Spoiler</b></summary>
