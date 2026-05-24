@@ -15,6 +15,7 @@ Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-con's
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
 - (Experimental) External pedal: connect your wheel\pedals and emulate triggers or sticks.
+- Minimal memroy and CPU usage (0~20 - 0.50 %)
  
 ## What's the difference:
 In short: Conception of use Gyro Motion, user friendly GUI's and bugfixes. <br>
@@ -67,7 +68,7 @@ Install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-
 <details>
   <summary><h2>Technical changes and bug fixes</h2> (Click to open)</summary>
   <br>
-- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.70% :) App uses a surprisingly small amount of PC resources<br>
+- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.60% :) App uses a surprisingly small amount of PC resources<br>
 Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement, especially for Gyro Mouse <br>
 What limitations? Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten, added WheelXboxHoldTimer. Full changelist in joyshocklibraree see on fork page: https://github.com/fttlov/JoyShockLibrary
 - Fixed Gyro Joysctick mode issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) - bugs in JoyshokLibrary
