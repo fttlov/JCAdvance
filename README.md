@@ -35,7 +35,8 @@ Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a
   </tr>
 </table>
 
-- You can map <u> any Nintendo/Sony gamepad button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
+- You can map <u> any Nintendo/Sony gamepad button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> <br>
+- One main profile for all. You can still switch between profiles and create new ones
 - Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (like R+HOME)
 - Add Gyro Space option - an important option for aiming (see more in Technical changes)
 - Add Poling rate option. igher the value - smoother the motion
