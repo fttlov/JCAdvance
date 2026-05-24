@@ -59,11 +59,12 @@ Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a
 Download, unzip, run JCadvance.exe, connect gamepad, enjoy.
 
 ## Important
-To work properly in some games you'll need to hide your real gamepad <br>
+To work properly in some games you'll need to hide your real gamepad. <br>
 To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from nefarius.
 Full install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
 
-## <b> Technical changes and bug fixes</b>
+<details>
+  <summary>## Technical changes and bug fixes</summary>
 
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.70% :) App uses a surprisingly small amount of PC resources<br>
 Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement, especially for Gyro Mouse <br>
@@ -89,7 +90,7 @@ Original code has made for Arduino pedal project(i du no what is it) and dinpt d
 Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
 a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others axis
 b) change DeviceName: Value 'Auto' is a sort of 'smart filter' to block gamepads — which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.<br>
-I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them.  
+I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them. </details>
 
 
 ## Potential issues
