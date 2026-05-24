@@ -64,8 +64,8 @@ To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from 
 Full install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
 
 <details>
-  <summary>h2>##Technical changes and bug fixes</h2></summary>
-
+  <summary><h2>Technical changes and bug fixes</h2></summary>
+  <br>
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.70% :) App uses a surprisingly small amount of PC resources<br>
 Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement, especially for Gyro Mouse <br>
 What limitations? Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten, added WheelXboxHoldTimer. Full changelist in joyshocklibraree see in https://github.com/fttlov/JoyShockLibrary
