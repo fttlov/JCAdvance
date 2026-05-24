@@ -5,11 +5,11 @@
 ## What is it
 Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro controller, DualShock 4 and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) from r57zone. <br>
 
-## Main features
+## Some basic features:
 - Customizable buttons. Assign buttons on the gamepad to emulate Xbox, Keyboard and mouse keys <br>
-- Gyro based modes: Mouse\Stick emulation for looking/aiming; Wheel emulation for Driving <br>
-- Fully customizable hotkeys for switching Gyro modes in realtime with two-buttons support <br>
-- Customizable Sensitivity, deadzones, left/right hand stick switching
+- Gyro based modes: mouse\stick emulation for looking/aiming; wheel emulation for Driving <br>
+- Hotkeys for switching Gyro modes in realtime<br>
+- Customizable Sensitivity, deadzones, left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
 - Support for adaptive triggers for Sony DualSense (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
