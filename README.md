@@ -84,7 +84,7 @@ Hard to explain, but i try. For two-handed gamepads: Hold the gamepad in front o
 
 For Joy-con: We have a free hand. The cursor is moved by rotating the wrist or moving the entire arm (using the forearm, which makes aiming more precise) up, down, left, and right. In this case, rotating the wrist around its axis (clockwise and counterclockwise) has a negative effect on cursor movement. 0 - the angle of wrist rotation (clockwise and counterclockwise) always has an effect. The big toe should always point toward the ceiling. 1 - the only mode where this effect is neutralized. If you hold the Joy-Con more or less horizontally, interference from other axes is minimal.
 
-- Experemental fixes for ExternalPedals function. I expect to receive the highest number of issues reports right here. <br>
+- Experemental fixes for ExternalPedals function. I expect the highest number of issues right here. <br>
 Original code has made for Arduino pedal project(i du no what is it) and dinpt devices, but i couldn't get the other steering wheels/pedals to work. Code has been rewritten for all dinput wheel\pedals. <br>
 Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
 a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others axis
