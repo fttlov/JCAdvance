@@ -76,7 +76,7 @@ What limitations? Wheel function did not work properly when Sleeptimeout < 15 an
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
 - Fixed Battery Info (ALT+I) for 2nd Joy-con
 
-- Gyro Motion Space. This option controls how the gyroscope interprets hand moves into mouse\stick movements depending on the `ntilt of the wrist (clockwise or anti-clockwise) and how you hold a gamepad (face buttons to you or horizontal). In DSAdvance "0" it is hard-coded value. Now we have all 3 modes from Joyshoklibrary creatoor: 0, 1 ,2<br>
+- Gyro Motion Space. This option controls how the gyroscope interprets hand moves into mouse\stick movements depending on the tilt of the wrist (clockwise or anti-clockwise) and how you hold a gamepad (face buttons to you or horizontal). In DSAdvance "0" it is hard-coded value. Now we have all 3 modes from Joyshoklibrary creatoor: 0, 1 ,2<br>
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
