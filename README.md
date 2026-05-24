@@ -3,29 +3,29 @@
 ← Choose language
 
 ## What is it
-Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-con's, Pro controller, DualShock 4 and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) from r57zone. <br>
+Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone. <br>
 
 ## Some basic features:
-- Customizable buttons. Assign buttons on the gamepad to emulate Xbox, Keyboard and mouse keys <br>
-- Gyro based modes: mouse\stick emulation for looking/aiming; wheel emulation for Driving <br>
-- Hotkeys for switching Gyro modes in realtime<br>
-- Customizable Sensitivity, deadzones, left/right stick switching
+- Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
+- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving <br>
+- Hotkeys for switching Gyro modes in real time<br>
+- Customizable sensitivity, deadzones, and left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
-- Support for adaptive triggers for Sony DualSense (pistol, rifle, sniper rifle, bow, car pedal);<br>
+- Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
-- (Experimental) External pedal: connect your wheel\pedals and emulate triggers or sticks.
-- Minimal memroy and CPU usage (0~20 - 0.50 %)
+- (Experimental) External pedal: connect your wheel/pedals and emulate triggers or sticks.
+- Minimal memory and CPU usage (0.20% - 0.50%)
  
 ## What's the difference:
-In short: Conception of use Gyro Motion, user friendly GUI's and bugfixes. <br>
-DSAdvance was designed primarily for Sony's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
-I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on different concepts. <br>
-Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. <br>
-Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a relic of the past.
+In short: the concept of using Gyro Motion, user-friendly GUIs, and bug fixes. <br>
+DSAdvance was designed primarily for Sony's two-handed controllers. JCAdvance, as you might guess, focuses on Joy-con's and Gyro aiming features. <br>
+I assume that Gyro aiming with two-handed gamepads and Joy-con's is based on different concepts. <br>
+Two-handed: Gyro aiming is used for fine-tuning and adjusting classic stick aiming. <br>
+Joy-con's: it is free-hand, full Gyro aiming — the right stick for looking (aiming) is a relic of the past.
 
 ## What's new:
-- Config.exe. All primary settings, Gyro options, mapping buttons and hotkeys now can be configured via GUI
+- Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150"></td>
@@ -36,15 +36,15 @@ Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a
   </tr>
 </table>
 
-- You can map <u> any digital Nintendo/Sony gamepad button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> <br>
+- You can map <u> any digital Nintendo/Sony gamepad button </u> to emulate <u>any Xbox, keyboard, or mouse key</u> <br>
 - One main profile for all. You can still switch between profiles and create new ones
-- Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (like R+HOME)
-- Add Gyro Space option - an important option for aiming (see more in Technical changes)
-- Add Poling rate option. Higher the value - smoother the motion
-- Add option to read Gyro data from left Joy-con (by defaul - only for right)
-- Add Smooth motion filter
-- (Experimental) External pedal now working with almost known dinput wheels\pedals (not just Arduino)
-- A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to Full menu)
+- Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME)
+- Added Gyro Space option — an important setting for aiming (see more in Technical changes)
+- Added Polling rate option (higher value means smoother motion)
+- Added option to read Gyro data from the left Joy-con (by default, only the right one is used)
+- Added Smooth motion filter
+- (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
+- A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z for the full menu)
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main.png" width="150"></td>
@@ -53,55 +53,55 @@ Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a
 </table>
 
 ## Requires
-[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework from nefarius <br>
+[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework by nefarius <br>
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
 
 ## How to use
-Download, unzip, run JCadvance.exe, connect gamepad, enjoy.
+Download, unzip, run JCadvance.exe, connect gamepad and enjoy.
 
 ## Important
 To work properly in some games you'll need to hide your real gamepad. <br>
-To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from nefarius.
+To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) by nefarius.
 Install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
 
 
 <details>
   <summary><h2>Technical changes and bug fixes</h2> (Click to open)</summary>
   <br>
-- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.60% :) App uses a surprisingly small amount of PC resources<br>
-Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement, especially for Gyro Mouse <br>
-What limitations? Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten, added WheelXboxHoldTimer. Full changelist in joyshocklibraree see on fork page: https://github.com/fttlov/JoyShockLibrary
-- Fixed Gyro Joysctick mode issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) - bugs in JoyshokLibrary
-- Added EMA motion smoothing filter. Careful: add input latency. For 60fps games (value - latency): 25   ~2.7ms;  50   ~8ms;  75   ~24ms
-- Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
-- Fixed connect and disconnect time, specialy for second joy-con
-- Fixed a crash that occurred when two joy-cons were disconnected at the same time
-- Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
-- Fixed Battery Info (ALT+I) for 2nd Joy-con
+- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. <br>
+Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
+What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
+- Fixed a Gyro Joystick mode issue where the stick would be randomly pulled toward the center when moving the gyroscope up or down (Y-axis), caused by bugs in JoyShockLibrary.
+- Added EMA motion smoothing filter. Note: this introduces input latency. For 60fps games (value - latency): 25 ~2.7ms; 50 ~8ms; 75 ~24ms.
+- Rumble code fixes for Joy-Cons. Added PacketCounter2, flood protection, etc.
+- Improved connection and disconnection times, especially for the second Joy-Con.
+- Fixed a crash that occurred when two Joy-Cons were disconnected at the same time.
+- Fixed an issue where connecting Joy-Con (1), disconnecting it, and then connecting Joy-Con (2) resulted in no input response.
+- Fixed Battery Info (Alt+I) for the second Joy-Con.
 
-- Gyro Motion Space. This option controls how the gyroscope interprets hand moves into mouse\stick movements depending on the tilt of the wrist (clockwise or anti-clockwise) and how you hold a gamepad (face buttons to you or horizontal). In DSAdvance "0" it is hard-coded value. Now we have all 3 modes from Joyshocklibrary creator: 0, 1 ,2<br>
+- Gyro Motion Space. This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
-Hard to explain, but i try. For two-handed gamepads: Hold the gamepad in front of you with the L2 and R2 buttons facing the ceiling. To move the mouse cursor up and down, rotate the gamepad around its axis, L2 R2 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: 0 -  "steering wheel" movement to the left; 2 - tilt the right side of the gamepad (R2) away from you while bringing the left side (L2) closer. If you hold the gamepad horizontally (which is uncomfortable), "steering wheel" movement returns.<br>
+It is hard to explain, but I will try. For two-handed gamepads: hold the gamepad in front of you with the L2 and R2 buttons facing the ceiling. To move the mouse cursor up and down, rotate the gamepad around its axis, with L2 and R2 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: 0 — "steering wheel" movement to the left; 2 — tilt the right side of the gamepad (R2) away from you while bringing the left side (L2) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
 
-For Joy-con: We have a free hand. The cursor is moved by rotating the wrist or moving the entire arm (using the forearm, which makes aiming more precise) up, down, left, and right. In this case, rotating the wrist around its axis (clockwise and counterclockwise) has a negative effect on cursor movement. 0 - the angle of wrist rotation (clockwise and counterclockwise) always has an effect. The big toe should always point toward the ceiling. 1 - the only mode where this effect is neutralized. If you hold the Joy-Con more or less horizontally, interference from other axes is minimal.
+For Joy-Con: We have a free hand. The cursor is moved by rotating the wrist or moving the entire arm (using the forearm, which makes aiming more precise) up, down, left, and right. In this case, rotating the wrist around its axis (clockwise and counter-clockwise) has a negative effect on cursor movement. 0 — the angle of wrist rotation (clockwise and counter-clockwise) always affects movement, meaning you will need to consciously control your wrist position to keep your physical hand movements aligned with the cursor on the screen. 1 — the only mode where this effect is neutralized. If you hold the Joy-Con more or less horizontally, interference from other axes is minimal.
 
-- Experemental fixes for ExternalPedals function. I expect the highest number of issues right here. <br>
-Original code has made for Arduino pedal project(i du no what is it) and dinpt devices, but i couldn't get the other steering wheels/pedals to work. Code has been rewritten for all dinput wheel\pedals. <br>
-Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
-a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others axis
-b) change DeviceName: Value 'Auto' is a sort of 'smart filter' to block gamepads — which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.<br>
-I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them. </details>
+- Experimental fixes for the ExternalPedals function. I expect the most issues to occur here. <br>
+The original code was made for an Arduino pedal project (I do not know what it is) and DirectInput (DInput) devices, but I could not get other steering wheels/pedals to work. The code has been rewritten to support all DInput wheels/pedals. <br>
+Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Nintendo/Sony gamepad, and... Xbox triggers are now controlled by your pedals. If not, try changing the settings in the config section [ExternalPedals]: 
+a) Pedal1Axis: in Windows, the default pedal mapping is Z and Z-rotation. Try other axes.
+b) change DeviceName: The 'Auto' value acts as a 'smart filter' to block gamepads — which, of course, isn't actually that smart. However, you can try entering the name of your wheel/pedals manually. Open the command prompt (cmd), run 'joy.cpl', press Enter, and copy/type the exact name of your steering wheel/pedals instead of 'Auto'. <br>
+I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals to the trigger axes. </details>
 
 
 ## Potential issues
-- Now i have not Sony gamepads for testing. The original code for them hasn't been changed, so everything should be fine, but something tells me that's not the case :)<br>
-- It’s much the same with the pedals. It’s much the same with the pedals. Testing the code on just one is clearly not enough.<br>
-- Joy-con's rumble. I have Mobapad M6S with simple rumble and have no idea how HD rumble works, or whether it even works at all.
+- Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine, but something tells me that's not the case :) <br>
+- It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
+- Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all.
 
 
-## If you’d like to explore all the features like Sony Touchpad And Nintendo Home\Capture hotkeys, changing profiles and others - visit https://github.com/r57zone/DSAdvance
+## If you’d like to explore all the features like Sony Touchpad and Nintendo Home/Capture hotkeys, profile switching and more - visit https://github.com/r57zone/DSAdvance
 
 
 ## Credits
@@ -114,15 +114,15 @@ I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for the
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 
 ## Building
-1. Download the sources and unzip them
-2. Download VIsual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png?token=GHSAT0AAAAAADYRJAGYXVW5TUCNT2QJLEOU2QML4CA) with these components
+1. Download the source code and unzip
+2. Download Visual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png?token=GHSAT0AAAAAADYRJAGYXVW5TUCNT2QJLEOU2QML4CA) with these components
 3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/SDK_Install.png?token=GHSAT0AAAAAADYRJAGZXLP2JUHLXWREPIBM2QML43A) with these components <br>
-If you have newer SDK don't forget retarhet project.
-4. Choose the `Release` build type  and `x86` or `x64`, then compile the project
-5. For compile Config use Ahk2exe, base file: v2 U32 (x86 only). Script reading JoyShockLibrary.dll and icon ftom \Icon folder
+If you have newer SDK don't forget to retarget the project
+4. Choose the `Release` build type , either `x86` or `x64`, and compile the project. Remember about JoyshockLibrary architecture
+5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64 (depends on JoyshockLibrary). The script reads JoyShockLibrary.dll and the icon from the `\Icon` folder.
 
 ## Editing
-Added support files for edit code in modern VS Code + clangd
+Added configuration and support files for editing the code in modern VS Code with clangd.
 
 ## Feedback
 `fttlkov@gmail.com`
