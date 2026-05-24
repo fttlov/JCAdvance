@@ -40,7 +40,7 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
 </table>
 
 ## Requires
-[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework from nefarius 
+[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework from nefarius <br>
 Microsoft Visual C++ Redistributable 2017 or newer
 
 ## How to use
@@ -48,15 +48,15 @@ Download, unzip, run JCadvance.exe, connect gamepad, enjoy.
 
 ## Important
 To work properly in some games you'll need to hide your real gamepad <br>
-To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from nefarius
+To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from nefarius.
 Full install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
 
 ## <b> Technical changes and bug fixes</b>
 
-- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage has risen dramatically from 0.30% to 0.40% :) App uses a surprisingly small amount of PC resources<br>
-Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement of the Gyro Mouse <br>
-Limitations: Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten , added WheelXboxHoldTimer 
-- Fixed Gyro Joysctick mode issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) by fixed some bugs in JoyshokLibrary
+- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage even on 250hz from 0.30% to 0.70% :) App uses a surprisingly small amount of PC resources<br>
+Due to certain limitations by some functions in code and bugs in JoyShokLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — clearly insufficient rate for smooth movement, especially for Gyro Mouse <br>
+What limitations? Wheel function did not work properly when Sleeptimeout < 15 and has been rewritten, added WheelXboxHoldTimer. Full changelist in joyshocklibraree see in https://github.com/fttlov/JoyShockLibrary
+- Fixed Gyro Joysctick mode issue when the stick being randomly pulled towards the centre when Gyro move up or down (Y axis) - bugs in JoyshokLibrary
 - Added EMA motion smoothing filter. Careful: add input latency. For 60fps games (value - latency): 25   ~2.7ms;  50   ~8ms;  75   ~24ms
 - Rumble code fixes for Joy-cons. Add PacketCounter2, flood protection, .etc
 - Fixed connect and disconnect time, specialy for second joy-con
@@ -64,14 +64,14 @@ Limitations: Wheel function did not work properly when Sleeptimeout < 15 and has
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
 - Fixed Battery Info (ALT+I) for 2nd Joy-con
 
-- (Experemental) fixes for ExternalPedals function. I expect to receive the highest number of issues reports right here.
-Original code has made for Arduino pedal project(i du no what is it). I couldn't get the other steering wheels/pedals to work. Code has been rewritten for: set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
-a) Pedal1Axis - in Widows by default pedals maapping to z, z-rotation. Try others axis
-b) change DeviceName: Value 'Auto' is a sort of 'smart filter'—which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.
+- Experemental fixes for ExternalPedals function. I expect to receive the highest number of issues reports right here. <br>
+Original code has made for Arduino pedal project(i du no what is it) and dinpt devices, but i couldn't get the other steering wheels/pedals to work. Code has been rewritten for all dinput wheel\pedals. <br>
+Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
+a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others axis
+b) change DeviceName: Value 'Auto' is a sort of 'smart filter' to block gamepads — which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.<br>
+I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them.  
 
-I have old "Logitech Wingman Wheel" and testing pedals to triggers axis for them.  
-
-# If you’d like to explore all the features, please visit https://github.com/r57zone/DSAdvance
+## If you’d like to explore all the features like Sony Touchpad And Nintendo Home\Capture hotkeys, changing profiles please and others - visit https://github.com/r57zone/DSAdvance
 
 ## Credits
 * Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
@@ -85,8 +85,9 @@ I have old "Logitech Wingman Wheel" and testing pedals to triggers axis for them
 ## Building
 1. Download the sources and unzip them
 2. Download VIsual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png?token=GHSAT0AAAAAADYRJAGYXVW5TUCNT2QJLEOU2QML4CA) with these components
-3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/SDK_Install.png?token=GHSAT0AAAAAADYRJAGZXLP2JUHLXWREPIBM2QML43A) with these components
-4. Choose the `Release` build type  and `x86`, then compile the project
+3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/SDK_Install.png?token=GHSAT0AAAAAADYRJAGZXLP2JUHLXWREPIBM2QML43A) with these components <br>
+If you have newer SDK don't forget retarhet project.
+4. Choose the `Release` build type  and `x86` or `x64`, then compile the project
 5. For compile Config use Ahk2exe, base file: v2 U32 (x86 only). Script reading JoyShockLibrary.dll and icon ftom \Icon folder
 
 ## Editing
