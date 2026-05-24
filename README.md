@@ -5,7 +5,7 @@
 ## What is it
 Joy-con Advance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
 Based on DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
-All of features like a change profiles, Touchpad or Home\Capture hotkeys, Magic Wheel, Air Craft, External pedals etc. has been retained and improvement.
+All of features like a change profiles, Touchpad(Sony) and Home\Capture hotkeys, Magic Wheel, Air Craft, External pedals etc. has been retained and improvement.
 
 ## What's the difference:
 In conception of use Gyro Motion, user friendly GUI's and bugfixes <br>
@@ -17,27 +17,27 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
 <table>
   <tr>
     <td>
-      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" target="_blank">
+      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config1.png">
         <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150" alt="Config 1">
       </a>
     </td>
     <td>
-      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" target="_blank">
+      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config2.png">
         <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" width="150" alt="Config 2">
       </a>
     </td>
     <td>
-      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" target="_blank">
+      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config3.png">
         <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" width="150" alt="Config 3">
       </a>
     </td>
     <td>
-      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" target="_blank">
+      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config4.png">
         <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" width="150" alt="Config 4">
       </a>
     </td>
     <td>
-      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" target="_blank">
+      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config5.png">
         <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" width="150" alt="Config 5">
       </a>
     </td>
