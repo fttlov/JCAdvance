@@ -24,21 +24,20 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
   </tr>
 </table>
 
-- You can map <u> any Joy-con button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
-<sub>For Sony gamepads you can do the same, but wihou GUI by editing [Keyboard-Mouse] section in \XboxProfile\Default.ini</sub>
-
-- Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (R+HOME)
-- Add Gyro Space option - an extremely important option for aiming (see more in Technical changes)
-- Add Poling rate option (see more in Technical changes)
+- You can map <u> any Nintendo/Sony gamepad button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
+- Fully configurable hotkeys to activate Gyro modes with two-buttons combinations support (like R+HOME)
+- Add Gyro Space option - an important option for aiming (see more in Technical changes)
+- Add Poling rate option. igher the value - smoother the motion
 - Add option to read Gyro data from left Joy-con (by defaul - only for right)
-- Add Smooth Filter
-- (Experimental) External pedal now working with almost known dinput wheels\pedals (not just Arduino) (realy experimental)
-- A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to old menu)
-<details>
-  <summary><b>Spoiler</b></summary>
-  
-  <img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/Screenshot_Main.png"/>
-</details>
+- Add Smooth motion filter
+- (Experimental) External pedal now working with almost known dinput wheels\pedals (not just Arduino)
+- A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z to Full menu)
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
+  </tr>
+</table>
 
 ## <b> Technical changes and bug fixes</b>
 
