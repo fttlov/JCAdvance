@@ -53,7 +53,7 @@ Joy-con's it's free hand full Gyro aiming - right stick for looking(aiming) is a
 
 ## Requires
 [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework from nefarius <br>
-Microsoft Visual C++ Redistributable 2017 or newer
+[Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
 
 ## How to use
 Download, unzip, run JCadvance.exe, connect gamepad, enjoy.
