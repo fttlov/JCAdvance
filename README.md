@@ -1,20 +1,19 @@
 [![EN](https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png)](https://github.com/fttlov/JCAdvance/) 
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
-← Choose language | Выберите язык
-
-Joy-con Advance it's a fork of DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
+← Choose language
 
 ## What is it
-JCAdvance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
-All of DSAdvance's features, like a profiles, hotkeys, Magic Wheel, Air Craft, External pedals etc. have been retained.
+Joy-con Advance is an Xbox gamepad emulator with advanced features for Nintendo Joy-cons, Pro controller, DualShock 4 and DualSense Edge.<br>
+Based on DSAdvance from r57zone https://github.com/r57zone/DSAdvance <br>
+All of features like a change profiles, Touchpad or Home\Capture hotkeys, Magic Wheel, Air Craft, External pedals etc. has been retained and improvement.
 
 ## What's the difference:
-In conception of use Gyro Motion, user friendly GUI and bugfixes <br>
+In conception of use Gyro Motion, user friendly GUI's and bugfixes <br>
 DSAdvance was designed primarily for SONY's two-handed controllers. JCAdvance, as you might guess, focuses on the Joy-Con's and Gyro aiming features. <br>
-I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) in FPS is a relic of the past.
+I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on different concepts. Two handed: Gyro aiming is a fine-tuning, adjustment for classic stick aiming. Joy-con's - it's free hand full Gyro aiming - right stick for looking(aiming) is a relic of the past.
 
 ## What's new:
-- Config.exe. All primary settings, mapping buttons and hotkeys now can be configured via GUI
+- Config.exe. All primary settings, Gyro options, mapping buttons and hotkeys now can be configured via GUI
 <details>
   <summary><b>Spoiler</b></summary>
   
