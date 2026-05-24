@@ -11,6 +11,7 @@ Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons,
 - Hotkeys for switching Gyro modes in real time<br>
 - Customizable sensitivity, deadzones, and left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
+- Dual Joy-Cons combined into a single virtual Xbox controller 
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
@@ -57,12 +58,14 @@ Joy-con's: it is free-hand, full Gyro aiming — the right stick for looking (ai
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
 
 ## How to use
-Download, unzip, run JCadvance.exe, connect gamepad and enjoy.
+1. Download the latest version from the [Releases](https://github.com/fttlov/JCAdvance/releases) page.
+2. Unzip the archive to any folder.
+3. Run `JCAdvance.exe`, connect your gamepad and enjoy!
 
 ## Important
-To work properly in some games you'll need to hide your real gamepad. <br>
-To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) by nefarius.
-Install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
+To ensure compatibility with some games, you will need to hide your physical gamepad. Otherwise, the game might detect both your physical controller and the virtual Xbox controller at the same time (causing double-input issues). <br>
+To prevent this, we recommend using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
+See the simple installation and setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 
 
 <details>
