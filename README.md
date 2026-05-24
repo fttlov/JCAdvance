@@ -13,7 +13,7 @@ Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons,
 - Rumble support for Sony/Nintendo gamepads
 - Support for adaptive triggers for Sony DualSense (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
-- Support for two gamepads, the first with full functionality, and the second with simplified features (must be enabled in the config);<br>
+- Support for two gamepads <br>
 - (Experimental) External pedal: connect your wheel\pedals and emulate triggers or sticks.
  
 ## What's the difference:
