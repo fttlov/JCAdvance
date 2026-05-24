@@ -16,31 +16,11 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
 - Config.exe. All primary settings, Gyro options, mapping buttons and hotkeys now can be configured via GUI
 <table>
   <tr>
-    <td>
-      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config1.png">
-        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150" alt="Config 1">
-      </a>
-    </td>
-    <td>
-      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config2.png">
-        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" width="150" alt="Config 2">
-      </a>
-    </td>
-    <td>
-      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config3.png">
-        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" width="150" alt="Config 3">
-      </a>
-    </td>
-    <td>
-      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config4.png">
-        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" width="150" alt="Config 4">
-      </a>
-    </td>
-    <td>
-      <a href="https://github.com/fttlov/JCAdvance/blob/main/Icon/Config5.png">
-        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" width="150" alt="Config 5">
-      </a>
-    </td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" width="150"></td>
   </tr>
 </table>
 
