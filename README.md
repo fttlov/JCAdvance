@@ -76,6 +76,15 @@ What limitations? Wheel function did not work properly when Sleeptimeout < 15 an
 - Fixed: If connect joy-con(1), disconnect them and connect joycon(2) - it will not respond to input
 - Fixed Battery Info (ALT+I) for 2nd Joy-con
 
+- Gyro Motion Space. This option controls how the gyroscope interprets hand moves into mouse\stick movements depending on the `ntilt of the wrist (clockwise or anti-clockwise) and how you hold a gamepad (face buttons to you or horizontal). In DSAdvance "0" it is hard-coded value. Now we have all 3 modes from Joyshoklibrary creatoor: 0, 1 ,2<br>
+
+In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
+
+Hard to explain, but i try. For two-handed gamepads: Hold the gamepad in front of you with the L2 and R2 buttons facing the ceiling. To move the mouse cursor up and down, rotate the gamepad around its axis, L2 R2 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: 0 -  "steering wheel" movement to the left; 2 - tilt the right side of the gamepad (R2) away from you while bringing the left side (L2) closer. If you hold the gamepad horizontally (which is uncomfortable), "steering wheel" movement returns.<br>
+For Joy-con: We have a free hand. The cursor is moved by rotating the wrist or moving the entire arm (using the forearm, which makes aiming more precise) up, down, left, and right. In this case, rotating the wrist around its axis (clockwise and counterclockwise) has a negative effect on cursor movement. 0 - the angle of wrist rotation (clockwise and counterclockwise) always has an effect. The big toe should always point toward the ceiling. 1 - the only mode where this effect is neutralized. If you hold the Joy-Con more or less horizontally, interference from other axes is minimal.
+
+
+
 - Experemental fixes for ExternalPedals function. I expect to receive the highest number of issues reports right here. <br>
 Original code has made for Arduino pedal project(i du no what is it) and dinpt devices, but i couldn't get the other steering wheels/pedals to work. Code has been rewritten for all dinput wheel\pedals. <br>
 Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/Sony gamepad and..  XBOX triggers now controlled by your pedals. If is not, try to change settings  in config setction [ExternalPedals]: 
