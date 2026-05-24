@@ -91,7 +91,9 @@ a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others 
 b) change DeviceName: Value 'Auto' is a sort of 'smart filter' to block gamepads — which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.<br>
 I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them.  
 
-## If you’d like to explore all the features like Sony Touchpad And Nintendo Home\Capture hotkeys, changing profiles please and others - visit https://github.com/r57zone/DSAdvance
+
+## If you’d like to explore all the features like Sony Touchpad And Nintendo Home\Capture hotkeys, changing profiles and others - visit https://github.com/r57zone/DSAdvance
+
 
 ## Credits
 * Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
