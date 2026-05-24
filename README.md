@@ -3,7 +3,7 @@
 ← Choose language
 
 ## What is it
-Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro controller, DualShock 4 and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) from r57zone. <br>
+Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-con's, Pro controller, DualShock 4 and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) from r57zone. <br>
 
 ## Some basic features:
 - Customizable buttons. Assign buttons on the gamepad to emulate Xbox, Keyboard and mouse keys <br>
@@ -90,6 +90,12 @@ Set DInput=1 in config, plug-in your USB dinput wheel\pedals, connect Nintendo/S
 a) Pedal1Axis - in Widows by default pedals maapping  z, z-rotation. Try others axis
 b) change DeviceName: Value 'Auto' is a sort of 'smart filter' to block gamepads — which, of course, isn't actually smart. But you can try entering the name of your Wheel/pedals yourself. Open cmd - joy.cpl - Enter and type the exact name of your steering wheel\pedals in place of 'Auto'.<br>
 I have old "Logitech Wingman" wheel" and testing pedals to triggers axis for them.  
+
+
+## Potential issues
+- Now i have not Sony gamepads for testing. The original code for them hasn't been changed, so everything should be fine, but something tells me that's not the case :)<br>
+- It’s much the same with the pedals. It’s much the same with the pedals. Testing the code on just one is clearly not enough.<br>
+- Joy-con's rumble. I have Mobapad M6S with simple rumble and have no idea how HD rumble works, or whether it even works at all.
 
 
 ## If you’d like to explore all the features like Sony Touchpad And Nintendo Home\Capture hotkeys, changing profiles and others - visit https://github.com/r57zone/DSAdvance
