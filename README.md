@@ -14,11 +14,35 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
 
 ## What's new:
 - Config.exe. All primary settings, Gyro options, mapping buttons and hotkeys now can be configured via GUI
-<details>
-  <summary><b>Spoiler</b></summary>
-  
-  <img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/Screenshot_Config.png"/>
-</details>
+<table>
+  <tr>
+    <td>
+      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" target="_blank">
+        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150" alt="Config 1">
+      </a>
+    </td>
+    <td>
+      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" target="_blank">
+        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" width="150" alt="Config 2">
+      </a>
+    </td>
+    <td>
+      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" target="_blank">
+        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" width="150" alt="Config 3">
+      </a>
+    </td>
+    <td>
+      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" target="_blank">
+        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" width="150" alt="Config 4">
+      </a>
+    </td>
+    <td>
+      <a href="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" target="_blank">
+        <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" width="150" alt="Config 5">
+      </a>
+    </td>
+  </tr>
+</table>
 
 - You can map <u> any Joy-con button </u> to emulate <u>any of Xbox, Keyboard or Mouse key</u> in one main profile <br>
 <sub>For Sony gamepads you can do the same, but wihou GUI by editing [Keyboard-Mouse] section in \XboxProfile\Default.ini</sub>
