@@ -39,6 +39,18 @@ I assume that Gyro aiming with a two-handed gamepad's and Joy-Con's is based on 
   </tr>
 </table>
 
+## Requires
+[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework from nefarius 
+Microsoft Visual C++ Redistributable 2017 or newer
+
+## How to use
+Download, unzip, run JCadvance.exe, connect gamepad, enjoy.
+
+## Important
+To work properly in some games you'll need to hide your real gamepad <br>
+To do this, use the utility [HidHide](https://github.com/nefarius/HidHide) from nefarius
+Full install & setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/) 
+
 ## <b> Technical changes and bug fixes</b>
 
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1sec = 1000ms\8). CPU usage has risen dramatically from 0.30% to 0.40% :) App uses a surprisingly small amount of PC resources<br>
