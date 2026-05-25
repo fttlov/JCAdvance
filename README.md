@@ -11,7 +11,8 @@ Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, 
 - Hotkeys for switching Gyro modes in real time<br>
 - Customizable sensitivity, deadzones, and left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
-- Dual Joy-Cons combined into a single virtual Xbox controller 
+- Dual Joy-Cons combined into a single virtual Xbox controller
+- Magic Wheel feature: use the gyroscope and movements in different directions as additional buttons/actions
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
@@ -29,11 +30,12 @@ Joy-con's: it is free-hand full Gyro motion control — the right stick for look
 - Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config6_en.png" width="150"></td>
   </tr>
 </table>
 
