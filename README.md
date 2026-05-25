@@ -50,7 +50,7 @@ Joy-con's: it is free-hand full Gyro motion control — the right stick for look
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z for the full menu)
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main1.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Main1.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
   </tr>
 </table>
