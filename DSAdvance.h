@@ -145,6 +145,16 @@
 #define TOUCHPAD_LEFT_AREA				0.33
 #define TOUCHPAD_RIGHT_AREA				0.67
 
+//@115 Функция расчета линейности стика (Response Curve)
+inline float ApplyLinearity(float value, float linearity) {
+	if (linearity == 50.0f || value == 0.0f) {
+		return value; // Быстрый обход для дефолтного (линейного) значения
+	}
+	// Рассчитываем степень p (теперь при 0 степень = 4.0, при 100 степень = 0.25)
+	float p = powf(2.0f, (50.0f - linearity) / 25.0f);
+	return (value >= 0.0f ? 1.0f : -1.0f) * powf(fabsf(value), p);
+}
+
 // Aiming
 //#define FrameTime						0.0166666666666667f // 1.f / 60.f
 //#define Tightening						2.f
@@ -176,6 +186,41 @@ inline int KMProfileIndex = 0;
 inline int KMGameProfileIndex = 0;
 inline std::vector<std::string> XboxProfiles;
 inline int XboxProfileIndex = 0;
+
+enum JoystickAxis {	//@114 рабочие dinput педали
+	AXIS_X,
+	AXIS_Y,
+	AXIS_Z,
+	AXIS_R, // Z-Rotation / Rudder
+	AXIS_U, // X-Rotation / Slider 1
+	AXIS_V  // Y-Rotation / Slider 2 / Dial
+};
+
+// Функция парсинга имени оси из Config.ini в Enum при запуске программы
+inline JoystickAxis ParseAxisName(const std::string& name) {
+	std::string upper = name;
+	for (auto &c : upper) c = toupper(c);
+	if (upper == "X") return AXIS_X;
+	if (upper == "Y") return AXIS_Y;
+	if (upper == "Z") return AXIS_Z;
+	if (upper == "R" || upper == "Z-ROTATION" || upper == "ZROT" || upper == "RUDDER") return AXIS_R;
+	if (upper == "U" || upper == "X-ROTATION" || upper == "XROT" || upper == "SLIDER1") return AXIS_U;
+	if (upper == "V" || upper == "Y-ROTATION" || upper == "YROT" || upper == "SLIDER2" || upper == "DIAL") return AXIS_V;
+	return AXIS_V; // фолбэк по умолчанию
+}
+
+// Быстрый геттер значения оси по Enum внутри 250 Гц цикла
+inline DWORD GetAxisValue(const JOYINFOEX& info, JoystickAxis axis) {
+	switch (axis) {
+	case AXIS_X: return info.dwXpos;
+	case AXIS_Y: return info.dwYpos;
+	case AXIS_Z: return info.dwZpos;
+	case AXIS_R: return info.dwRpos;
+	case AXIS_U: return info.dwUpos;
+	case AXIS_V: return info.dwVpos;
+	default:     return info.dwVpos;
+	}
+}
 
 struct InputOutState {
 	unsigned char LEDRed;
@@ -330,6 +375,11 @@ struct AdvancedGamepad {
 		bool InvertLeftY = false;
 		bool InvertRightX = false;
 		bool InvertRightY = false;
+
+		float LinearityLeftX = 50.0f;	//@115
+		float LinearityLeftY = 50.0f;
+		float LinearityRightX = 50.0f;
+		float LinearityRightY = 50.0f;
 	};
 	_Sticks Sticks;
 
@@ -379,7 +429,7 @@ struct AdvancedGamepad {
 		float EmaGyroX = 0.0f;
 		float EmaGyroY = 0.0f;
 		float EmaGyroZ = 0.0f;
-		float Tightening = 2.0f; // now in config.ini
+		float Tightening = 2.0f; //@112 now in config.ini
 
 		float MotionWheelButtonsDeadZone = 0;
 		int WheelCounter = 0;
@@ -488,6 +538,9 @@ struct _AppStatus {
 	JOYINFOEX ExternalPedalsJoyInfo;
 	JOYCAPS ExternalPedalsJoyCaps;
 	int ExternalPedalsJoyIndex = JOYSTICKID1;
+	JoystickAxis Pedal1Axis = AXIS_V; //@114 Дефолтные оси для безопасности
+	JoystickAxis Pedal2Axis = AXIS_U;
+	std::string ExternalPedalsDeviceName = "AUTO"; //AUTO - фильтр, или пишем имя руля из joy.cpl в congig
 	bool LockedChangeBrightness = false;
 	bool LockChangeBrightness = true;
 	int BrightnessAreaPressed = 0;
@@ -509,6 +562,7 @@ struct _AppStatus {
 	bool ShowFullMenu = false;		//@107 Alt+Z change Menu Layers
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
 	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnsct
+	int GyroSpace = 1;				//@113 
 
 	struct _HotKeys
 	{
