@@ -1,5 +1,5 @@
 [![EN](https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png)](https://github.com/fttlov/JCAdvance/) 
-[![RU](Docs/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/tree/main/docs)
+[![RU](Icon/ru_RU.png)](README_RU.md)
 ← Choose language
 
 ## What is it
