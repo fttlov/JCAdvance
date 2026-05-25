@@ -7,7 +7,7 @@ Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, 
 
 ## Some basic features:
 - Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
-- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving <br>
+- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving, Aircraft <br>
 - Hotkeys for switching Gyro modes in real time<br>
 - Customizable sensitivity, deadzones, and left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
