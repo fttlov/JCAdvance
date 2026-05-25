@@ -2,8 +2,6 @@
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
 ← Выберите язык
 
-## Что это?
-Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone. <br>
 Joy-con Advance - это эмулятор Xbox геймада с дополнительными функциями для Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, основанный на [DSAdvance](https://github.com/r57zone/DSAdvance) от r57zone. <br>
 
 ## Основные возможности:
