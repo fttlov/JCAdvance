@@ -69,7 +69,7 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 Для решения проблемы рекомендуется использовать утилиту для скрытия геймпада от игр или всей системы [HidHide](https://github.com/nefarius/HidHide) от того же nefarius.
 Подробную инструкцию по установке и настройке можно найти [здесь](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 
-details>
+<details>
   <summary><h2>Техническая информация</h2> (Click to open)</summary>
   <br>
 - Частота опроса программы теперь по умолчанию 125hz (sleepTimeout=8 в config.ini; 1 sec = 1000ms / 8) <br>
