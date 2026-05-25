@@ -45,7 +45,7 @@ Joy-con's: it is free-hand full Gyro motion control — the right stick for look
 - Added Gyro Space option — an important setting for aiming (see more in Technical changes)
 - Added Polling rate option (higher value means smoother motion)
 - Added option to read Gyro data from the left Joy-con (by default, only the right one is used)
-- Added Smooth motion filter
+- Added Smooth motion filter (temporal, add some latency)
 - (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z for the full menu)
 <table>
