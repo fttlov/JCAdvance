@@ -101,6 +101,7 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 
 
 ## Potential issues
+- If you’re experiencing poor connectivity or vibration issues when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
 - Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine <br>
 - It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
 - Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all.
