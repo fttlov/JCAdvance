@@ -2,6 +2,8 @@
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
 ← Выберите язык
 
+## Что это:
+
 Joy-con Advance - это эмулятор Xbox геймада с дополнительными функциями для Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, основанный на [DSAdvance](https://github.com/r57zone/DSAdvance) от r57zone. <br>
 
 ## Основные возможности:
@@ -53,11 +55,11 @@ Joy-con'ы - это свободные руки, и, как следствие, 
   </tr>
 </table>
 
-## Необходимое ПО
+## Необходимое ПО:
 [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Драйвер виртуального XBOX Gamepad от nefarius <br>
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) или новее
 
-## Как пользоваться
+## Как пользоваться:
 1. Скачиваем последний релиз [Releases](https://github.com/fttlov/JCAdvance/releases) 
 2. Распаковываем архив в любую папку
 3. Запускаем `JCAdvance.exe`, подключаем поддерживаемый контроллер - наслаждаемся!
