@@ -3,7 +3,7 @@
 ← Choose language
 
 ## What is it
-Joy-con Advance is an Xbox gamepad emulator with GUI configurator and advanced features for Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone. <br>
+Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone. <br>
 
 ## Some basic features:
 - Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
@@ -99,12 +99,12 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 
 
 ## Potential issues
-- Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine, but something tells me that's not the case :) <br>
+- Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine <br>
 - It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
 - Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all.
 
 ## The list of supported controllers is limited by Joyshocklibrary (by JibbSmart) and will not be expanded.
-## If you’d like to explore all the features like Sony Touchpad and Nintendo Home/Capture hotkeys, profile switching and more - visit https://github.com/r57zone/DSAdvance
+## If you’d like to explore all the features like Sony Touchpad and Nintendo Home/Capture hotkeys, old profile switching and more - visit https://github.com/r57zone/DSAdvance
 
 
 ## Credits
@@ -126,6 +126,9 @@ If you have newer SDK don't forget to retarget the project
 
 ## Editing
 Added configuration and support files for editing the code in modern VS Code with clangd.
+
+## Translation
+To translate Config.exe 
 
 ## Feedback
 `fttlkov@gmail.com`
