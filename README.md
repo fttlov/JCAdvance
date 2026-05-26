@@ -20,11 +20,11 @@ Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, 
 - Minimal memory and CPU usage (0.20% - 0.50%)
  
 ## What's the difference:
-In short: in the concept of using Gyro Motion, user-friendly GUIs, and bug fixes. <br>
-DSAdvance was designed primarily for Sony's two-handed controllers. JCAdvance, as you might guess, focuses on Joy-con's and Gyro aiming features. <br>
-I assume that Gyro aiming with two-handed gamepads and Joy-con's is based on different concepts. <br>
-Two-handed: Gyro aiming is used for fine-tuning and adjusting classic stick aiming. <br>
-Joy-con's: it is free-hand full Gyro motion control — the right stick for looking/aiming is a relic of the past.
+In short: in the concept of using Gyro Motion, user-friendly GUIs, bug fixes and some new features. <br>
+DSAdvance was designed primarily for Sony's two-handed controllers. JCAdvance, as you might guess, focuses on Joy-cons and their unique gyroscope capabilities. <br>
+I assume that Gyro Motion with two-handed gamepads and Joy-cons is based on different concepts. <br>
+For two-handed: is used for fine-tuning and adjusting classic stick aiming. <br>
+Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past.
 
 ## What's new:
 - Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
