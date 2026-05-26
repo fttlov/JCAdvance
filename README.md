@@ -12,7 +12,7 @@ Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, 
 - Customizable sensitivity, deadzones, and left/right stick switching
 - Rumble support for Sony/Nintendo gamepads
 - Dual Joy-Cons combined into a single virtual Xbox controller
-- Magic Wheel feature: use the gyroscope and movements in different directions as additional buttons/actions
+- Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
