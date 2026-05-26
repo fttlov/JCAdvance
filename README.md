@@ -136,8 +136,5 @@ If you have newer SDK don't forget to retarget the project
 ## Editing
 Added configuration and support files for editing the code in modern VS Code with clangd.
 
-## Translation
-To translate Config.exe 
-
 ## Feedback
 `fttlkov@gmail.com`
