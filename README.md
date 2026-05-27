@@ -107,6 +107,7 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 
 
 ## Potential issues
+- Congfig.exe is written in AHK, high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution.
 - If you’re experiencing poor connectivity or vibration issues when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
 - Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine <br>
 - It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
