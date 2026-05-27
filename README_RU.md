@@ -31,7 +31,7 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config1_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config2_ru.png_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config2_ru.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config3_ru.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config4_ru.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config5_ru.png" width="150"></td>
