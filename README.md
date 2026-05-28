@@ -55,10 +55,12 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 - (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu)
 <table>
-  <tr>
+  <p align="center">
+   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2.png" width="150"></td>
-  </tr>
+  </p> 
+   </tr>
 </table>
 
 ## Requires
