@@ -1,4 +1,4 @@
-[![EN](Icon/en-US.png)](README.md)
+[![EN](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/en.png)](README.md)
 [![RU](https://github.com/fttlov/JCAdvance/blob/main/Icon/ru-RU.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
 ← Выберите язык
 
