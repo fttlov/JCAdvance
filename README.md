@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">JCAdvance</h1>
 
-[![EN](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/en.png)](README.md)
+[![EN](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/en.png)](README.md)
 [![RU](Icon/ru.png)](README_RU.md)
 ← Choose your language
 
@@ -35,12 +35,12 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 - Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config1_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config2_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config3_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config4_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config5_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/main/Icon/Config6_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config1_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config2_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config3_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config4_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config5_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config6_en.png" width="150"></td>
   </tr>
 </table>
 
@@ -56,8 +56,8 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 - A new, user-friendly main menu with info about the current settings and hotkeys (press Alt+Z for the full menu)
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Main1_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvanc_test/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
   </tr>
 </table>
 
