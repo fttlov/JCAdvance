@@ -3,7 +3,8 @@
 </p>
 <h1 align="center"JCAdvance</h1>
 
-  <a href="https://github.com/fttlov/JCAdvance/"><img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png" alt="EN" width="24" style="vertical-align: middle;"></a> 
+
+<a href="https://github.com/fttlov/JCAdvance/"><img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png" alt="EN" width="24" style="vertical-align: middle;"></a> 
 <a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="24" style="vertical-align: middle;"></a> 
 ##### ← Choose language
 
