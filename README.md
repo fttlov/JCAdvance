@@ -73,6 +73,9 @@ See the simple installation and setup [instructions](https://docs.nefarius.at/pr
 <details>
   <summary><h2>Technical changes and bug fixes</h2> (Click to open)</summary>
   <br>
+
+- Interface and profiles. A new 3-layer menu has been introduced. Layer 0 is for before connecting devices, Layer 1 is for after connecting, and Layer 2 is the classic menu. Layer 2 is too cluttered, but has been retained for compatibility, as well as for information on hotkeys and the old profile management system. Profiles: In the original code, there was a strict separation between profiles for Xbox (reading .ini files from the XboxProfile folder) and Keyboard/Mouse (KMProfile). It was impossible to emulate both XBOX and KM buttons in a single profile. In the current implementation, the main XboxProfile folder emulates any buttons, and profiles are managed via Config.exe. However, you can still switch between profiles using hotkeys both within the XboxProfile folder and between folders; KMProfiles is retained for compatibility.
+ 
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. <br>
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
