@@ -45,7 +45,7 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 </table>
 
 - You can map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
-- Added the ability to automatically assign using the "Bind" button or manually via a drop-down list of available buttons
+- Added the ability to auto-assign using the "Bind" button or manually via a drop-down list of available buttons
 - Added Profile Manager. Create and manage profiles in a single tab of the configurator
 - Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME)
 - Added Gyro Space option — an important setting for aiming (see more in Technical changes)
