@@ -130,12 +130,13 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 
 ## Building
+0. If you're new to programming, just like me, follow the instructions below carefully:
 1. Download the source code and unzip
 2. Download Visual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png) with these components
 3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png) with these components <br>
 If you have newer SDK don't forget to retarget the project
 4. Choose the `Release` build type , either `x86` or `x64`, and compile the project. Remember about JoyshockLibrary architecture
-5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64 (depends on JoyshockLibrary). The script reads JoyShockLibrary.dll and the icon from the `\Icon` folder.
+5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64. The script reads JoyShockLibrary.dll and the icon from the `\Icon` folder.
 
 ## Editing
 Added configuration and support files for editing the code in modern VS Code with clangd.
