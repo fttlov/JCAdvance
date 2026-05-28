@@ -45,7 +45,8 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 </table>
 
 - You can map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
-- Profile Manager. Create and manage profiles in a single tab of the configurator
+- Added the ability to automatically assign using the "Bind" button or manually via a drop-down list of available buttons
+- Added Profile Manager. Create and manage profiles in a single tab of the configurator
 - Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME)
 - Added Gyro Space option — an important setting for aiming (see more in Technical changes)
 - Added Polling rate option (higher value means smoother motion)
@@ -116,6 +117,7 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 
 ## Potential issues
 - Congfig.exe is written in AHK, high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution.
+- Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it. INI files are available for your use.
 - If you’re experiencing poor connectivity or vibration issues when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
 - Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine <br>
 - It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
