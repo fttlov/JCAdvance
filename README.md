@@ -148,7 +148,7 @@ If you have newer SDK don't forget to retarget the project
 Added configuration and support files for editing the code in modern VS Code with clangd.
 
 ## Translating
-You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder
+You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release
 
 ## Feedback
 `fttlkov@gmail.com`
