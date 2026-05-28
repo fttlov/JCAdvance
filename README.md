@@ -57,7 +57,7 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvanc_test/refs/heads/main/Icon/Main2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2.png" width="150"></td>
   </tr>
 </table>
 
