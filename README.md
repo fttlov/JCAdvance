@@ -63,7 +63,7 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 
 ## Requires
 [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework by nefarius <br>
-[Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
+[Microsoft Visual C++ Redistributable 2017 x86 x64](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
 
 ## How to use
 1. Download the latest version from the [Releases](https://github.com/fttlov/JCAdvance/releases) page.
