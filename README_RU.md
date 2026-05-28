@@ -133,6 +133,3 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 
 ## Feedback
 `fttlkov@gmail.com`
-
-## Feedback
-`fttlkov@gmail.com`
