@@ -54,15 +54,14 @@ Joy-cons: free-hand full Gyro motion control — the right stick for looking/aim
 - Added Smooth motion filter (temporal, add some latency)
 - (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu)
-<table>
-  <p align="center">
+<p align="center">
+ <table>
    <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2.png" width="150"></td>
-  </p> 
    </tr>
-</table>
-
+ </table>
+</p>
 ## Requires
 [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework by nefarius <br>
 [Microsoft Visual C++ Redistributable 2017 x86 x64](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
