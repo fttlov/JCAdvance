@@ -28,12 +28,12 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 - Config.exe. Основные настройки, привязка кнопок и горячих клавиш, опции гироскопа теперь в удобном GUI конфигураторе 
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config1_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config2_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config3_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config4_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config5_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Config6_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config1_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config2_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config3_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config4_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config5_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config6_ru.png" width="150"></td>
   </tr>
 </table>
 - Можно привязывать абсолютно все цифровые кнопки для эмуляции кнопок Xbox, клавиатуры и мыши в одном профиле <br>
@@ -49,8 +49,8 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 - Новое главное окно программы с текущим статусом настроек и горячих клавиш. Классическое меню по нажатию ALT-Z 
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Main1_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
   </tr>
 </table>
 
