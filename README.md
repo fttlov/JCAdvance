@@ -1,7 +1,11 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="250"/>
 </p>
 <h1 align="center">JCAdvance</h1>
+
+[![EN](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/en.png)](README.md)
+[![RU](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/ru.png)](https://github.com/fttlov/JCAdvance/blob/master/README.RU.md)
+← Choose your language
 
 ## What is it
 Joy-con Advance is an Xbox gamepad emulator and advanced features for Joy-cons, Pro Controller, DualShock 4, and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone. <br>
