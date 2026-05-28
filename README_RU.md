@@ -50,7 +50,7 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Screenshot_Main2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2.png" width="150"></td>
   </tr>
 </table>
 
