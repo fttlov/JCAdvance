@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="225"/>
+  <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="250"/>
 </p>
 <h1 align="center"JCAdvance</h1>
 
