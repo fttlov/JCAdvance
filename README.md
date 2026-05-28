@@ -2,9 +2,9 @@
   <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="250"/>
 </p>
 <h1 align="center"JCAdvance</h1>
-<a href="https://github.com/fttlov/JCAdvance/"><img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png" alt="EN" width="18" style="vertical-align: middle;"></a> 
-<a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="18" style="vertical-align: middle;"></a> 
-<small>← Choose language</small>
+<a href="https://github.com/fttlov/JCAdvance/"><img src="Icon/en-US.png" alt="EN" width="16" style="vertical-align: middle;"></a> 
+<a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="16" style="vertical-align: middle;"></a> 
+<span style="font-size: 0.75em; color: gray; vertical-align: middle;">← Choose language</span>
 
 
 ## What is it
