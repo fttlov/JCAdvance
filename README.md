@@ -124,8 +124,6 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 - Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all.
 
 ## The list of supported controllers is limited by Joyshocklibrary (by JibbSmart) and will not be expanded.
-## If you’d like to explore all the features like Sony Touchpad and Nintendo Home/Capture hotkeys, old profile switching and more - visit https://github.com/r57zone/DSAdvance
-
 
 ## Credits
 * Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
