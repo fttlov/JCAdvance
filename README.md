@@ -2,17 +2,9 @@
   <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="250"/>
 </p>
 <h1 align="center"JCAdvance</h1>
-<table>
-  <tr>
-    <td valign="center">
-      <a href="https://github.com/fttlov/JCAdvance/"><img src="Icon/en-US.png" alt="EN" width="24"></a>
-      <a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="24"></a>
-    </td>
-    <td valign="center">
-      <sub>← Choose language</sub>
-    </td>
-  </tr>
-</table>
+<a href="https://github.com/fttlov/JCAdvance/"><img src="https://github.com/fttlov/JCAdvance/blob/main/Icon/en-US.png" alt="EN" width="24" style="vertical-align: middle;"></a> 
+<a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="24" style="vertical-align: middle;"></a> 
+<small>← Choose language</small>
 
 
 ## What is it
