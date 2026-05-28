@@ -2,8 +2,8 @@
   <img src="https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/JCAdvance_logo3.png" alt="Logo" width="250"/>
 </p>
 <h1 align="center"JCAdvance</h1>
-<a href="https://github.com/fttlov/JCAdvance/"><img src="Icon/en-US.png" alt="EN" width="16" style="vertical-align: middle;"></a> 
-<a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="16" style="vertical-align: middle;"></a> 
+<a href="https://github.com/fttlov/JCAdvance/"><img src="Icon/en-US.png" alt="EN" width="19" style="vertical-align: middle;"></a> 
+<a href="README_RU.md"><img src="Icon/ru-RU.png" alt="RU" width="20" style="vertical-align: middle;"></a> 
 <sub>← Choose language</sub>
 
 
