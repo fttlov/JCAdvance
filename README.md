@@ -4,7 +4,7 @@
 <h1 align="center">JCAdvance</h1>
 
 [![EN](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/en.png)](README.md)
-[![RU](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/ru.png)](README.RU.md
+[![RU](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/ru.png)](README.RU.md)
 ← Choose your language
 
 ## What is it
