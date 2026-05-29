@@ -100,7 +100,9 @@ For the full changelog of JoyShockLibrary, see the fork page: https://github.com
 - Fixed an issue where connecting Joy-Con (1), disconnecting it, and then connecting Joy-Con (2) resulted in no input response.
 - Fixed Battery Info (Alt+I) for the second Joy-Con.
 
-- Gyro Motion Space. This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
+- Gyro Motion Space.
+
+This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
