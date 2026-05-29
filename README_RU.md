@@ -1,11 +1,11 @@
 [![EN](Icon/en.png)](https://github.com/fttlov/JCAdvance)
 ← En
 
-## Что это:
+### Что это:
 
-Joy-con Advance - это эмулятор Xbox геймпада с расширенным функционалом для Joy-con'ов, Pro Controller, DualShock 4, and DualSense Edge, основанный на [DSAdvance](https://github.com/r57zone/DSAdvance) от r57zone и [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) от JibbSmart. <br>
+Joy-con Advance - это эмулятор Xbox геймпада с расширенным функционалом для Joy-con'ов, Pro Controller, DualShock 4, and DualSense Edge, основанный на  DSAdvance от r57zone <br>
 
-## Основные возможности:
+### Основные возможности:
 - Назначайте кнопки вашего геймпада для эмуляции кнопок Xbox, клавиатуры и мыши <br>
 - Режимы гироскопа: управление курсором мыши/виртуальным стиком; эмуляция руля для вождения, Aircraft <br>
 - Горячие кнопки для смены режимов и профилей во время игры
@@ -17,14 +17,14 @@ Joy-con Advance - это эмулятор Xbox геймпада с расшир�
 - Поддержка подключения двух геймпадов
 - Внешние педали: подключите ваш руль/педали и используйте их как аналоговые триггеры и не только
 
-## В чём отличия:
+### В чём отличия:
 В концепции использования Gyro Motion, user-friendly GUI, багфиксах и новых функциях <br>
 DSAdvance - это, прежде всего, эмулятор для двуручных контроллеров от Sony. В JCAdvance сделан фокус на Joy-con'ы и управление с помощью гироскопа. <br>
 Убеждён, что в этом аспекте двуручные контроллеры и Joy-con'ы имеют различную концепцию применения <br>
 Двуручные: Gyro Motion используется для доводки при прицеливании, дополняя классический looking/aiming на стиках. <br>
 Joy-con'ы - это свободные руки, и, как следствие, иные степени свободы, полноценное использование гироскопа для обзора/прицеливания в FPS TPS играх без использования стика.
 
-## Что нового:
+### Что нового:
 - Config.exe. Основные настройки, привязка кнопок и горячих клавиш, опции гироскопа теперь в удобном GUI конфигураторе 
 <table>
   <tr>
@@ -54,16 +54,16 @@ Joy-con'ы - это свободные руки, и, как следствие, 
   </tr>
 </table>
 
-## Необходимое ПО:
+### Необходимое ПО:
 [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Драйвер виртуального XBOX Gamepad от nefarius <br>
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) или новее
 
-## Как пользоваться:
+### Как пользоваться:
 1. Скачиваем последний релиз [Releases](https://github.com/fttlov/JCAdvance/releases) 
 2. Распаковываем архив в любую папку
 3. Запускаем `JCAdvance.exe`, подключаем поддерживаемый контроллер - наслаждаемся!
 
-## Важно!
+### Важно!
 Некоторые игры не будут работать корректно из-за проблемы двойного ввода - одновременной инициализации реального геймпада и виртуального.
 Для решения проблемы рекомендуется использовать утилиту для скрытия геймпада от игр или всей системы [HidHide](https://github.com/nefarius/HidHide) от того же nefarius.
 Подробную инструкцию по установке и настройке можно найти [здесь](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
@@ -108,7 +108,7 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 Как подключить: подсоединяем руль/педали, в config.ini внизу ищем секцию [ExternalPedals], делаем DInput=1, сохраняем и запускаем JCAdvance. Теперь при старте будет опрашиваться dinput устройства. У вас будет пару секунд чтобы чтобы заметить какие устройства найдены и инициализированы. Увидели свой руль - почти всё говотово. Подключаем геймпад и проверяем работу в XinputTest или joy.cpl. Если триггеры не реагируют на нажатие педалей пробуем разные оси для Pedal1Axis Pedal2Axis в cofig.ini.
 Если при старте название вашего устройства не обнаружено, попробуйте прописать его вручную в DeviceName = вместо AUTO.  </details>
 
-## Возможные проблемы:
+### Возможные проблемы:
 - Congfig.exe написан на AHK и он немного капризен к DPI в Windows. Если текст не влезает в окно или наклдывается друг на друга, временно уменьшите значение DPI или смените разрешение экрана
 - Возможна ложно-позитивная реакция антивируса на Config.exe из-за вызовов библиотек. Его source открыт, но если вы параноик - не пользуйтесь, ковыряйте конфиги 
 - Если вы столкнулись проблемой плохого коннекта или проблем с вибрацией при двух одновременно подключённых Joy-con'ах, попробуйте другой bluetooth адаптер. Известные беспроблемные адаптеры: ASUS USB-BT400 и более дешёвые аналоги на этом же чипе BCM20702 (есть и за 200 р.), некоторые bluetooth 4.0 от Ugreen
@@ -116,8 +116,17 @@ Joy-con'ы - это свободные руки, и, как следствие, 
 - Тесты для контроллеров Joy-con проводились на MobaPad M6s с упрощённой вибрацией, поэтому как работает HD вибрация и работает ли она вообще сказать затруднительно
 - При тестировании внешних педалей для работы в качестве триггеров использовался старый Logitech Wingman. Тесты прошли успешно, но выборка явно недостаточная.
 
-## Список поддерживаемых контроллеров ограничен библиотекой Joyshocklibrary
+### Список поддерживаемых контроллеров ограничен библиотекой Joyshocklibrary
 И не будет расширяться до перехода на SDL в очень необозримом будущем.
+
+### Credits
+* [DSAdvance](https://github.com/r57zone/DSAdvance) - that was the starting point for me. r57zone has done a really great job and I thank him for that.
+* [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) for a cool gamepad library that makes it easy to get controller rotation. Also uses some code from this library and [JibbSmart snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df) for aiming.
+* [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
+* [HIDAPI library](https://github.com/signal11/hidapi) with [fixes](https://github.com/libusb/hidapi) for the library to work with a USB devices. The project uses this [fork](https://github.com/r57zone/hidapi).
+* DS4Windows[[1]](https://github.com/Jays2Kings/DS4Windows)[[2]](https://github.com/Ryochan7/DS4Windows) for the battery level.
+* [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
+* [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 
 <details>
   <summary><h3>Сборка</h3> (развернуть)</summary>
