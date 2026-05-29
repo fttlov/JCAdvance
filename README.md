@@ -113,10 +113,11 @@ Reading this description might make it seem like playing this way is impossible 
 
 - Experimental fixes for the ExternalPedals function. I expect the most issues to occur here. <br>
 The original code was made for an Arduino pedal project (I do not know what it is) and DirectInput (DInput) devices, but I could not get other steering wheels/pedals to work. The code has been rewritten to support all DInput wheels/pedals. <br>
-Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Nintendo/Sony gamepad, and... Xbox triggers are now controlled by your pedals. If not, try changing the settings in the config section [ExternalPedals]: 
-a) Pedal1Axis: in Windows, the default pedal mapping is Y or Z and Z-rotation. Try other axes.
+Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Nintendo/Sony gamepad, and... Xbox triggers are now controlled by your pedals. If not, try changing the settings in the config section [ExternalPedals]: <br>
+a) Pedal1Axis: in Windows, the default pedal mapping is Y or Z and Z-rotation. Try other axes<br>
 b) change DeviceName: The 'Auto' value acts as a 'smart filter' to block gamepads — which, of course, isn't actually that smart. However, you can try entering the name of your wheel/pedals manually. Open the command prompt (cmd), run 'joy.cpl', press Enter, and copy/type the exact name of your steering wheel/pedals instead of 'Auto'. <br>
-I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals to the trigger axes. </details>
+I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!
+</details>
 
 
 ## Potential issues
