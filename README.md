@@ -8,7 +8,7 @@
 ← Choose your language
 
 ## What is it
-Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4 and DualSense Edge, based on [DSAdvance](https://github.com/r57zone/DSAdvance) by r57zone and [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) by JibbSmart. <br>
+Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4 and DualSense Edge, based on DSAdvance by r57zone <br>
 
 ## Some basic features:
 - Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
@@ -127,10 +127,10 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 And will not be expanded until the transition to SDL, which is a long way off
 
 ## Credits
-* Sony and Nintendo for the most advanced gamepads and investment in innovation, and for driving innovation in games.
+* [DSAdvance](https://github.com/r57zone/DSAdvance) - that was the starting point for me. r57zone has done a really great job and I thank him for that.
+* [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) for a cool gamepad library that makes it easy to get controller rotation. Also uses some code from this library and [JibbSmart snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df) for aiming.
 * [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
 * [HIDAPI library](https://github.com/signal11/hidapi) with [fixes](https://github.com/libusb/hidapi) for the library to work with a USB devices. The project uses this [fork](https://github.com/r57zone/hidapi).
-* [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) for a cool gamepad library that makes it easy to get controller rotation. Also uses some code from this library and [JibbSmart snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df) for aiming.
 * DS4Windows[[1]](https://github.com/Jays2Kings/DS4Windows)[[2]](https://github.com/Ryochan7/DS4Windows) for the battery level.
 * [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
@@ -152,7 +152,8 @@ If you have newer SDK don't forget to retarget the project
 Added configuration and support files for editing the code in modern VS Code with clangd.
 
 ### Translating
-You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release</details>
+You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release 
+</details>
 
 ## Feedback
 `fttlkov@gmail.com`
