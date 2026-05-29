@@ -51,10 +51,9 @@ JCAdvance не просто делает фокус на удобстве раб
 - Добавлена опция нелинейного хода для стиков <br>
 - (Экспериментально) Теперь поддерживаются почти все dinput рули/педали, не только Arduino (см. технический раздел) <br>
 - Новое главное окно программы с текущим статусом настроек и горячих клавиш. Классическое меню по нажатию ALT-Z 
-<table>
+ <table align="center">
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_ru.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
   </tr>
 </table>
 
