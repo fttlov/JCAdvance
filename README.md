@@ -14,22 +14,25 @@ Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons,
 - Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
 - Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving, Aircraft <br>
 - Hotkeys for switching modes and profiles in real time<br>
-- Customizable sensitivity, deadzones, and left/right stick switching
-- Rumble support for Sony/Nintendo gamepads
-- Dual Joy-Cons combined into a single virtual Xbox controller
-- Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions
+- Customizable sensitivity, deadzones, and left/right stick switching<br>
+- Rumble support for Sony/Nintendo gamepads<br>
+- Dual Joy-Cons combined into a single virtual Xbox controller<br>
+- Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
 - Various emulation modes for games with adaptive triggers;<br>
 - Support for two gamepads <br>
-- (Experimental) External pedal: connect your wheel/pedals and emulate triggers or sticks.
-- Minimal memory and CPU usage (0.20% - 0.50%)
+- (Experimental) External pedal: connect your wheel/pedals and emulate triggers or sticks<br>
+- Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## What's the difference:
-In short: in the concept of using Gyro Motion, user-friendly GUIs, bug fixes and some new features. <br>
-DSAdvance was designed primarily for Sony's two-handed controllers. JCAdvance, as you might guess, focuses on Joy-cons and their unique gyroscope capabilities. <br>
-I assume that Gyro Motion with two-handed gamepads and Joy-cons is based on different concepts. <br>
-For two-handed: is used for fine-tuning and adjusting classic stick aiming. <br>
-Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past.
+- First of all: in the concept of using Gyro Motion <br>
+- New user-friendly GUIs <br>
+- Bug fixes and some new features <br>
+
+DSAdvance was designed primarily for Sony's two-handed controllers with Joy-con support.  <br>
+JCAdvance not only focuses on making the Joy-Con easy to use, but also allows for flexible customization of the gyroscope settings for various devices. I assume that Gyro Motion with two-handed gamepads and Joy-cons is based on different concepts: <br>
+For two-handed: is used for fine-tuning and adjusting classic stick aiming <br>
+Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past
 
 ## What's new:
 - Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
@@ -123,7 +126,7 @@ I tested this feature using an old "Logitech Wingman" wheel, mapping its pedals 
 - It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
 - Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all.
 
-## The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
+### The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
 And will not be expanded until the transition to SDL, which is a long way off
 
 ## Credits
