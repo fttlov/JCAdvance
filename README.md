@@ -83,10 +83,12 @@ See the simple installation and setup [instructions](https://docs.nefarius.at/pr
   <br>
 
 - Interface and profiles
+  
 A new 3-layer menu has been introduced. Layer 0 is for before connecting devices, Layer 1 is for after connecting, and Layer 2 is the classic menu. Layer 2 is too cluttered, but has been retained for compatibility, as well as for information on Sony Touchpad hotkeys and the old profile management system.<br>
 Profiles: In the original code, there was a strict separation between profiles for Xbox (reading .ini files from the XboxProfile folder) and Keyboard/Mouse (KMProfile). It was impossible to emulate both XBOX and KM buttons in a single profile. In the current implementation, the main XboxProfile folder emulates any buttons, and profiles are managed via Config.exe. However, you can still switch between profiles using hotkeys both within the XboxProfile folder and between folders; KMProfiles is retained for compatibility.
  
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. <br>
+
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
 For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
@@ -113,6 +115,7 @@ For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a f
 Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
 - Experimental fixes for the ExternalPedals function. I expect the most issues to occur here. <br>
+
 The original code was made for an Arduino pedal project (I do not know what it is) and DirectInput (DInput) devices, but I could not get other steering wheels/pedals to work. The code has been rewritten to support all DInput wheels/pedals. <br>
 Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Nintendo/Sony gamepad, and... Xbox triggers are now controlled by your pedals. If not, try changing the settings in the config section [ExternalPedals]: <br>
 a) Pedal1Axis: in Windows, the default pedal mapping is Y or Z and Z-rotation. Try other axes<br>
