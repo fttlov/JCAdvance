@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <math.h>
 #include <mutex>
-#include <iostream>
+//#include <iostream>
 #include "ViGEm\Client.h"
 #include "IniReader\IniReader.h"
 #include "JoyShockLibrary\JoyShockLibrary.h"
@@ -14,10 +14,9 @@
 #include <thread>
 #include <atlstr.h>
 #include <dbt.h>
-#include <chrono>
+//#include <chrono>
 #include <mmsystem.h>
-#include <locale.h>
-
+//#include <locale.h>
 #pragma comment(lib, "winmm.lib")
 
 void GamepadSearch(AdvancedGamepad &Gamepad, std::string SkipDevPath, std::string SkipDevPath2 = "") {
@@ -795,7 +794,6 @@ inline bool IsValidPedalDevice(const std::string& name, const std::string& confi
 	}
 
 	// ИНАЧЕ: работает стандартный умный фильтр автоопределения
-
 	// 1. БЕЛЫЙ СПИСОК (разрешаем рули и педали сразу)
 	//if (upperName.find("LOGITECH") != std::string::npos) return true;
 
@@ -1238,29 +1236,29 @@ void LoadXboxProfile(std::string ProfileFile) {
 }
 
 void DefaultMainText() {
-	if (AppStatus.ControllerCount < 1) { //@025 New menu Layer1 
-		printf("\n Connect Joy-con(s), Pro controller, DualShock 4, DualSense or Press \"ALT + Esc\" to Exit.\n");
+	if (AppStatus.ControllerCount < 1) { //@025 New menu Layer0 
+		u8printf(T("Layer0_Connect", "\n Connect Joy-con(s), Pro controller, DualShock 4, DualSense or Press \"ALT + Esc\" to Exit.").c_str());
 		return;
 	}
 
-	if (!AppStatus.ShowFullMenu) {	//	Layer2 Light menu for novice
-		printf("\n Connected controllers: ");
+	if (!AppStatus.ShowFullMenu) {	//	Layer1 Light menu for novice
+		u8printf(T("Layer1_Connected", "\n Connected controllers: ").c_str());
 		switch (PrimaryGamepad.ControllerType) {
 		case SONY_DUALSENSE:
-			printf("\033[32m Sony DualSense\033[0m");
+			u8printf(T("Layer1_DualSense", "\033[32m Sony DualSense\033[0m").c_str());
 			break;
 		case SONY_DUALSHOCK4:
-			printf("\033[32m Sony DualShock 4\033[0m");
+			u8printf(T("Layer1_DualShock", "\033[32m Sony DualShock 4\033[0m").c_str());
 			break;
 		case NINTENDO_JOYCONS:
-			printf("\033[32m Nintendo Joy-Con(s) -\033[0m");
-			if (PrimaryGamepad.HidHandle != NULL && PrimaryGamepad.HidHandle2 != NULL) printf("\033[32m left & right\033[0m");
-			else if (PrimaryGamepad.HidHandle != NULL) printf("\033[32m left\033[0m");
-			else if (PrimaryGamepad.HidHandle2 != NULL) printf("\033[32m right\033[0m");
+			u8printf(T("Layer1_Joy-Con(s)", "\033[32m Nintendo Joy-Con(s) -\033[0m").c_str());
+			if (PrimaryGamepad.HidHandle != NULL && PrimaryGamepad.HidHandle2 != NULL) u8printf(T("Layer1_JC_Both", "\033[32m left & right\033[0m").c_str());
+			else if (PrimaryGamepad.HidHandle != NULL) u8printf(T("Layer1_JC(L)", "\033[32m left\033[0m").c_str());
+			else if (PrimaryGamepad.HidHandle2 != NULL) u8printf(T("Layer1_JC(R)", "\033[32m right\033[0m").c_str());
 			//printf(") (\033[32m all functions)\033[0m");
 			break;
 		case NINTENDO_SWITCH_PRO:
-			printf("\033[32m Nintendo Switch Pro\033[0m");
+			u8printf(T("Layer1_Pro", "\033[32m Nintendo Switch Pro\033[0m").c_str());
 			break;
 		default:
 			break;
@@ -1292,7 +1290,8 @@ void DefaultMainText() {
 		} else if (AppStatus.ControllerCount > 1 && SecondaryGamepad.DeviceIndex != -1) printf(", the second gamepad is disabled in the config");
 		printf("\n");
 
-		printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mCTRL + R\033[0m\" to reset/search for controllers, \"\033[1mALT + V\033[0m\" to swap the 1st and 2nd ones.\n", AppStatus.HotKeys.ResetKeyName.c_str());
+		u8printf(T("Layer1_Reset", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mCTRL + R\033[0m\" to reset/search for controllers, \"\033[1mALT + V\033[0m\" to swap the 1st and 2nd ones\n").c_str(), AppStatus.HotKeys.ResetKeyName.c_str());
+
 		if (AppStatus.ControllerCount > 0 && AppStatus.ShowBatteryStatus) {
 			printf(" Controller 1");
 			if (PrimaryGamepad.USBConnection) printf(" wired");
@@ -1321,38 +1320,37 @@ void DefaultMainText() {
 			printf(".\n");
 		}
 
-		printf("\n \033[4mDescription\033[0m:");
-		printf("\n JCAdvance is an Xbox gamepad emulator with advanced Gyro features. You can map most of any button on your \n" 
+		u8printf(T("Layer1_Descript", "\n \033[4mDescription\033[0m:").c_str());
+		u8printf(T("Layer1_About", "\n JCAdvance is an Xbox gamepad emulator with advanced Gyro features. You can map most of any button on your \n"
 		" gamepad to emulate any of Xbox, Keyboard or Mouse keys. Gyro modes are controlled in real time using hotkeys.\n" 
-		" For setup primary setting use config.exe. To manage all settings see Config.ini and XboxProfile\\Default.ini.\n");
+		" For setup primary setting use config.exe. To manage all settings see Config.ini and XboxProfile\\Default.ini\n").c_str());
 		
-		printf("\n \033[4mGyro info\033[0m:");
+		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: \n").c_str());
+		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to activate Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
-		printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to activate Gyro Aiming Mode (on/off)\n", AppStatus.AimingToggleButtonName.c_str());
+		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
+		else u8printf(T("Layer1_Mode_Stick", "\n \033[1mControls\033[0m: \033[36mGyro Stick\033[0m").c_str());
+		u8printf(T("Layer1_Mode_Switch", ", to switch mode press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\"\n").c_str(), AppStatus.AimingModeToggleButtonName.c_str());
+		u8printf(T("Layer1_Move_Button", "\n \033[1mControl Button\033[0m: \"\033[31m%s\033[0m\", %s\n").c_str(),
+			AppStatus.AimingButtonName.c_str(),
+			AppStatus.AimingByPressingMode ?
+			T("Layer1_START_MOVE", "press to \033[1mstart\033[0m Gyro move").c_str() :
+			T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m Gyro move").c_str());
 
-		if (AppStatus.AimMode == AimMouseMode) printf("\n \033[1mAiming mode\033[0m = \033[33mGyro Mouse\033[0m");
-		else printf("\n \033[1mAiming mode\033[0m = \033[36mGyro Stick\033[0m");
-		printf(", press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\" to switch\n", AppStatus.AimingModeToggleButtonName.c_str());
 
-		//printf("\n \033[1mAiming Button\033[0m: \"\033[1m%s\033[0m\", pressing to Gyro move\n", AppStatus.AimingButtonName.c_str());
+		//printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
+		u8printf(T("Layer1_Driving", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n").c_str(), AppStatus.DrivingToggleButtonName.c_str());
 
-		printf("\n \033[1mAiming Button\033[0m: \"\033[31m%s\033[0m\", pressing to Gyro move\n", AppStatus.AimingButtonName.c_str());
-
-		printf("\n Set Gyro move behavior in the Config (1 = by pressing AimButton, 0 = always on)\n");
-
-		printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
-
-		printf("\n \033[4mMiscellaneous\033[0m:");
-
-		printf("\n Press \"\033[1mALT + I\033[0m\" or the center of the touchpad (Sony only) to view battery status\n");
-
-		printf("\n Press \"\033[1mALT + Z\033[0m\" to open all settings.\n");
-		printf("\n Press \"\033[1mALT + Esc\033[0m\" to Exit.\n");
+		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:\n").c_str());
+		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\", press \"\033[1mPS/Home + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to change\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
+		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status\n").c_str());
+		u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
+		u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
 
 		return;
 	}
 
-	//else {									 //Слой 3 Full
+	//else {									 //Layer3 old/Full
 	printf("\n Connected controllers: ");
 	switch (PrimaryGamepad.ControllerType) {
 	case SONY_DUALSENSE:
@@ -1449,7 +1447,7 @@ void DefaultMainText() {
 	//printf(" Press touchpad areas or \"Capture/Home\" buttons to change operating modes.\n");
 	//printf(" If there's no touch panel, switch using a touchpad press (enabled in the config) or use \"ALT + 1/2\".\n");
 	//printf(" Pressing \"Home\" or \"ALT + 2\" again - switches aim mode (always/L2), \"Capture\" - resets.\n");
-	printf(" To manage modes below: bind Hotkeys in Config.ini or Press touchpad areas buttons(Sony) or use ALT + 1/2/A\.\n");	//@004 Правки в print 1
+	printf(" To manage modes below: bind Hotkeys in Config.exe or Press touchpad areas buttons(Sony) or use ALT + 1/2/A\.\n");	//@004 Правки в print 1
 	printf(" Press \"%s\" or \"ALT + 1\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
 	printf(" Press \"%s\" or \"ALT + 2\" to activate Gyro Aiming Mode (on/off)\n", AppStatus.AimingToggleButtonName.c_str());
 	printf(" Aiming Button: \"%s\", pressing to Gyro move\n", AppStatus.AimingButtonName.c_str());
@@ -1509,7 +1507,8 @@ void DefaultMainText() {
 
 	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Gyro Mouse"); else printf("\n Aiming mode = Gyro Stick");	//@004 Правки в print 2
 	printf(", press \"%s\" or \"ALT + A\" to switch.\n", AppStatus.AimingModeToggleButtonName.c_str());	//  вывод кнопки из Config 
-	printf(" Set Gyro move behavior in the Config (1 = by pressing AimButton, 0 = always on)\n");
+	//printf(" Set Gyro move behavior in the Config (1 = by pressing AimButton, 0 = always on)\n");
+	printf(" Mouse/Stick moves when: \"%s\"\n", AppStatus.AimingByPressingMode ? "pressing AimingButton" : "AimingButton not pressed ");
 
 	printf(" Rumble strength is %d%%, press \"ALT + </>\", \"PS + Options\", or \"Capture + Plus\" to adjust.\n", PrimaryGamepad.RumbleStrength);
 
@@ -1544,14 +1543,14 @@ void DefaultMainText() {
 	printf(" Press \"ALT + Escape\" to exit.\n");
 }
 
-void RussianMainText() {
-}
+//void RussianMainText() {
+//}
 
 void MainTextUpdate() {
 	system("cls");
-	if (AppStatus.Lang == LANG_RUSSIAN)
-		RussianMainText();
-	else
+	//if (AppStatus.Lang == LANG_RUSSIAN)
+	//	RussianMainText();
+	//else
 		DefaultMainText();
 	//system("cls"); DefaultMainText();
 }
@@ -1808,19 +1807,19 @@ int main(int argc, char **argv)
 	SetConsoleTitle("JCAdvance 2.2");
 	WindowToCenter();
 
-	bool ForceEnLang = true;
+	bool ForceEnLang = false;
 	for (int i = 1; i < __argc; i++)
 		if (strcmp(__argv[i], "-en") == 0) {
 			ForceEnLang = true;
 			break;
 		}
 
-	if (PRIMARYLANGID(GetUserDefaultLangID()) == LANG_RUSSIAN) { // Resave cpp file with UTF8 BOM
+	/*if (!ForceEnLang && PRIMARYLANGID(GetUserDefaultLangID()) == LANG_RUSSIAN) { // Resave cpp file with UTF8 BOM
 		AppStatus.Lang = LANG_RUSSIAN;
 		setlocale(LC_ALL, ""); // Output locale
 		setlocale(LC_NUMERIC, "C"); // Numbers with a dot
 		system("chcp 65001 > nul"); // Console UTF8 output 
-	}
+	}*/
 
 	WNDCLASS AppWndClass = {};
 	AppWndClass.lpfnWndProc = WindowProc;
@@ -1832,6 +1831,17 @@ int main(int argc, char **argv)
 
 	// Config parameters
 	CIniReader IniFile("Config.ini");
+
+	std::string selectedLang = IniFile.ReadString("ConfigGUI", "Language", "English");	//@037 Локализация через файлы .ini
+	std::string lowerLang = selectedLang;
+	std::transform(lowerLang.begin(), lowerLang.end(), lowerLang.begin(), ::tolower);
+	if (!ForceEnLang && lowerLang != "english") {	// УНИВЕРСАЛЬНАЯ динамическая логика определения любого языка!
+		AppStatus.LangFile = selectedLang; // Сюда запишется "Spanish", "Russian" и т.д.
+	}
+	else {
+		AppStatus.LangFile = "english";
+	}
+
 	PrimaryGamepad.Sticks.InvertLeftX = IniFile.ReadBoolean("Gamepad", "InvertLeftStickX", false);
 	PrimaryGamepad.Sticks.InvertLeftY = IniFile.ReadBoolean("Gamepad", "InvertLeftStickY", false);
 	PrimaryGamepad.Sticks.InvertRightX = IniFile.ReadBoolean("Gamepad", "InvertRightStickX", false);
@@ -2023,8 +2033,8 @@ int main(int argc, char **argv)
 		FindClose(hFind);
 	}
 
-	//@036 Config_Profiles Умное чтение активного профиля из config.ini
-	std::string ActiveProfile = IniFile.ReadString("Gamepad", "LayoutProfile", "Default.ini");	
+	//@036 для вкладки Profiles Config GUI. Умное чтение активного профиля из config.ini. 
+	std::string ActiveProfile = IniFile.ReadString("ConfigGUI", "LayoutProfile", "Default.ini");	
 	for (size_t i = 0; i < XboxProfiles.size(); i++) {
 		if (_stricmp(XboxProfiles[i].c_str(), ActiveProfile.c_str()) == 0) {
 			XboxProfileIndex = (int)i; // Синхронизируем индекс с выбранным файлом
@@ -2863,7 +2873,7 @@ int main(int argc, char **argv)
 			report.wButtons = (WORD)XboxButtons;
 		}
 		// Nintendo controllers buttons: Capture & Home - changing working mode + another controllers (with additional buttons with keyboard emulation)
-		//if ((IsKeyPressed(VK_MENU) && IsKeyPressed('1')) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')) ||		//@027 -Hotkey for all gamepads
+		//if ((IsKeyPressed(VK_MENU) && IsKeyPressed('1')) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')) ||		//@038 -Hotkey for all gamepads
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER ||
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT ||
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
@@ -2993,7 +3003,7 @@ int main(int argc, char **argv)
 
 		// Gamepad modes
 
-		//@035  Проверяем нажатие кнопки прицеливания (поддерживаем аналоговый опрос для ZL/L2 и ZR/R2):
+		//@038  Проверяем нажатие кнопки прицеливания (поддерживаем аналоговый опрос для ZL/L2 и ZR/R2):
 		bool isAimingButtonPressed = (AppStatus.AimingButton != 0) && (
 			(AppStatus.AimingButton == JSMASK_ZL && DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) > 0) ||
 			(AppStatus.AimingButton == JSMASK_ZR && DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) > 0) ||
@@ -3026,7 +3036,8 @@ int main(int argc, char **argv)
 						(PrimaryGamepad.InputState.buttons & AppStatus.AimingButton) // PS games with emulators (L1) & one-handed controllers like light guns and gaming accessibility
 					)
 				) ) {*/
-		//@035 Always меняем на button not pressed
+		
+		//@039 Always меняем на button not pressed
 		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) ||
 			(PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {
 

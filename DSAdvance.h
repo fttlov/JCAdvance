@@ -563,6 +563,7 @@ struct _AppStatus {
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
 	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnsct
 	int GyroSpace = 1;				//@113 
+	std::string LangFile = "";		//@116
 
 	struct _HotKeys
 	{
@@ -1382,4 +1383,113 @@ inline  void WindowToCenter() {
 	int consoleHeight = consoleRect.bottom - consoleRect.top;
 
 	MoveWindow(hWndConsole, (screenWidth - consoleWidth) / 2, (screenHeight - consoleHeight) / 2, consoleWidth, consoleHeight, TRUE);
+}
+
+//@116 ЛОКАЛИЗАЦИЯ через ini файлы в Language 
+// Нативное чтение UTF-16 LE BOM файлов через системное Windows API
+inline std::string ReadIniStringW(const std::string& section, const std::string& key, const std::string& default_val, const std::string& file_path) {
+	// 1. Преобразуем входящие std::string в std::wstring для вызова Wide-функций Windows API
+	std::wstring wSection(section.begin(), section.end());
+	std::wstring wKey(key.begin(), key.end());
+	std::wstring wDefault(default_val.begin(), default_val.end());
+	std::wstring wFile(file_path.begin(), file_path.end());
+
+	// 2. Windows API требует абсолютный путь к INI-файлу
+	wchar_t absPath[MAX_PATH];
+	GetFullPathNameW(wFile.c_str(), MAX_PATH, absPath, NULL);
+
+	// 3. Вызываем системную функцию чтения INI (она нативно и без проблем понимает UTF-16 LE BOM)
+	wchar_t buffer[2048] = { 0 };
+	GetPrivateProfileStringW(wSection.c_str(), wKey.c_str(), wDefault.c_str(), buffer, 2048, absPath);
+
+	// 4. Переводим прочитанную UTF-16 строку в UTF-8 для корректного вывода в консоль
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, buffer, -1, NULL, 0, NULL, NULL);
+	if (size_needed <= 0) return default_val;
+
+	std::string strTo(size_needed - 1, 0);
+	WideCharToMultiByte(CP_UTF8, 0, buffer, -1, &strTo[0], size_needed, NULL, NULL);
+
+	return strTo;
+}
+
+// Вспомогательная функция для замены текстовых управляющих кодов на реальные системные байты
+inline std::string ProcessEscapeSequences(std::string str) {
+	std::string result = "";
+	for (size_t i = 0; i < str.length(); ++i) {
+		if (str[i] == '\\' && i + 1 < str.length()) {
+			if (str[i + 1] == 'n') {
+				result += '\n';
+				i++;
+			}
+			else if (str[i + 1] == 't') {
+				result += '\t';
+				i++;
+			}
+			else if (str[i + 1] == '\"') {
+				result += '\"';
+				i++;
+			}
+			else if (str[i + 1] == '\\') {
+				result += '\\';
+				i++;
+			}
+			else if (i + 3 < str.length() && str[i + 1] == '0' && str[i + 2] == '3' && str[i + 3] == '3') {
+				result += '\033';
+				i += 3;
+			}
+			else {
+				result += str[i];
+			}
+		}
+		else {
+			result += str[i];
+		}
+	}
+	return result;
+}
+
+// Главная функция перевода
+inline std::string T(const std::string& key, const std::string& default_val) {
+	if (AppStatus.LangFile.empty() || AppStatus.LangFile == "english") {
+		return ProcessEscapeSequences(default_val);
+	}
+
+	std::string path = "Language\\" + AppStatus.LangFile + ".ini";
+
+	// Вызываем наше системное чтение, которое легко прочтет UTF-16 LE BOM файл
+	std::string translated = ReadIniStringW("Console", key, default_val, path);
+
+	return ProcessEscapeSequences(translated);
+}
+
+#include <vector>
+#include <stdarg.h>
+
+// Универсальный и безопасный аналог printf для вывода UTF-8 в консоль Windows
+inline void u8printf(const char* format, ...) {
+	va_list args;
+	va_start(args, format);
+
+	// 1. Форматируем строку (подставляем %s, %d и т.д.) во временный буфер
+	int size = vsnprintf(NULL, 0, format, args) + 1;
+	va_end(args);
+
+	std::vector<char> buf(size);
+	va_start(args, format);
+	vsnprintf(buf.data(), size, format, args);
+	va_end(args);
+
+	std::string utf8_str(buf.data());
+
+	// 2. Конвертируем готовую UTF-8 строку в UTF-16 для вывода
+	int wsize = MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, NULL, 0);
+	if (wsize <= 0) return;
+
+	std::wstring wstr(wsize, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, &wstr[0], wsize);
+
+	// 3. Выводим текст напрямую в буфер консоли Windows, работает на ЛЮБЫХ версиях Windows и при ЛЮБЫХ локалях
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD written;
+	WriteConsoleW(hOut, wstr.c_str(), (DWORD)wstr.length() - 1, &written, NULL);
 }

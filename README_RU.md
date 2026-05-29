@@ -40,7 +40,8 @@ JCAdvance не просто делает фокус на удобстве вза
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config6_ru.png" width="150"></td>
   </tr>
 </table>
-- Можно привязывать абсолютно все цифровые кнопки для эмуляции кнопок Xbox, клавиатуры и мыши в одном профиле <br>
+
+- Все цифровые кнопки геймпадов теперь доступны для эмуляции кнопок Xbox, клавиатуры и мыши в одном профиле <br>
 - Автоматическая привязка с помощью кнопки "Bind" или вручную, через выпадающий список всех доступных кнопок <br>
 - Менеджер профилей. Создавайте и управляйте профилями в одной вкладке конфигуратора <br>
 - Полностью настраиваемые горячие клавиши для различных Gyro режимов с поддержкой комбинации кнопок (пример: R+HOME) <br>
@@ -48,9 +49,9 @@ JCAdvance не просто делает фокус на удобстве вза
 - Добавлена опция частоты опроса. Выше частота - больше плавности Gyro mouse <br>
 - Добавлена опция чтения данных с гироскопа только для левого Joy-con <br>
 - Добавлен EMA фильтр сглаживания движений <br>
-- Добавлена опция нелинейного хода для стиков <br>
-- (Экспериментально) Теперь поддерживаются почти все dinput рули/педали, не только Arduino (см. технический раздел) <br>
-- Новое главное окно программы с текущим статусом настроек и горячих клавиш. Классическое меню по нажатию ALT-Z 
+- Добавлена опция нелинейного хода для стиков
+- (Экспериментально) Теперь поддерживаются почти все dinput рули/педали, не только Arduino (см. технический раздел)
+- Новое главное окно программы с текущим статусом настроек и горячих клавиш. Классическое меню по нажатию ALT-Z
  <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
@@ -117,15 +118,19 @@ JCAdvance не просто делает фокус на удобстве вза
 Насколько можно понять, автор DSADvance делал упор на проект педалей через Arduino, Хотя и заявлялось, что можно подключить dinput педали и они будут работать как триггеры, в коде был поиск dinput устройств, но работал он странно. <br>
 Переписан код для реального поиска устройств в реестре, подхватывание имени, фильтр отсечения геймпадов (только нужны рули и педали). В Config.ini добавлена возможность чётко прописать имя устройства (из реестра или joy.cpl), а также смена осей, так как у разных рулей педали могут висеть на разных осях. Добавлено все 8 Windows осей для самостоятельно перебора. По умолчанию z и z-roll. <br>
 Как подключить: подсоединяем руль/педали, в config.ini внизу ищем секцию [ExternalPedals], делаем DInput=1, сохраняем и запускаем JCAdvance. При старте будет опрашиваться dinput устройства. У вас будет пару секунд чтобы заметить какие устройства найдены и инициализированы. Увидели свой руль - почти всё говотово. Подключаем геймпад и проверяем работу в XinputTest или joy.cpl. Если триггеры не реагируют на нажатие педалей пробуем разные оси для Pedal1Axis Pedal2Axis в cofig.ini.
-Если не работает, попробуйте прописать название своего устройства (cmd - joy.cpl вручную в Config.ini DeviceName = вместо AUTO.  </details>
+Если не работает, попробуйте прописать название своего устройства (cmd - joy.cpl вручную в Config.ini DeviceName = вместо AUTO.
+
+- Проблемы отладки: <br>
+В данный момент отсутствует доступ к геймпаду Sony и нормальный дебаггинг невозможен. Код для Sony не менялся, но всё может быть  <br>
+Тесты контроллеров Joy-con проводились на MobaPad M6s с упрощённой вибрацией, поэтому как работает HD вибрация и работает ли она вообще сказать затруднительно <br>
+В тестировании функции внешних педалей использовался старый руль Logitech Wingman. Тесты прошли успешно, но выборка явно недостаточная
+
+</details>
 
 ### Возможные проблемы:
 - Congfig.exe написан на AHK и он немного капризен к DPI в Windows. Если текст не влезает в окно или наклдывается друг на друга, временно уменьшите значение DPI или смените разрешение экрана
 - Возможна ложно-позитивная реакция антивируса на Config.exe из-за вызовов библиотек. Его source открыт, но если вы параноик - немедленно удалите "вирус" и ковыряйте конфиги
 - Если вы столкнулись проблемой плохого коннекта или проблем с вибрацией при двух одновременно подключённых Joy-con'ах, попробуйте другой bluetooth адаптер. Известные беспроблемные адаптеры: ASUS USB-BT400 и более дешёвые аналоги на этом же чипе BCM20702 (есть и за 200 р.), некоторые bluetooth 4.0 от Ugreen
-- В данный момент  отсутствует доступ к геймпаду Sony, проверить их работу возможности нет. Код оригинальной программы для них не менялся, но всё может быть
-- Тесты для контроллеров Joy-con проводились на MobaPad M6s с упрощённой вибрацией, поэтому как работает HD вибрация и работает ли она вообще сказать затруднительно
-- При тестировании внешних педалей для работы в качестве триггеров использовался старый Logitech Wingman. Тесты прошли успешно, но выборка явно недостаточная.
 
 ### Список поддерживаемых контроллеров ограничен библиотекой Joyshocklibrary
 И не будет расширяться до перехода на SDL в очень необозримом будущем.
@@ -153,6 +158,94 @@ JCAdvance не просто делает фокус на удобстве вза
 
 ### Редактирования
 Для редактирования также можно использовать VS Code с clangd. Соотв. файлы для совместимости добавлены
+</details>
 
-## Feedback
+## Поддержка проекта 🍺
+
+Понравилась программа - купите автору пивка!
+
+#### 🇷🇺  Россия/Беларусь 👉 **[CloudTips (СБП, TPay, карты МИР)](https://pay.cloudtips.ru/p/3ae0e7e5)** <table align="center">
+<details>
+  <summary>📷 QR code </summary>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/cloudtips.png" width="160" alt="CloudTips QR" />
+</details>
+
+#### 🌐 Worldwide 👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** <sub> (без регистрации, email для чеков и истории переводов)</sub>
+
+
+<details>
+<summary><h4>🪙 Криптовалюта (Прямой перевод)</h4> </summary>
+
+Пожалуйста, убедитесь, что вы отправляете перевод через **правильную сеть**, указанную внутри каждого спойлера!
+
+<details>
+<summary>🟢 <b>USDT (BSC / BEP-20) — Низкая комиссия</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> BNB Smart Chain (BEP-20)</li>
+  <li><b>Адрес:</b> <code>0x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/BSC%20(BEP20)%200x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429.png" width="160" alt="USDT BEP-20 QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🟢 <b>USDT (Tron / TRC-20) — Классический вариант</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> Tron (TRC-20)</li>
+  <li><b>Address:</b> <code>TXAdZL5Y4FqhUdZP5TeShMyXPk9hBWh27o</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Tron%20(TRC20)%20TXAdZL5Y4FqhUdZP5TeShMyXPk9hBWh27o.png" width="160" alt="USDT TRC-20 QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔵 <b>TON (Toncoin) — Мгновенно и без комиссии</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> TON Chain</li>
+  <li><b>Адрес:</b> <code>UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro</code> (👉 <b><a href="https://tonkeeper.app/transfer/UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro">Открыть в кошельке</a></b>)</li>
+  <li><b>Важно:</b> Memo / Tag указывать не нужно!</li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/TON%20(TON)%20UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro.png" width="160" alt="TON QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🪙 <b>LTC (Litecoin) — Минимальная комиссия сети</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> Litecoin (LTC)</li>
+  <li><b>Адрес:</b> <code>Lb3GnY7u8aKYsFQi7nY4gi5QeWb9Y8QDeR</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/LTC%20(LTC)%20Lb3GnY7u8aKYsFQi7nY4gi5QeWb9Y8QDeR.png" width="160" alt="LTC QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔶 <b>BTC (Bitcoin)</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> Bitcoin</li>
+  <li><b>Адрес:</b> <code>1MVqQdFdf8WCGyyZP6nqCE314nZj7mDGYR</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/BTC%20(BTC)%201MVqQdFdf8WCGyyZP6nqCE314nZj7mDGYR.png" width="160" alt="BTC QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔷 <b>ETH (Ethereum / ERC-20)</b></summary>
+<br>
+<ul>
+  <li><b>Сеть:</b> Ethereum (ERC-20)</li>
+  <li><b>Адрес:</b> <code>0x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/ETH%20(ERC20)%200x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429.png" width="160" alt="ETH QR" />
+<br><br>
+</details>
+
+</details>
+
+### Обратная связь
 `fttlkov@gmail.com`

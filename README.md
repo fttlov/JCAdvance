@@ -30,7 +30,7 @@ Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons,
 - Bug fixes and some new features <br>
 
 DSAdvance was designed primarily for Sony's two-handed controllers. With Joy-con support.  <br>
-JCAdvance not only focuses on making the Joy-Con easy to use, but also allows for flexible customization of the gyroscope settings for various devices (Gyro Space). I assume that Gyro Motion with two-handed gamepads and Joy-cons is based on different concepts: <br>
+JCAdvance not only focuses on making the Joy-Con easy to use, but also allows for flexible customization of the gyroscope settings for various devices (Gyro Space option). I assume that Gyro Motion with two-handed gamepads and Joy-Cons is based on different concepts: <br>
 - For two-handed: is used for fine-tuning and adjusting classic stick aiming <br>
 - Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past
 
@@ -55,7 +55,7 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 - Added Polling rate option (higher value means smoother motion)
 - Added option to read Gyro data from the left Joy-con (by default, only the right one is used)
 - Added EMA filter (temporal antialiasing, add some latency)
-- Aadded a non-linear stick sensitivity option 
+- Added a non-linear stick sensitivity option 
 - (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu)
  <table align="center">
@@ -124,16 +124,18 @@ Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Ninte
 a) Pedal1Axis: in Windows, the default pedal mapping is Y or Z and Z-rotation. Try other axes<br>
 b) change DeviceName: The 'Auto' value acts as a 'smart filter' to block gamepads — which, of course, isn't actually that smart. However, you can try entering the name of your wheel/pedals manually. Open the command prompt (cmd), run 'joy.cpl', press Enter, and copy/type the exact name of your steering wheel/pedals instead of 'Auto'. <br>
 I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!
+
+- Debugging & Testing Limitations: <br>
+I currently lack access to any Sony controllers, making proper debugging for these devices impossible at the moment. While the DSAdvance Sony-related code remains unchanged, unexpected issues may still occur <br>
+Joy-Con testing was conducted on MobaPad M6s controllers, which utilize simplified rumble motors. Consequently, it is difficult to determine how well HD Rumble is implemented or if it functions correctly at all <br>
+The experimental externalpedals feature was tested using an old Logitech steering wheel. Although the initial tests were successful, this sample size is obviously too small to guarantee broad compatibility
 </details>
 
 
 ## Potential issues
 - Congfig.exe is written in AHK, high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
 - Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it, .ini files are wainting for you
-- If you’re experiencing poor connectivity or vibration issues when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
-- Currently, I do not have any Sony gamepads for testing. The original code for them has not been changed, so everything should be fine <br>
-- It’s much the same with the pedals: testing the code on just one device is clearly not enough. <br>
-- Joy-Con rumble: I only have a Mobapad M6S with basic rumble, so I do not know how HD Rumble behaves, or if it works at all
+- If you’re experiencing poor connectivity or vibration issues (like infinite rumble) when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
 
 ### The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
 And will not be expanded until the transition to SDL, which is a long way off
@@ -166,6 +168,94 @@ Added configuration and support files for editing the code in modern VS Code wit
 ### Translating
 You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release 
 </details>
+
+## Support the Project
+
+Enjoying your favorite game with J.C. Advance? Buy me a 🍺🍺🍺
+
+### 🌐 International:
+
+ 👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** <sub> (No registration, enter email for receipt & history only)</sub>
+
+### 🪙 Cryptocurrency (Direct Transfer)
+<details>
+<summary><b>Click to expand Crypto addresses & QR Codes</b></summary>
+<br>
+
+Please ensure you send your transaction through the **correct network** listed inside each option!
+
+<details>
+<summary>🟢 <b>USDT (BSC / BEP-20) — Recommended (Low Fee)</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> BNB Smart Chain (BEP-20)</li>
+  <li><b>Address:</b> <code>0x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/BSC%20(BEP20)%200x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429.png" width="160" alt="USDT BEP-20 QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🟢 <b>USDT (Tron / TRC-20) — Classic</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> Tron (TRC-20)</li>
+  <li><b>Address:</b> <code>TXAdZL5Y4FqhUdZP5TeShMyXPk9hBWh27o</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Tron%20(TRC20)%20TXAdZL5Y4FqhUdZP5TeShMyXPk9hBWh27o.png" width="160" alt="USDT TRC-20 QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔵 <b>TON (Toncoin) — Recommended (Instant & Low Fee)</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> TON Chain</li>
+  <li><b>Address:</b> <code>UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro</code> (👉 <b><a href="https://tonkeeper.app/transfer/UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro">Open in Wallet</a></b>)</li>
+  <li><b>Important:</b> No Memo / Tag required! (Direct personal deposit address).</li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/TON%20(TON)%20UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro.png" width="160" alt="TON QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🪙 <b>LTC (Litecoin) — Low Fee</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> Litecoin (LTC)</li>
+  <li><b>Address:</b> <code>Lb3GnY7u8aKYsFQi7nY4gi5QeWb9Y8QDeR</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/LTC%20(LTC)%20Lb3GnY7u8aKYsFQi7nY4gi5QeWb9Y8QDeR.png" width="160" alt="LTC QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔶 <b>BTC (Bitcoin) — Classic</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> Bitcoin</li>
+  <li><b>Address:</b> <code>1MVqQdFdf8WCGyyZP6nqCE314nZj7mDGYR</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/BTC%20(BTC)%201MVqQdFdf8WCGyyZP6nqCE314nZj7mDGYR.png" width="160" alt="BTC QR" />
+<br><br>
+</details>
+
+<details>
+<summary>🔷 <b>ETH (Ethereum) — ERC-20</b></summary>
+<br>
+<ul>
+  <li><b>Network:</b> Ethereum (ERC-20)</li>
+  <li><b>Address:</b> <code>0x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429</code></li>
+</ul>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/ETH%20(ERC20)%200x7bd7bb2a21d3489a6bce6de29d9e504eb6bb1429.png" width="160" alt="ETH QR" />
+<br><br>
+</details>
+
+</details>
+
+__________
+
+<sub>🇷🇺 Для пользователей из РФ/РБ: **[Donate via CloudTips / МИР СБП](https://pay.cloudtips.ru/p/3ae0e7e5)**</sub>
 
 ## Feedback
 `fttlkov@gmail.com`
