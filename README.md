@@ -55,6 +55,7 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 - Added Polling rate option (higher value means smoother motion)
 - Added option to read Gyro data from the left Joy-con (by default, only the right one is used)
 - Added EMA filter (temporal antialiasing, add some latency)
+- Aadded a non-linear stick sensitivity option 
 - (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
 - A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu)
  <table align="center">
