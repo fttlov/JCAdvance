@@ -87,7 +87,8 @@ Profiles: In the original code, there was a strict separation between profiles f
  
 - Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. <br>
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
-What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
+What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
+For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
 - Fixed a Gyro Joystick mode issue where the stick would be randomly pulled toward the center when moving the gyroscope up or down (Y-axis), caused by bugs in JoyShockLibrary.
 - Added EMA motion smoothing filter. Note: this introduces input latency. For 60fps games (value - latency): 25 ~2.7ms; 50 ~8ms; 75 ~24ms.
 - Rumble code fixes for Joy-Cons. Added PacketCounter2, flood protection, etc.
