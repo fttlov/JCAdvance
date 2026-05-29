@@ -135,7 +135,11 @@ And will not be expanded until the transition to SDL, which is a long way off
 * [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 
-## Building
+<details>
+  <summary><h3>Building, Editing, Translating</h3> (Click to open)</summary>
+  <br>
+
+### Building
 0. If you're new to programming, just like me, follow the instructions below carefully:
 1. Download the source code and unzip
 2. Download Visual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance/refs/heads/main/Icon/VS17_Install.png) with these components
@@ -144,11 +148,11 @@ If you have newer SDK don't forget to retarget the project
 4. Choose the `Release` build type , either `x86` or `x64`, and compile the project. Remember about JoyshockLibrary architecture
 5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64. The script reads JoyShockLibrary.dll and the icon from the `\Icon` folder.
 
-## Editing
+### Editing
 Added configuration and support files for editing the code in modern VS Code with clangd.
 
-## Translating
-You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release
+### Translating
+You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release</details>
 
 ## Feedback
 `fttlkov@gmail.com`
