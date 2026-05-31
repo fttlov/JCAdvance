@@ -80,7 +80,7 @@ See the simple installation and setup [instructions](https://docs.nefarius.at/pr
 
 
 <details>
-  <summary><h2>Technical changes and bug fixes</h2> (Click to open)</summary>
+  <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
   <br>
 
 - Interface and profiles
