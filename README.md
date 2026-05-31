@@ -117,7 +117,7 @@ For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a f
 1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
 Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
-- Added split mode for Joy-cons and XY swap stick axes for horizontal grip. If SplitJoycons = 1 in config.ini, Left Joy-con = Xbox 1 gamepad, Right = Xbox 2 gamepad. Aren't enough buttons/axis to play properly, maybe someday adding the missing stick in this mode using the gyro or something kike that.
+- Added split mode for Joy-cons and XY swap stick axes for horizontal grip. If SplitJoycons = 1 in config.ini, Left Joy-con = Xbox 1 gamepad, Right = Xbox 2 gamepad. Aren't enough buttons/axis to play properly, maybe someday adding the missing stick in this mode using the gyro or something like that.
 
 - Experimental fixes for the ExternalPedals function. I expect the most issues to occur here. <br>
 
