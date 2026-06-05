@@ -70,7 +70,23 @@ JCAdvance не просто делает фокус на удобстве вза
 ## Важно!
 Некоторые игры не будут работать корректно из-за проблемы двойного ввода - одновременной инициализации реального геймпада и виртуального.
 Для решения проблемы рекомендуется использовать утилиту для скрытия геймпада от игр или всей системы [HidHide](https://github.com/nefarius/HidHide) от того же nefarius.
+<details>
+  <summary><h4>Быстрая настройка</h4> (Click to open)</summary>
+Скачиваем по ссылке выше и устанавливаем HidHide, затем:
+1. Добавляем JCAdvance.exe и Config.exe
+ 
+2. Ставим галку рядом снужным геймпадом
+ 
+3. Ставим галку enable device hiding
+ <table align="center">
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150"></td>
+  </tr>
+</table>
+</details>  
 Подробную инструкцию по установке и настройке можно найти [здесь](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
+
 
 <details>
   <summary><h2>Техническая информация</h2> (разверунуть)</summary>
