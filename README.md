@@ -71,7 +71,8 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 ## How to use
 1. Download the latest version from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
 2. Unzip the archive to any folder
-3. Run `JCAdvance.exe`, connect your gamepad and enjoy!
+3. Assign the desired buttons and hotkeys
+4. Run `JCAdvance.exe`, connect your gamepad and enjoy!
 
 ## Important
 To ensure compatibility with some games, you will need to hide your physical gamepad. Otherwise, the game might detect both your physical controller and the virtual Xbox controller at the same time (causing double-input issues). <br>
