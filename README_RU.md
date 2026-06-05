@@ -77,7 +77,7 @@ JCAdvance не просто делает фокус на удобстве вза
   
 1. Добавляем JCAdvance.exe и Config.exe
  
-2. Ставим галку рядом снужным геймпадом
+2. Ставим галку рядом с нужным геймпадом
  
 3. Ставим галку enable device hiding
  <table align="center">
