@@ -76,8 +76,20 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 ## Important
 To ensure compatibility with some games, you will need to hide your physical gamepad. Otherwise, the game might detect both your physical controller and the virtual Xbox controller at the same time (causing double-input issues). <br>
 To prevent this, we recommend using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
+<details>
+  <summary><h2>Setup</h2> (Click to open)</summary>
+ Download and install HidHide. Open HidHide Configuration Client and:
+ 1. Add JCAdvance.exe and Config.exe
+ 2. Tick your gamepad
+ 3. Tick enable device hiding
+ <table align="center">
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150"></td>
+  </tr>
+</table>
+</details>  
 See the simple installation and setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
-
 
 <details>
   <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
