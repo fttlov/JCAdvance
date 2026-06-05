@@ -92,7 +92,7 @@ To prevent this, we recommend using the [HidHide](https://github.com/nefarius/Hi
   </tr>
 </table>
 </details>  
-See the simple installation and setup [instructions](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
+See full installation and setup [guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 
 <details>
   <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
