@@ -8,20 +8,19 @@
 ← Choose your language
 
 ## What is it
-Joy-con Advance is an Xbox gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4 and DualSense Edge, based on DSAdvance by r57zone <br>
+Joy-con Advance is an Xbox/DS4 gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4 and DualSense Edge, based on DSAdvance by r57zone <br>
 
 ## Some basic features:
-- Customizable buttons: assign gamepad buttons to emulate Xbox, keyboard, and mouse keys <br>
-- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving, Aircraft <br>
-- Hotkeys for switching modes and profiles in real time<br>
-- Customizable sensitivity, deadzones, and left/right stick switching<br>
-- Rumble support for Sony/Nintendo gamepads<br>
+- Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (a separate profile for each) <br>
+- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving; Aircraft <br>
+- HardCoded hotkeys for switching modes and profiles in real time <br>
+- Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
+- Rumble support for Sony/Nintendo gamepads <br>
 - Dual Joy-Cons combined into a single virtual Xbox controller<br>
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
-- Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal);<br>
-- Various emulation modes for games with adaptive triggers;<br>
-- Support for two gamepads <br>
-- (Experimental) External pedal: connect your wheel/pedals and emulate triggers or sticks<br>
+- Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
+- Support for two gamepads (second gamepad is limited to basic functions)<br>
+- External pedal: connect pedals to emulate triggers or sticks (limited device support) (<br>
 - Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## What's the difference:
@@ -47,17 +46,20 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
   </tr>
 </table>
 
-- You can map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
-- Added the ability to auto-assign using the "Bind" button or manually via a drop-down list of available buttons
-- Added Profile Manager. Create and manage profiles in a single tab of the configurator
-- Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME)
-- Added Gyro Space option - an important setting for Gyro Mouse/Stick modes (see more in Technical changes)
-- Added Polling rate option (higher value means smoother motion)
-- Added option to read Gyro data from the left Joy-con (by default, only the right one is used)
-- Added EMA filter (temporal motion antialiasing, add some latency)
-- Added a non-linear stick sensitivity option 
-- (Experimental) External pedal now works with almost all known dinput wheels/pedals (not just Arduino)
-- A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu)
+- Now you can map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
+- Added the ability to auto-assign using the "Bind" button or manually via a drop-down list of available buttons <br>
+- New Gyro Melee gesture. Map virtual button to a punch, hook, blow hammer gesture <br>
+- Profile Manager. Create and manage profiles in a single tab of the configurator <br>
+- Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME) <br>
+- Added Gyro Space option - an important setting for Gyro Mouse/Stick modes (see more in Technical changes) <br>
+- Added Polling rate option (higher value means smoother motion) <br>
+- Added option to read Gyro data from the left Joy-con in combined mode <br>
+- Added EMA filter (temporal motion antialiasing, add some latency) <br>
+- Added a non-linear stick and steering wheel sensitivity option <br>
+- Added option to emulate DirectInput controller instead of xinput Xbox 360 controller <br>
+- Enhanced driving mode. The steering wheel no longer jerks to the opposite side. Added hotkey for manual calibration <br>
+- (Experimental) External pedal now works with almost all known dinput wheels/pedals <br>
+- A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu) <br>
  <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
@@ -130,18 +132,25 @@ For two-handed gamepads: let’s take the example of the standard grip, where th
 
 For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation (horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling). <br>
 0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
-1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
+With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+
 Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
 - Added Split mode for Joy-cons and XY swap stick axes for horizontal grip. Added joy-con buttons SL SR HOME CAPTURE to secondary gamepad. If SplitJoycons = 1 in config.ini, Left Joy-con = Xbox 1 gamepad, Right = Xbox 2 gamepad. Aren't enough buttons/axis to play properly, maybe someday adding the missing stick in this mode using the gyro or something like that.
 
-- Experimental fixes for the ExternalPedals function. I expect the most issues to occur here. <br>
+- A cool new Gyro gesture called ‘Melee’ has been added. It’s handy for Joy-Con controllers. You can use a punching gesture (straight or side) or a hammering gesture to emulate any Xbox button, or a keyboard/mouse key. This means that the Melee attack in the game doesn’t occupy a physical button.
 
-The original code was made for an Arduino pedal project (I do not know what it is) and DirectInput (DInput) devices, but I could not get other steering wheels/pedals to work. The code has been rewritten to support all DInput wheels/pedals. <br>
-Set DInput=1 in config, plug in your USB DInput wheel/pedals, connect your Nintendo/Sony gamepad, and... Xbox triggers are now controlled by your pedals. If not, try changing the settings in the config section [ExternalPedals]: <br>
-a) Pedal1Axis: in Windows, the default pedal mapping is Y or Z and Z-rotation. Try other axes<br>
-b) change DeviceName: The 'Auto' value acts as a 'smart filter' to block gamepads — which, of course, isn't actually that smart. However, you can try entering the name of your wheel/pedals manually. Open the command prompt (cmd), run 'joy.cpl', press Enter, and copy/type the exact name of your steering wheel/pedals instead of 'Auto'. <br>
-I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!
+- Dualshock emulation has been added. This only works with Nintendo controllers. When JCAdvance is launched, a DirectInput Wireless Controller is created instead of an Xbox 360 Controller (Xinput). This can be used in DirectInput games, such as the Need for Speed series.
+
+- The driving mode has been improved. The CalcMotionStick code has been rewritten to resolve issues where the steering wheel jerks in the opposite direction when maximum turning angles are reached. A manual calibration/centring button has been added. What is it for: a) very rarely, but the ‘steering wheel’ may get stuck in position 32768 (far right) at unacceptable angles, for example, if the gamepad is lying horizontally. b) when driving mode is enabled, the centre is automatically calibrated. Sometimes the centre is slightly off. You can now set the centre yourself – choose a comfortable angle by eye and press the button.
+
+- ExternalPedals function. I expect the most issues to occur here. <br>
+
+The original code was made for a custom pedals project on Arduino and others. The code has been rewritten to support all DInput wheels/pedals. <br>
+How to: connect the steering wheel/pedals, go to the Steering tab in Config and enable "Dinput Search", launch JCAdvance and check the console, if you see someting like: [Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED! -everything is OK, the device has been found and placed in the correct slot. Connect the gamepad and test it in XinputTest or joy.cpl. If the triggers do not respond when the pedals are pressed, try different axes for Pedal1Axis and Pedal2Axis in Config. <br>
+If your device’s name does not appear in the console or nothing works at all, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the name of your steering wheel/pedals in Config.  <br>
+I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!  <br>
 
 - Debugging & Testing Limitations: <br>
 I currently lack access to any Sony controllers, making proper debugging for these devices impossible at the moment. While the DSAdvance Sony-related code remains unchanged, unexpected issues may still occur <br>
@@ -149,9 +158,8 @@ Joy-Con testing was conducted on MobaPad M6s controllers, which utilize simplifi
 The experimental externalpedals feature was tested using an old Logitech steering wheel. Although the initial tests were successful, this sample size is obviously too small to guarantee broad compatibility
 </details>
 
-
 ## Potential issues
-- Congfig.exe is written in AHK, high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
+- Congfig.exe is written in AHK, low resolution or high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
 - Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it, .ini files are wainting for you
 - If you’re experiencing poor connectivity or vibration issues (like infinite rumble) when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
 
