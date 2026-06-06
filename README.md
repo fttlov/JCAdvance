@@ -73,7 +73,7 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 ## How to use
 1. Download the latest version from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
 2. Unzip the archive to any folder
-3. Assign the desired buttons and hotkeys
+3. Assign the desired buttons and hotkeys in Config.exe
 4. Run `JCAdvance.exe`, connect your gamepad and enjoy!
 
 ## Important
