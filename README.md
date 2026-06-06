@@ -46,7 +46,7 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
   </tr>
 </table>
 
-- Now you can map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
+- Map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
 - Added the ability to auto-assign using the "Bind" button or manually via a drop-down list of available buttons <br>
 - New Gyro Melee gesture. Map virtual button to a punch, hook, blow hammer gesture <br>
 - Profile Manager. Create and manage profiles in a single tab of the configurator <br>
