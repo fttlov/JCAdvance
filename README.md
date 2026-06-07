@@ -96,7 +96,7 @@ To prevent this, recommend using the [HidHide](https://github.com/nefarius/HidHi
 </table>
 </details>  
 
-See full installation and setup [guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/)
+See full installation and setup guide [here](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/)
 
 <details>
   <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
