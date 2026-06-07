@@ -132,19 +132,21 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
 
   ### Gyro Motion Space
-  This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2.
-  - **Mode 0 / 2:** Recommended for two-handed controllers.
-  - **Mode 0 / 1:** Recommended for Joy-Cons.
+  This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
-  **Understanding the Modes:**
-  * **Two-handed controllers:** To aim vertically, you tilt the controller forward/backward. Horizontal aiming behaves as follows:
-    * **Mode 0:** Steer the controller like a steering wheel.
-    * **Mode 2:** Yaw-based rotation (tilting the right side away while pulling the left side closer). If held completely flat, it reverts to steering behavior.
-  * **Joy-Cons:** Since a single Joy-Con is held freely in one hand, precision is affected by wrist roll and controller tilt.
-    * **Mode 0:** Wrist roll affects horizontal aiming. Aiming straight requires keeping your wrist completely straight.
-    * **Mode 1:** Wrist roll is ignored (within a 180-degree range). With a horizontal grip (triggers pointing at the screen), the cursor precisely follows your physical movement vector. If held vertically, however, wrist twisting will affect the horizontal axis.
+In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
-  While these descriptions sound complex, muscle memory adapts very quickly. Most setups are highly playable (except for Joy-Cons on Mode 2). Experiment to find your preference!
+It is hard to explain, but I will try. <br>
+For two-handed gamepads: let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
+0 — "steering wheel" movement to the left <br>
+2 — tilt the right side of the gamepad (R1) away from you while bringing the left side (L1) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
+
+For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
+0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
+1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
+With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+
+Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
   ### Split Mode & Joy-Con Mapping
   Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2.
