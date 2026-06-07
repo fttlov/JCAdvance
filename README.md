@@ -178,7 +178,7 @@ I tested this feature using an old "Logitech Wingman" wheel and it f@cking works
 - **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files.
 - **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
 
-### The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
+### The list of supported controllers is limited by Joyshocklibrary
 And will not be expanded until the transition to SDL, which is a long way off
 
 ## Credits
