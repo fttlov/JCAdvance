@@ -34,7 +34,7 @@ JCAdvance not only focuses on making the Joy-Con easy to use, but also allows fo
 - Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past
 
 ## What's new:
-- Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can now be configured via a GUI
+- Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can be configured via a GUI
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config1_en.png" width="150"></td>
