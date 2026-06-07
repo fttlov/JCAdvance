@@ -94,9 +94,10 @@ To prevent this, recommend using the [HidHide](https://github.com/nefarius/HidHi
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150"></td>
   </tr>
 </table>
-</details>  
 
 See full installation and setup guide [here](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/)
+
+</details>  
 
 <details>
   <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
