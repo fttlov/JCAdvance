@@ -20,7 +20,7 @@ Joy-con Advance is an XBOX/DS4 gamepad emulator with advanced features for Joy-c
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
 - Support for two gamepads (second gamepad is limited to basic functions)<br>
-- External pedal: connect pedals to emulate triggers or sticks (limited device support) (<br>
+- External pedal: connect pedals to emulate triggers or sticks (limited device support) <br>
 - Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## What's the difference:
