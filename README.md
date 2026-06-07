@@ -25,7 +25,7 @@
  
 ## Key Differences in JCAdvance
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
-- **GUI:** New configurator and redesigned user-friendly interface
+- **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes** and some **new features**
 
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
