@@ -1418,16 +1418,16 @@ void DefaultMainText() {
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\Default.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: \n").c_str());
-		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to activate Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
+		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
 		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
 		else u8printf(T("Layer1_Mode_Stick", "\n \033[1mControls\033[0m: \033[36mGyro Stick\033[0m").c_str());
 		u8printf(T("Layer1_Mode_Switch", ", to switch mode press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\"\n").c_str(), AppStatus.AimingModeToggleButtonName.c_str());
-		u8printf(T("Layer1_Move_Button", "\n \033[1mControl Button\033[0m: \"\033[31m%s\033[0m\", %s\n").c_str(),
+		u8printf(T("Layer1_Move_Button", "\n \033[1mControl Button\033[0m: \"\033[93m%s\033[0m\", %s\n").c_str(),
 			AppStatus.AimingButtonName.c_str(),
 			AppStatus.AimingByPressingMode ?
-			T("Layer1_START_MOVE", "press to \033[1mstart\033[0m Gyro move").c_str() :
-			T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m Gyro move").c_str());
+			T("Layer1_START_MOVE", "press to \033[1mstart\033[0m motion").c_str() :
+			T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m motion").c_str());
 
 
 		//printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
@@ -1541,8 +1541,14 @@ void DefaultMainText() {
 	//printf(" Pressing \"Home\" or \"ALT + 2\" again - switches aim mode (always/L2), \"Capture\" - resets.\n");
 	printf(" To manage modes below: bind Hotkeys in Config.exe or Press touchpad areas buttons(Sony) or use ALT + 1/2/A\.\n");	//@004 Правки в print 1
 	printf(" Press \"%s\" or \"ALT + 1\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
-	printf(" Press \"%s\" or \"ALT + 2\" to activate Gyro Aiming Mode (on/off)\n", AppStatus.AimingToggleButtonName.c_str());
-	printf(" Aiming Button: \"%s\", pressing to Gyro move\n", AppStatus.AimingButtonName.c_str());
+	printf(" Press \"%s\" or \"ALT + 2\" to unlock Gyro Motion (on/off)\n", AppStatus.AimingToggleButtonName.c_str());
+	//printf(" Aiming Button: \"%s\"\n", AppStatus.AimingButtonName.c_str());
+	u8printf(T("Layer1_Move_Button", " Control Button \"\033[1m%s\033[0m\", %s\n").c_str(),
+		AppStatus.AimingButtonName.c_str(),
+		AppStatus.AimingByPressingMode ?
+		T("Layer1_START_MOVE", "press to \033[1mstart\033[0m motion").c_str() :
+		T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m motion").c_str());
+
 	if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) {
 		printf(" Adaptive triggers mode: ");
 		switch (PrimaryGamepad.AdaptiveTriggersMode) {
@@ -1600,7 +1606,7 @@ void DefaultMainText() {
 	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Gyro Mouse"); else printf("\n Aiming mode = Gyro Stick");	//@004 Правки в print 2
 	printf(", press \"%s\" or \"ALT + A\" to switch.\n", AppStatus.AimingModeToggleButtonName.c_str());	//  вывод кнопки из Config 
 	//printf(" Set Gyro move behavior in the Config (1 = by pressing AimButton, 0 = always on)\n");
-	printf(" Mouse/Stick moves when: \"%s\"\n", AppStatus.AimingByPressingMode ? "pressing AimingButton" : "AimingButton not pressed ");
+	//printf(" Mouse/Stick moves when: \"%s\"\n", AppStatus.AimingByPressingMode ? "pressing AimingButton" : "AimingButton not pressed ");
 
 	printf(" Rumble strength is %d%%, press \"ALT + </>\", \"PS + Options\", or \"Capture + Plus\" to adjust.\n", PrimaryGamepad.RumbleStrength);
 
