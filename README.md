@@ -24,11 +24,11 @@
 - Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## Key Differences in JCAdvance
-- **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion.
-- **Modern GUI:** Completely redesigned, user-friendly configuration interface.
-- **Bug Fixes:** Resolved original issues and added stability improvements.
+- **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
+- **GUI:** New configurator and redesigned user-friendly interface
+- **Bug Fixes** and some **new features**
 
-While *DSAdvance* was primarily designed for two-handed Sony controllers (with basic Joy-Con support), *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
+While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
