@@ -32,7 +32,7 @@ While *DSAdvance* was primarily designed for two-handed Sony controllers with Jo
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
-* **Joy-Cons:** True, free-hand full gyro motion control. With Joy-Cons, using the right stick for aiming in FPS/TPS becomes obsolete.
+* **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.
 
 ## What's New
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
