@@ -215,11 +215,15 @@ You can easily translate the JCAdvance configurator and console interface into a
 
 Enjoying your favorite game with J.C. Advance? Buy me a 🍺🍺🍺
 
-### 🌐 International:
+
 <!--
  👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** <sub> (No registration, enter email for receipt & history only)</sub>
 -->
- 👉 **[Donationalerts](https://dalink.to/fttlov)** <sub> (Very high fee - 12% 😢)</sub>
+ ### 🌐 Worldwide 👉 **[Donationalerts](https://dalink.to/fttlov)** <sub> (Very high fee - 12% 😢)</sub> <table align="center">
+<details>
+  <summary>📷 QR code </summary>
+<img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/dalink-qr-code.png" width="160" alt="CloudTips QR" />
+</details>
  
 ### 🪙 Cryptocurrency (Direct Transfer)
 <details>
