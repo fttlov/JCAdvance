@@ -90,7 +90,8 @@ JCAdvance не просто делает фокус на удобстве вза
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150"></td>
   </tr>
 </table>
-</details>  
+</details> 
+
 Подробную инструкцию по установке и настройке можно найти [здесь](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 
 
