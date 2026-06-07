@@ -202,7 +202,7 @@ JCadvance, Joyshocklibrary.dll и Config.exe должны быть оиднак�
 #### 🇷🇺  Россия/Беларусь 👉 **[CloudTips (СБП, TPay, карты МИР)](https://pay.cloudtips.ru/p/3ae0e7e5)** 
 <table align="center">
 <details>
-  <summary>📷 QR code </summary>
+  <summary>📷 CloudTips QR code </summary>
 <img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/cloudtips.png" width="160" alt="CloudTips QR" />
 </details>
 
@@ -213,7 +213,7 @@ JCadvance, Joyshocklibrary.dll и Config.exe должны быть оиднак�
 #### 🌐 Worldwide 👉 **[Donationalerts](https://dalink.to/fttlov)**  <sub> (Very high fee - 12% 😢)</sub> 
 <table align="center">
 <details>
-  <summary>📷 QR code </summary>
+  <summary>📷 Donationalerts QR code </summary>
 <img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/dalink-qr-code.png" width="160" alt="CloudTips QR" />
 </details>
  
