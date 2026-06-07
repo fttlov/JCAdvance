@@ -213,7 +213,7 @@ You can easily translate the JCAdvance configurator and console interface into a
 
 ## Support the Project
 
-Enjoying your favorite game with J.C. Advance? Buy me a 🍺🍺🍺
+Enjoying your favorite game with J.C. Advance? Buy me a 🍺
 
 
 <!--
