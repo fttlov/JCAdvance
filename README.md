@@ -8,210 +8,214 @@
 ← Choose your language
 
 ## What is it
-Joy-con Advance is an XBOX/DS4 gamepad emulator with advanced features for Joy-cons, Pro Controller, DualShock 4 and DualSense Edge, based on DSAdvance by r57zone <br>
+**Joy-Con Advance (JCAdvance)** is an Xbox/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the [DSAdvance](https://github.com/r57zone/DSAdvance) project by r57zone.
 
-## Basic features of the original:
-- Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (a separate profile for each) <br>
-- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving; Aircraft <br>
-- HardCoded hotkeys for switching modes and profiles in real time <br>
-- Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
-- Rumble support for Sony/Nintendo gamepads <br>
-- Dual Joy-Cons combined into a single virtual Xbox controller<br>
-- Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
-- Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
-- Support for two gamepads (second gamepad is limited to basic functions)<br>
-- External pedal: connect pedals to emulate triggers or sticks (limited device support) <br>
-- Minimal memory and CPU usage (0.20% - 0.50%)<br>
+## Basic Features of the Original Project
+- **Button Mapping:** Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (with separate profiles).
+- **Gyro-based Modes:** Emulate mouse/stick movements for looking/aiming, wheel movement for driving, or aircraft-style controls.
+- **On-the-fly Switching:** Hardcoded hotkeys to switch modes and profiles in real time.
+- **Flexible Customization:** Adjust sensitivity, dead zones, inversion, and stick/trigger switching.
+- **Rumble Support:** Haptic feedback for Sony and Nintendo controllers.
+- **Combined Joy-Cons:** Combine dual Joy-Cons into a single virtual Xbox controller.
+- **Magic Wheel:** Use gyroscope movements in different directions as additional actions or buttons.
+- **Adaptive Triggers:** Support for Sony DualSense adaptive triggers (modes: pistol, rifle, sniper, bow, car pedal).
+- **Multi-Controller Support:** Support for two gamepads (the second controller has basic functions).
+- **External Pedals:** Connect pedal systems to emulate triggers or sticks (limited device support).
+- **Efficiency:** Minimal memory and CPU footprint (0.20% - 0.50% usage).
  
-## What's the difference:
-- First of all: in the concept of using Gyro Motion <br>
-- New user-friendly GUIs <br>
-- Bug fixes and some new features <br>
+## Key Differences in JCAdvance
+- **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion.
+- **Modern GUI:** Completely redesigned, user-friendly configuration interface.
+- **Bug Fixes:** Resolved original issues and added stability improvements.
 
-DSAdvance was designed primarily for Sony's two-handed controllers. With Joy-con support.  <br>
-JCAdvance not only focuses on making the Joy-Con easy to use, but also allows for flexible customization of the gyroscope settings for various devices (Gyro Space option). I assume that Gyro Motion with two-handed gamepads and Joy-Cons is based on different concepts: <br>
-- For two-handed: is used for fine-tuning and adjusting classic stick aiming <br>
-- Joy-cons: free-hand full Gyro motion control — the right stick for looking/aiming in FPS TPS is a relic of the past
+While *DSAdvance* was primarily designed for two-handed Sony controllers (with basic Joy-Con support), *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
 
-## What's new:
-- Config.exe: all primary settings, Gyro options, button mapping, and hotkeys can be configured via a GUI
+The core philosophy of Gyro Motion differs between controller types:
+* **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
+* **Joy-Cons:** True, free-hand full gyro motion control. With Joy-Cons, using the right stick for aiming in FPS/TPS becomes obsolete.
+
+## What's New
+- **Configurator App (`Config.exe`):** Configure all primary settings, Gyro options, button mapping, and hotkeys via a graphical user interface.
+
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config1_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config2_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config3_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config4_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config5_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config6_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config1_en.png" width="150" alt="Config Tab 1"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config2_en.png" width="150" alt="Config Tab 2"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config3_en.png" width="150" alt="Config Tab 3"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config4_en.png" width="150" alt="Config Tab 4"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config5_en.png" width="150" alt="Config Tab 5"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Config6_en.png" width="150" alt="Config Tab 6"></td>
   </tr>
 </table>
 
-- Map any digital Nintendo/Sony gamepad button to emulate any Xbox, keyboard or mouse in one profile <br>
-- Added the ability to auto-assign using the "Bind" button or manually via a drop-down list of available buttons <br>
-- New Gyro Melee gesture. Map virtual button to a punch, hook, blow hammer gesture <br>
-- Profile Manager. Create and manage profiles in a single tab of the configurator <br>
-- Fully configurable hotkeys to activate Gyro modes with support for two-button combinations (like R+HOME) <br>
-- Added Gyro Space option - an important setting for Gyro Mouse/Stick modes (see more in Technical changes) <br>
-- Added Polling rate option (higher value means smoother motion) <br>
-- Added option to read Gyro data from the left Joy-con in combined mode <br>
-- Added EMA filter (temporal motion antialiasing, add some latency) <br>
-- Added a non-linear stick and steering wheel sensitivity option <br>
-- Added option to emulate DirectInput controller instead of xinput Xbox 360 controller <br>
-- Enhanced driving mode. The steering wheel no longer jerks to the opposite side. Added hotkey for manual calibration <br>
-- (Experimental) External pedal now works with almost all known dinput wheels/pedals <br>
-- A new, user-friendly main menu with info about the current settings and hotkeys (Alt+Z for the full menu) <br>
+- **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any Xbox button, keyboard key, or mouse action within a single profile.
+- **Auto-Bind:** Quickly bind buttons using the "Bind" feature or select them manually from a drop-down list.
+- **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons.
+- **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator.
+- **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`).
+- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see *Technical Details* for more information).
+- **Polling Rate Option:** Increase the polling rate for smoother motion response.
+- **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode.
+- **EMA Filter:** Smooths out jittery movements (adds a small amount of latency).
+- **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options.
+- **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a standard virtual Xbox 360 controller.
+- **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles. Added a hotkey for manual calibration.
+- **Pedal Compatibility:** External pedal feature now works with almost all standard DirectInput wheels/pedals.
+- **Clean Main Menu:** Displays active settings and hotkeys at a glance (toggle with `Alt+Z`).
+
  <table align="center">
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150" alt="Main Interface"></td>
   </tr>
 </table>
  
-## Requires
-[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Virtual Gamepad Emulation Framework by nefarius <br>
-[Microsoft Visual C++ Redistributable 2017 x86 x64](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri)  or newer 
+## Requirements
+- [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius.
+- [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer.
 
-## How to use
-1. Download the latest version from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
-2. Unzip the archive to any folder
-3. Assign the desired buttons and hotkeys in Config.exe
-4. Run `JCAdvance.exe`, connect your gamepad and enjoy!
+## How to Use
+1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page.
+2. Unzip the archive to any folder.
+3. Open `Config.exe` to configure your buttons and hotkeys.
+4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
-## Important
-To ensure compatibility with some games, you will need to hide your physical gamepad. Otherwise, the game might detect both your physical controller and the virtual Xbox controller at the same time (causing double-input issues). <br>
-To prevent this, recommend using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
+## Important Note
+To prevent double-input issues (where a game detects both your physical controller and the virtual Xbox controller simultaneously), you should hide your physical gamepad.
+
+We highly recommend using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
+
 <details>
-  <summary><h4>Quick setup</h4> </summary>
- Download and install HidHide. Open HidHide Configuration Client and:
+  <summary><b>Quick Setup Guide</b></summary>
+  <br>
+  Download and install HidHide. Open the HidHide Configuration Client and:
+  
+  1. Add `JCAdvance.exe` and `Config.exe` to the Applications list.
+  2. Select your physical gamepad in the Devices tab.
+  3. Enable the **"Enable device hiding"** option.
 
-1. Add JCAdvance.exe and Config.exe
- 
-2. Tick your gamepad
- 
-3. Tick enable device hiding
- <table align="center">
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150"></td>
-  </tr>
-</table>
+  <table align="center">
+    <tr>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150" alt="HidHide Setup 1"></td>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150" alt="HidHide Setup 2"></td>
+    </tr>
+  </table>
 
-See full installation and setup guide [here](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/)
-
+  For a complete guide, visit the [official HidHide Setup Guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 </details>  
 
 <details>
-  <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
+  <summary><b>Technical Details and Bug Fixes</b> (Click to expand)</summary>
   <br>
 
-- Interface and profiles
+  ### Interface and Profiles
+  A new 3-layer menu system has been introduced:
+  - **Layer 0:** Shown before connecting devices.
+  - **Layer 1:** Active after controllers are connected.
+  - **Layer 2:** Classic detailed menu (retained for compatibility, touchpad hotkey info, and legacy profile management).
+
+  *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. Legacy `KMProfiles` are retained for backward compatibility.
+   
+  ### Polling Rate & Performance
+  The default polling rate is set to **125 Hz** (`sleepTimeout=8` in `config.ini`). Even at 250 Hz, CPU usage remains incredibly low (around 0.30% – 0.60%). 
   
-A new 3-layer menu has been introduced. Layer 0 is for before connecting devices, Layer 1 is for after connecting, and Layer 2 is the classic menu. Layer 2 is too cluttered, but has been retained for compatibility, as well as for information on Sony Touchpad hotkeys and the old profile management system.<br>
-Profiles: In the original code, there was a strict separation between profiles for Xbox (reading .ini files from the XboxProfile folder) and Keyboard/Mouse (KMProfile). It was impossible to emulate both XBOX and KM buttons in a single profile. In the current implementation, the main XboxProfile folder emulates any buttons, and profiles are managed via Config.exe. However, you can still switch between profiles using hotkeys both within the XboxProfile folder and between folders; KMProfiles is retained for compatibility.
- 
-- Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. <br>
+  Due to JoyShockLibrary limitations, the original developer was forced to use `SleepTimeout=15` (66.6 Hz), which caused choppy gyro mouse movement. The driving wheel functions have been rewritten to support lower sleep timeout values, and a `WheelXboxHoldTimer` has been added.
+  
+  *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).
 
-Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
-What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
-For the full changelog of JoyShockLibrary, see the fork page: https://github.com/fttlov/JoyShockLibrary
-- Fixed a Gyro Joystick mode issue where the stick would be randomly pulled toward the center when moving the gyroscope up or down (Y-axis), caused by bugs in JoyShockLibrary.
-- Added EMA motion smoothing filter. Note: this introduces input latency. For 60fps games (value - latency): 25 ~2.7ms; 50 ~8ms; 75 ~24ms.
-- Rumble code fixes for Joy-Cons. Added PacketCounter2, flood protection, etc.
-- Improved connection and disconnection times, especially for the second Joy-Con.
-- Fixed a crash that occurred when two Joy-Cons were disconnected at the same time.
-- Fixed an issue where connecting Joy-Con (1), disconnecting it, and then connecting Joy-Con (2) resulted in no input response.
-- Fixed Battery Info (Alt+I) for the second Joy-Con.
+  ### Fixes & Adjustments
+  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary bug).
+  - **EMA Smoothing Filter:** Smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms).
+  - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.).
+  - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con.
+  - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously.
+  - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration.
+  - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
 
-- Gyro Motion Space:
+  ### Gyro Motion Space
+  This option defines how hand rotation translates to on-screen movement based on wrist tilt (Roll) and how you hold the controller. JCAdvance includes all 3 modes from the creator of JoyShockLibrary (0, 1, and 2):
+  - **Mode 0 / 2:** Recommended for two-handed controllers.
+  - **Mode 0 / 1:** Recommended for Joy-Cons.
 
-This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
+  **Understanding the Modes:**
+  * **Two-handed controllers:** To aim vertically, you tilt the controller forward/backward. Horizontal aiming behaves as follows:
+    * **Mode 0:** Steer the controller like a steering wheel.
+    * **Mode 2:** Yaw-based rotation (tilting the right side away while pulling the left side closer). If held completely flat, it reverts to steering behavior.
+  * **Joy-Cons:** Since a single Joy-Con is held freely in one hand, precision is affected by wrist roll and controller tilt.
+    * **Mode 0:** Wrist roll affects horizontal aiming. Aiming straight requires keeping your wrist completely straight.
+    * **Mode 1:** Wrist roll is ignored (within a 180-degree range). With a horizontal grip (triggers pointing at the screen), the cursor precisely follows your physical movement vector. If held vertically, however, wrist twisting will affect the horizontal axis.
 
-In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
+  While these descriptions sound complex, muscle memory adapts very quickly. Most setups are highly playable (except for Joy-Cons on Mode 2). Experiment to find your preference!
 
-It is hard to explain, but I will try. <br>
-For two-handed gamepads: let’s take the example of the standard grip, where the L and R buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L2 and R2 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
-0 — "steering wheel" movement to the left <br>
-2 — tilt the right side of the gamepad (R2) away from you while bringing the left side (L2) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
+  ### Split Mode & Joy-Con Mapping
+  Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2.
 
-For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation (horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling). <br>
-0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
-1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
-With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+  ### Gyro Melee Gesture
+  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button.
 
-Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
+  ### DualShock Emulation
+  Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles).
 
-- Added Split mode for Joy-cons and XY swap stick axes for horizontal grip. Added joy-con buttons SL SR HOME CAPTURE to secondary gamepad. If SplitJoycons = 1 in config.ini, Left Joy-con = Xbox 1 gamepad, Right = Xbox 2 gamepad. Aren't enough buttons/axis to play properly, maybe someday adding the missing stick in this mode using the gyro or something like that.
+  ### Improved Driving Mode
+  The `CalcMotionStick` logic was rewritten to prevent the virtual wheel from snapping in the opposite direction when reaching maximum steering angles. Added manual calibration: if the wheel gets off-center, hold your controller in a comfortable position and press the calibration hotkey to reset the center.
 
-- A cool new Gyro gesture called ‘Melee’ has been added. It’s handy for Joy-Con controllers. You can use a punching gesture (straight or side) or a hammering gesture to emulate any Xbox button, or a keyboard/mouse key. This means that the Melee attack in the game doesn’t occupy a physical button.
+  ### External Pedals Support
+  Originally designed for custom Arduino-based pedals, this feature has been expanded to support standard DirectInput wheels/pedals.
+  
+  *Setup:* Connect your device, enable **"Dinput Search"** in the Steering tab of `Config.exe`, and launch `JCAdvance.exe`. If you see `[Pedals Search] ID 0: Found device 'Your Device Name' -> APPROVED!` in the console, it is configured correctly. If inputs do not register, adjust the `Pedal1Axis` and `Pedal2Axis` options in the Configurator. If automatic detection fails, replace `AUTO` with your exact device name (found via `joy.cpl`) in the configuration file.
 
-- Dualshock emulation has been added. This only works with Nintendo controllers. When JCAdvance is launched, a DirectInput Wireless Controller is created instead of an Xbox 360 Controller (Xinput). This can be used in DirectInput games, such as the Need for Speed series.
-
-- The driving mode has been improved. The CalcMotionStick code has been rewritten to resolve issues where the steering wheel jerks in the opposite direction when maximum turning angles are reached. A manual calibration/centering button has been added. What is it for: a) very rarely, but the ‘steering wheel’ may get stuck in position 32768 (far right) at unacceptable angles, for example, if the gamepad is lying horizontally. b) when driving mode is enabled, the centre is automatically calibrated. Sometimes the centre is slightly off. You can now set the centre yourself – choose a comfortable angle by eye and press the button.
-
-- ExternalPedals function. I expect the most issues to occur here. <br>
-
-The original code was made for a custom pedals project on Arduino and others. The code has been rewritten to support all DInput wheels/pedals. <br>
-How to: connect the steering wheel/pedals, go to the Steering tab in Config and enable "Dinput Search", launch JCAdvance and check the console, if you see something like: [Pedals Search] ID 0: Found device 'Your wheel/pedals name' -> APPROVED! -everything is OK, the device has been found and placed in the correct slot. Connect the gamepad and test it in XinputTest or joy.cpl. If the triggers do not respond when the pedals are pressed, try different axes for Pedal1Axis and Pedal2Axis in Config. <br>
-If your device’s name does not appear in the console or nothing works at all, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the name of your steering wheel/pedals in Config.  <br>
-I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!  <br>
-
-- Debugging & Testing Limitations: <br>
-I currently lack access to any Sony controllers, making proper debugging for these devices impossible at the moment. While the DSAdvance Sony-related code remains unchanged, unexpected issues may still occur <br>
-Joy-Con testing was conducted on MobaPad M6s controllers, which utilize simplified rumble motors. Consequently, it is difficult to determine how well HD Rumble is implemented or if it functions correctly at all <br>
-The experimental externalpedals feature was tested using an old Logitech steering wheel. Although the initial tests were successful, this sample size is obviously too small to guarantee broad compatibility
+  ### Testing & Debugging Limitations
+  - **Sony Controllers:** The developer currently lacks access to physical DualShock/DualSense controllers. While the original emulation code remains intact, some untested issues may occur.
+  - **Haptic Rumble:** Tested on Mobapad M6S controllers. Due to simplified motors, full HD Rumble compatibility could not be verified.
+  - **Pedals:** Tested only on a legacy Logitech steering wheel. Broad compatibility with all modern pedals cannot be guaranteed.
 </details>
 
-## Potential issues
-- Config.exe is written in AHK, low resolution or high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
-- Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it, .ini files are waiting for you
-- If you’re experiencing poor connectivity or vibration issues (like infinite rumble) when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
+## Potential Issues
+- **DPI / Resolution Scaling:** `Config.exe` is built using AutoHotkey. High DPI settings or unusual Windows resolutions may cause UI elements to overlap or cut off. If this happens, temporarily lower your OS scaling or manually edit the `.ini` files.
+- **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files.
+- **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Highly reliable adapters include the ASUS USB-BT400 (BCM20702 chip) and Bluetooth 4.0 adapters from Ugreen.
 
-### The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
-And will not be expanded until the transition to SDL, which is a long way off
+### Supported Controllers
+The list of supported controllers is limited by the underlying [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) and will remain so until a planned transition to SDL is implemented.
 
 ## Credits
-* [DSAdvance](https://github.com/r57zone/DSAdvance) - that was the starting point for me. r57zone has done a really great job and I thank him for that.
-* [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) for a cool gamepad library that makes it easy to get controller rotation. Also uses some code from this library and [JibbSmart snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df) for aiming.
-* [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
-* [HIDAPI library](https://github.com/signal11/hidapi) with [fixes](https://github.com/libusb/hidapi) for the library to work with a USB devices. The project uses this [fork](https://github.com/r57zone/hidapi).
-* DS4Windows[[1]](https://github.com/Jays2Kings/DS4Windows)[[2]](https://github.com/Ryochan7/DS4Windows) for the battery level.
-* [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
-* [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
+* [DSAdvance](https://github.com/r57zone/DSAdvance) — The original project by r57zone which served as the foundation.
+* [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) — Gamepad library for controller rotation tracking, and [JibbSmart's aiming snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df).
+* [ViGEm](https://github.com/nefarius/ViGEmBus) — Virtual controller emulation framework, and [HidHide](https://github.com/nefarius/HidHide/) for hiding physical devices.
+* [HIDAPI Library](https://github.com/signal11/hidapi) (with [USB fixes](https://github.com/libusb/hidapi)) — The project utilizes r57zone's [hidapi fork](https://github.com/r57zone/hidapi).
+* [DS4Windows](https://github.com/Ryochan7/DS4Windows) — Battery level logic.
+* [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver) — Joy-Con rumble implementation.
+* [Valkirie's JoyShockLibrary fork](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) — Adaptive triggers over Bluetooth.
 
 <details>
-  <summary><h3>Building, Editing, Translating</h3> (Click to open)</summary>
+  <summary><b>Building, Editing, and Translating</b> (Click to expand)</summary>
   <br>
 
-### Building
-0. If you're new to programming, just like me, follow the instructions below carefully:
-1. Download the source code and unzip
-2. Download Visual Studio 17 and [install](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/VS17_Install.png) with these components
-3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/SDK_Install.png) with these components <br>
-If you have newer SDK don't forget to retarget the project
-4. Choose the `Release` build type , either `x86` or `x64`, and compile the project
-5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64. The script reads JoyShockLibrary.dll and icons from the `\Icon` folder.
-JCadvance, Joyshocklibrary.dll and Config.exe must be the same architecture
+  ### Building
+  1. Download and extract the source code.
+  2. Install **Visual Studio 2017** with the required C++ build tools.
+  3. Install **Windows SDK 10.0.1776.x** (if you use a newer SDK, remember to retarget the project in VS).
+  4. Select the `Release` build configuration (`x86` or `x64`) and build the project.
+  5. To compile the Config tool, use `Ahk2exe` with the `v2 U32` or `v2 U64` base. Note that `JCAdvance.exe`, `JoyShockLibrary.dll`, and `Config.exe` must share the same architecture.
 
-### Editing
-Added configuration and support files for editing the code in modern VS Code with clangd.
+  ### Editing
+  We have included configuration files to easily edit the codebase in VS Code with the `clangd` extension.
 
-### Translating
-You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release 
+  ### Translating
+  You can translate the interface and console output of the configurator without recompiling. Simply refer to the `\Language` folder in the release directory.
 </details>
 
 ## Support the Project
-
-Enjoying your favorite game with J.C. Advance? Buy me a 🍺🍺🍺
+Enjoying your experience with JCAdvance? Consider buying me a 🍺!
 
 ### 🌐 International:
-
- 👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** <sub> (No registration, enter email for receipt & history only)</sub>
+👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** *(No registration required, enter your email for receipts only)*
 
 ### 🪙 Cryptocurrency (Direct Transfer)
 <details>
 <summary><b>Click to expand Crypto addresses & QR Codes</b></summary>
 <br>
 
-Please ensure you send your transaction through the **correct network** listed inside each option!
+Please ensure you send your transaction through the **correct network**!
 
 <details>
 <summary>🟢 <b>USDT (BSC / BEP-20) — Recommended (Low Fee)</b></summary>
@@ -241,7 +245,7 @@ Please ensure you send your transaction through the **correct network** listed i
 <ul>
   <li><b>Network:</b> TON Chain</li>
   <li><b>Address:</b> <code>UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro</code> (👉 <b><a href="https://tonkeeper.app/transfer/UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro">Open in Wallet</a></b>)</li>
-  <li><b>Important:</b> No Memo / Tag required! (Direct personal deposit address).</li>
+  <li><b>Important:</b> No Memo / Tag required!</li>
 </ul>
 <img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/TON%20(TON)%20UQC0uPYhCF5R3OZKC_HKsNi84oLtVvXBneI8fKVwhF2Ykcro.png" width="160" alt="TON QR" />
 <br><br>
@@ -282,9 +286,9 @@ Please ensure you send your transaction through the **correct network** listed i
 
 </details>
 
-__________
+---
 
 <sub>🇷🇺 Для пользователей из РФ/РБ: **[Donate via CloudTips / МИР СБП](https://pay.cloudtips.ru/p/3ae0e7e5)**</sub>
 
 ## Feedback
-`fttlkov@gmail.com`
+📧 `fttlkov@gmail.com`
