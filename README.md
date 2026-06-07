@@ -145,12 +145,12 @@ Reading this description might make it seem like playing this way is impossible 
 
 - Dualshock emulation has been added. This only works with Nintendo controllers. When JCAdvance is launched, a DirectInput Wireless Controller is created instead of an Xbox 360 Controller (Xinput). This can be used in DirectInput games, such as the Need for Speed series.
 
-- The driving mode has been improved. The CalcMotionStick code has been rewritten to resolve issues where the steering wheel jerks in the opposite direction when maximum turning angles are reached. A manual calibration/centring button has been added. What is it for: a) very rarely, but the ‘steering wheel’ may get stuck in position 32768 (far right) at unacceptable angles, for example, if the gamepad is lying horizontally. b) when driving mode is enabled, the centre is automatically calibrated. Sometimes the centre is slightly off. You can now set the centre yourself – choose a comfortable angle by eye and press the button.
+- The driving mode has been improved. The CalcMotionStick code has been rewritten to resolve issues where the steering wheel jerks in the opposite direction when maximum turning angles are reached. A manual calibration/centering button has been added. What is it for: a) very rarely, but the ‘steering wheel’ may get stuck in position 32768 (far right) at unacceptable angles, for example, if the gamepad is lying horizontally. b) when driving mode is enabled, the centre is automatically calibrated. Sometimes the centre is slightly off. You can now set the centre yourself – choose a comfortable angle by eye and press the button.
 
 - ExternalPedals function. I expect the most issues to occur here. <br>
 
 The original code was made for a custom pedals project on Arduino and others. The code has been rewritten to support all DInput wheels/pedals. <br>
-How to: connect the steering wheel/pedals, go to the Steering tab in Config and enable "Dinput Search", launch JCAdvance and check the console, if you see someting like: [Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED! -everything is OK, the device has been found and placed in the correct slot. Connect the gamepad and test it in XinputTest or joy.cpl. If the triggers do not respond when the pedals are pressed, try different axes for Pedal1Axis and Pedal2Axis in Config. <br>
+How to: connect the steering wheel/pedals, go to the Steering tab in Config and enable "Dinput Search", launch JCAdvance and check the console, if you see something like: [Pedals Search] ID 0: Found device 'Your wheel/pedals name' -> APPROVED! -everything is OK, the device has been found and placed in the correct slot. Connect the gamepad and test it in XinputTest or joy.cpl. If the triggers do not respond when the pedals are pressed, try different axes for Pedal1Axis and Pedal2Axis in Config. <br>
 If your device’s name does not appear in the console or nothing works at all, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the name of your steering wheel/pedals in Config.  <br>
 I tested this feature using an old "Logitech Wingman" wheel and it f@cking works!  <br>
 
@@ -161,8 +161,8 @@ The experimental externalpedals feature was tested using an old Logitech steerin
 </details>
 
 ## Potential issues
-- Congfig.exe is written in AHK, low resolution or high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
-- Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it, .ini files are wainting for you
+- Config.exe is written in AHK, low resolution or high DPI settings in Windows may cause display issues. If the text does not fit in the window or overlaps, temporarily lower the DPI setting or change your screen resolution
+- Your antivirus might flag Config.exe because of library calls. The source code is open, but if you're paranoid, don't use it, .ini files are waiting for you
 - If you’re experiencing poor connectivity or vibration issues (like infinite rumble) when two Joy-Cons are connected at the same time, try a different Bluetooth adapter. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
 
 ### The list of supported controllers is limited by Joyshocklibrary (by JibbSmart)
