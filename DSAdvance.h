@@ -157,7 +157,7 @@ inline float ApplyLinearity(float value, float linearity) {
 
 // Aiming
 //#define FrameTime						0.0166666666666667f // 1.f / 60.f
-//#define Tightening						2.f
+//#define Tightening						2.f	//@117 in config
 
 // Mic LED status
 #define MIC_LED_ON						0x01
@@ -311,6 +311,8 @@ struct _ButtonsState {
 	Button WheelUpRight;
 	Button WheelDownLeft;
 	Button WheelDownRight;
+
+	Button MeleeGesture; //@119
 };
 
 struct AdvancedGamepad {
@@ -380,6 +382,9 @@ struct AdvancedGamepad {
 		float LinearityLeftY = 50.0f;
 		float LinearityRightX = 50.0f;
 		float LinearityRightY = 50.0f;
+
+		bool InvertLeftXY = false;		//@119
+		bool InvertRightXY = false;
 	};
 	_Sticks Sticks;
 
@@ -436,8 +441,20 @@ struct AdvancedGamepad {
 		bool WheelActive = false;
 		float WheelAccumX = 0;
 		float WheelAccumY = 0;
-		int WheelXboxHoldTimer = 0;		//@105 защита от пропуска нажатия Xbox кнопок в Wheel
+		int WheelXboxHoldTimer = 0;		//@105 защита от пропуска нажатия Xbox кнопок в Wheel при Sleeptimeout <15
 		WORD WheelXboxHoldButton = 0;
+		int GestureXTimer = 0;	//@119 Таймеры для Melee
+		int GestureXCooldown = 0;
+
+		float PrevAngleRad = 0.0f;	//@121
+		float CumulativeOffsetRad = 0.0f;
+		bool AngleInitialized = false;
+
+		float PitchPrevAngleRad = 0.0f;
+		float PitchCumulativeOffsetRad = 0.0f;
+		bool PitchAngleInitialized = false;
+		float LinearityWheel = 50.0f;
+		bool IsManualCalibrated = false;
 	};
 	_Motion Motion;
 
@@ -561,9 +578,14 @@ struct _AppStatus {
 	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
 	bool ShowFullMenu = false;		//@107 Alt+Z change Menu Layers
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
-	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnsct
-	int GyroSpace = 1;				//@113 
+	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnect
+	int GyroSpace = 1;				//@113
 	std::string LangFile = "";		//@116
+	bool SplitJoycons = false;		//@118
+	float MeleeGForce = 3.0f;		//@119 Порог перегрузки для Melee жеста в G
+	bool EmulateDS4 = false;		//@120 Режим эмуляции DualShock 4 вместо Xbox 360
+	std::string DrivingCalibrationButtonName = "NONE";	//@121
+	int DrivingCalibrationButton = 0;
 
 	struct _HotKeys
 	{
@@ -632,6 +654,8 @@ struct _CurrentXboxProfile {
 	unsigned int WheelUpRight = 0;
 	unsigned int WheelDownLeft = 0;
 	unsigned int WheelDownRight = 0;
+
+	unsigned int MeleeGesture = 0; //@119
 
 	unsigned int JCSL = 0;
 	unsigned int JCSR = 0;
@@ -1354,7 +1378,7 @@ inline double OffsetYPR(double Angle1, double Angle2) // CalcMotionStick
 	return LeftAxisX;
 }*/
 
-inline float CalcMotionStick(float gravA, float gravB, float wheelAngle, float offsetAxis) {
+/*inline float CalcMotionStick(float gravA, float gravB, float wheelAngle, float offsetAxis) {
 	float angleRadians = wheelAngle * (3.14159f / 180.0f); // To radians
 
 	float normalizedValue = OffsetYPR(atan2f(gravA, gravB), offsetAxis) / angleRadians;
@@ -1365,8 +1389,94 @@ inline float CalcMotionStick(float gravA, float gravB, float wheelAngle, float o
 		normalizedValue = -1.0f;
 
 	return normalizedValue;
-}
+}*/
 
+//@121 Математический хелпер для исключения завала осей (компенсация Pitch)
+inline float GetCompensatedAngle(float gravA, float gravB, float gravC) {
+	float signB = (gravB >= 0.0f) ? 1.0f : -1.0f;
+	float adjustedGravB = signB * sqrtf(gravB * gravB + gravC * gravC);
+	return atan2f(gravA, adjustedGravB);
+}
+//@121 Новый CalcMotionStick сблекджеком и шлюхами
+inline float CalcMotionStick(float gravA, float gravB, float gravC, float maxAngleDeg, float offsetRad, float& prevAngle, float& cumulativeOffset, bool& isInit, bool isManualCalibrated, float linearityWheel) {
+	// 1. Вычисляем текущий физический угол наклона руля в радианах [-PI, PI] с компенсацией или без
+	float currentAngleRad;
+	if (isManualCalibrated) {
+		// Прецизионный режим с компенсацией Pitch
+		currentAngleRad = GetCompensatedAngle(gravA, gravB, gravC);
+	}
+	else {
+		// Оригинальный прощающий авто-режим автора
+		currentAngleRad = atan2f(gravA, gravB);
+	}
+
+	// 2. Инициализация при первом проходе
+	if (!isInit) {
+		prevAngle = currentAngleRad;
+		cumulativeOffset = 0.0f;
+		isInit = true;
+	}
+
+	// 3. Вычисляем дельту между кадрами
+	float delta = currentAngleRad - prevAngle;
+
+	// Находим реальное физическое смещение, нормализованное в [-PI, PI]
+	float physicalDelta = delta;
+	while (physicalDelta > 3.14159265f) physicalDelta -= 6.2831853f;
+	while (physicalDelta < -3.14159265f) physicalDelta += 6.2831853f;
+
+	// 4. Фильтр шума (отсекаем нефизические прыжки от встрясок акселерометра > 45 градусов за кадр)
+	if (fabsf(physicalDelta) < 0.78539816f) { // 0.78539816 рад = 45 градусов
+		// Если движение плавное, выполняем развертывание фазы при переходе через 180°
+		if (delta < -3.14159265f) {
+			cumulativeOffset += 6.2831853f;
+		}
+		else if (delta > 3.14159265f) {
+			cumulativeOffset -= 6.2831853f;
+		}
+		prevAngle = currentAngleRad;
+	}
+
+	// Жесткий лимит на величину накопителя (Ceiling Limit)
+	if (cumulativeOffset > 6.2831853f) {
+		cumulativeOffset = 6.2831853f;
+	}
+	else if (cumulativeOffset < -6.2831853f) {
+		cumulativeOffset = -6.2831853f;
+	}
+
+	// Автоматическое «самолечение» в центре (Self-healing on Center)
+	float absDistToCenter = abs(currentAngleRad - offsetRad);
+	while (absDistToCenter > 3.14159265f) absDistToCenter -= 6.2831853f;
+	absDistToCenter = abs(absDistToCenter);
+
+	if (absDistToCenter < 0.4363323f) { // 0.4363323 рад = 25 градусов
+		cumulativeOffset = 0.0f;
+	}
+
+	// 5. Непрерывный угол с учетом всех оборотов и самолечения
+	float continuousAngle = currentAngleRad + cumulativeOffset;
+
+	// 6. Находим разницу относительно калибровки нуля
+	float diffRad = continuousAngle - offsetRad;
+
+	// 7. Переводим максимальный рабочий угол в радианы
+	float maxAngleRad = maxAngleDeg * 0.0174532925f;
+
+	if (maxAngleRad <= 0.001f) return 0.0f;
+
+	// 8. Линейно масштабируем угол в диапазон [-1.0f, 1.0f]
+	float output = diffRad / maxAngleRad;
+
+	// Применяем кривую нелинейности для руля
+	output = ApplyLinearity(output, linearityWheel);
+
+	// 9. Ограничиваем рамками аналогового стика
+	if (output > 1.0f) output = 1.0f;
+	if (output < -1.0f) output = -1.0f;
+
+	return output;
+}
 inline  void WindowToCenter() {
 	HWND hWndConsole = GetConsoleWindow();
 	//if (hWndConsole == NULL) return 1;
@@ -1385,7 +1495,7 @@ inline  void WindowToCenter() {
 	MoveWindow(hWndConsole, (screenWidth - consoleWidth) / 2, (screenHeight - consoleHeight) / 2, consoleWidth, consoleHeight, TRUE);
 }
 
-//@116 ЛОКАЛИЗАЦИЯ через ini файлы в Language 
+//@116 For Translation
 // Нативное чтение UTF-16 LE BOM файлов через системное Windows API
 inline std::string ReadIniStringW(const std::string& section, const std::string& key, const std::string& default_val, const std::string& file_path) {
 	// 1. Преобразуем входящие std::string в std::wstring для вызова Wide-функций Windows API
