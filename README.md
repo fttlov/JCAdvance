@@ -104,7 +104,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility by n
 </details>  
 
 <details>
-  <summary><b>Technical Details and Bug Fixes</b> (Click to expand)</summary>
+  <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
   <br>
 
   ### Interface and Profiles
