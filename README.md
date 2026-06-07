@@ -8,7 +8,7 @@
 ← Choose your language
 
 ## What is it
-**Joy-Con Advance** is an Xbox/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the [DSAdvance](https://github.com/r57zone/DSAdvance) project by r57zone.
+**Joy-Con Advance** is an Xbox/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the DSAdvanceproject by r57zone.
 
 ## Basic features of the original:
 - Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (a separate profile for each) <br>
