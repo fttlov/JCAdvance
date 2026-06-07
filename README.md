@@ -49,7 +49,7 @@ The core philosophy of Gyro Motion differs between controller types:
 </table>
 
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any Xbox button, keyboard key, or mouse action within a single profile.
-- **Auto-Bind:** Quickly bind buttons using the "Bind" feature or select them manually from a drop-down list.
+- **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons.
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator.
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`).
