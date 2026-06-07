@@ -215,11 +215,10 @@ You can easily translate the JCAdvance configurator and console interface into a
 
 Enjoying your favorite game with J.C. Advance? Buy me a 🍺
 
-
 <!--
  👉 **[Lava.top (Apple Pay / PayPal / Visa / Mastercard)](https://app.lava.top/4003151013?tabId=donate)** <sub> (No registration, enter email for receipt & history only)</sub>
 -->
-🌐 Worldwide:<br>
+
 👉 **[Donationalerts](https://dalink.to/fttlov)** <sub> (Very high fee - 12% 😢)</sub><table align="center">
 <details>
   <summary>📷 QR code </summary>
