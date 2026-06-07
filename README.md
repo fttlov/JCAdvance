@@ -10,18 +10,18 @@
 ## What is it
 **Joy-Con Advance (JCAdvance)** is an Xbox/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the [DSAdvance](https://github.com/r57zone/DSAdvance) project by r57zone.
 
-## Basic Features of the Original Project
-- **Button Mapping:** Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (with separate profiles).
-- **Gyro-based Modes:** Emulate mouse/stick movements for looking/aiming, wheel movement for driving, or aircraft-style controls.
-- **On-the-fly Switching:** Hardcoded hotkeys to switch modes and profiles in real time.
-- **Flexible Customization:** Adjust sensitivity, dead zones, inversion, and stick/trigger switching.
-- **Rumble Support:** Haptic feedback for Sony and Nintendo controllers.
-- **Combined Joy-Cons:** Combine dual Joy-Cons into a single virtual Xbox controller.
-- **Magic Wheel:** Use gyroscope movements in different directions as additional actions or buttons.
-- **Adaptive Triggers:** Support for Sony DualSense adaptive triggers (modes: pistol, rifle, sniper, bow, car pedal).
-- **Multi-Controller Support:** Support for two gamepads (the second controller has basic functions).
-- **External Pedals:** Connect pedal systems to emulate triggers or sticks (limited device support).
-- **Efficiency:** Minimal memory and CPU footprint (0.20% - 0.50% usage).
+## Basic features of the original:
+- Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (a separate profile for each) <br>
+- Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving; Aircraft <br>
+- HardCoded hotkeys for switching modes and profiles in real time <br>
+- Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
+- Rumble support for Sony/Nintendo gamepads <br>
+- Dual Joy-Cons combined into a single virtual Xbox controller<br>
+- Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
+- Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
+- Support for two gamepads (second gamepad is limited to basic functions)<br>
+- External pedal: connect pedals to emulate triggers or sticks (limited device support) <br>
+- Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## Key Differences in JCAdvance
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion.
