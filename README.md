@@ -35,7 +35,7 @@ The core philosophy of Gyro Motion differs between controller types:
 * **Joy-Cons:** True, free-hand full gyro motion control. With Joy-Cons, using the right stick for aiming in FPS/TPS becomes obsolete.
 
 ## What's New
-- **Configurator App (`Config.exe`):** Configure all primary settings, Gyro options, button mapping, and hotkeys via a graphical user interface.
+- **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
 
 <table>
   <tr>
