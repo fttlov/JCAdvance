@@ -58,7 +58,7 @@ The core philosophy of Gyro Motion differs between controller types:
 - **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
-- **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a standard virtual Xbox 360 controller
+- **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual Xbox 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
 - **Pedal Compatibility:** External pedal feature now works with almost all standard DirectInput wheels/pedals
