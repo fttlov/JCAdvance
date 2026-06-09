@@ -27,12 +27,19 @@
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes** and some **new features**
+- **Six-Axis Support:** Full motion sensing for Joy-Cons is now a reality
 
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
 * **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.
+
+* **Stick as Triggers (Analog Trigger Emulation):** Since the right analog stick is freed up by gyro aiming, you can now map it to emulate virtual Xbox analog triggers (LT/RT). This elegantly bypasses the Joy-Con's physical limitation of having only digital (clicky) ZL/ZR buttons.
+  * **How it works:** Your physical ZL/ZR buttons stay fully active for instant, 100% digital clicks (perfect for rapid-fire shooting), while the Right Stick acts as a secondary, highly-precise analog lever for gradual input (perfect for driving or aiming mechanics).
+  * **Real-world examples:**
+    * *Red Dead Redemption 2:* Perform the iconic dueling mechanic (gradually drawing your weapon) by slowly pulling the analog stick down.
+    * *GTA:* Lightly push the stick to cock the hammer or lock-on/aim, and push it further to shoot. You can also use it for progressive throttle and braking while driving.
 
 ## What's New
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
@@ -48,6 +55,7 @@ The core philosophy of Gyro Motion differs between controller types:
   </tr>
 </table>
 
+- **Full Six-Axis Support:** True six-axis motion sensing is now fully supported for Joy-Cons with hotkey support (on\off)
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any Xbox button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
@@ -81,7 +89,7 @@ The core philosophy of Gyro Motion differs between controller types:
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
-To prevent double-input issues (where a game detects both your physical controller and the virtual Xbox controller simultaneously), you should hide your physical gamepad.
+To prevent double-input issues in games/Steam input (where a game detects both your physical controller and the virtual Xbox controller simultaneously), you should hide your physical gamepad.
 Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
 
 <details>
@@ -131,6 +139,24 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration.
   - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
 
+  ### 🎮 Hybrid Trigger Architecture: Stick-to-Trigger Emulation (Joy-con SixAxis)
+
+One of the most notable architectural differences of *JCAdvance* is the **Hybrid Trigger System**. Nintendo Joy-Cons physically lack analog triggers—their ZL and ZR buttons are simple digital switches (0 or 1). This makes games requiring progressive pressure (like driving simulators, stealth mechanics, or complex aiming) difficult or impossible to play as intended.
+
+To bypass this hardware bottleneck without sacrificing response times, *JCAdvance* routes both physical inputs and stick axes to the virtual Xbox 360 controller's triggers (LT/RT) simultaneously:
+
+1. **Physical Digital Buttons (ZL/ZR):** Retain their instant-response mapping. When pressed, they immediately send a 100% (fully pressed) signal to the virtual LT/RT. This is critical for competitive play, rapid-fire shooting, and instant actions.
+2. **Right Analog Stick (Y-Axis):** Because gyro-aiming completely frees up the right thumb, the Right Stick Y-axis is re-routed to act as a high-precision analog lever for LT/RT. 
+   - Moving the stick **Up** gradually presses the Left Trigger (LT).
+   - Moving the stick **Down** gradually presses the Right Trigger (RT).
+
+#### Key Benefits of this Hybrid Solution:
+* **The Best of Both Worlds:** You do not have to choose between fast digital clicks and slow analog pulls. You have both available on the same controller at the same time. 
+* **Seamless Mechanics Transition:** 
+  * In games like *GTA V/VI*, you can tap **ZL** to instantly lock onto a target, but use the **Right Stick** to smoothly modulate the gas pedal while driving.
+  * In *Red Dead Redemption 2*, you can use the digital buttons for standard shooting, but easily switch to the Right Stick for the precise analog pressure required during the "Dead Eye" duel sequences.
+* **Ergonomic efficiency:** Since gyro-aiming is done via motion, your right thumb naturally rests on the right stick anyway. Transforming the stick into dual-analog paddles makes perfect use of an otherwise idle thumb.
+  
   ### Gyro Motion Space
   This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
@@ -176,6 +202,7 @@ I tested this feature using an old "Logitech Wingman" wheel and it f@cking works
 ## Potential Issues
 - **DPI / Resolution Scaling:** `Config.exe` is built using AutoHotkey. High DPI settings or unusual Windows resolutions may cause UI elements to overlap or cut off. If this happens, temporarily lower your OS scaling, change resolution.
 - **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files.
+- Steam Input conflict. Disable it (for Switch, Playstation .etc) or use HidHide.
 - **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
 
 ### The list of supported controllers is limited by Joyshocklibrary
