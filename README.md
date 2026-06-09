@@ -34,14 +34,12 @@ While *DSAdvance* was primarily designed for two-handed Sony controllers with Jo
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
 * **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.<br>
-
-Since the right analog stick is now completely free: 
-
+Since the right analog stick is now completely free: <br>
 * **JCAdvance allows you to use the right stick's Y-axis as analog triggers** alongside (simultaneously) your physical digital ZL/ZR buttons. Thе option is fully controlled in real time by a configurable hotkey.<br>
 
 Examples of use:<br>
 * **Red Dead Redemption 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
-* **GTA V:** Uusing the right stick (up/down) for analog gas/brakes in vehicles or progressive trigger actions on foot.
+* **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles or progressive trigger actions on foot.
   
 ## What's New
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
