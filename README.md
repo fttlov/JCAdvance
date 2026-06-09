@@ -25,23 +25,23 @@
  
 ## Key Differences in JCAdvance
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
+- **6-Axis mode:** All 6 virtual Xbox analog axes are now concurrently usable on Joy-cons
 - **GUI:** New config tool and redesigned user-friendly main interface
-- **Six-Axis Support:** Full motion sensing for Joy-Cons is now a reality
 - **Bug Fixes**, **improvements** and some **new features**
 
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
-* **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.
+* **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.<br>
 
-* **Stick as Triggers (Analog Trigger Emulation):** Since the right analog stick is freed up by gyro aiming, you can now map it to emulate virtual Xbox analog triggers (LT/RT). This elegantly bypasses the Joy-Con's physical limitation of having only digital (clicky) ZL/ZR buttons.
-  * **How it works:** Your physical ZL/ZR buttons stay fully active for instant, 100% digital clicks (perfect for rapid-fire shooting), while the Right Stick acts as a secondary, highly-precise analog lever for gradual input (perfect for driving or aiming mechanics).<br>
+Since the right analog stick is now completely free, **JCAdvance allows you to use the right stick's Y-axis as analog triggers** alongside your physical digital ZL/ZR buttons. This enables simultaneous digital and analog control in AAA games:<br>
+* **Simultaneous Input:** You can push the right stick slightly to prepare, draw, or aim a weapon, and then instantly click physical ZR to fire.<br>
 
-**Real-world examples:** <br>
-    * *RDR2:* Perform the iconic dueling mechanic (gradually drawing your weapon) by slowly pulling the analog stick down.<br>
-    * *GTA:* Lightly push the stick to cock the hammer or lock-on/aim. To shoot: click ZR(RT) or push it further. You can also use it for progressive throttle and braking while driving.
-
+Examples of use:<br>
+* **Red Dead Redemption 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
+* **GTA V:** Uusing the right stick (up/down) for analog gas/brakes in vehicles or progressive trigger actions on foot.
+  
 ## What's New
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
 
@@ -56,9 +56,9 @@ The core philosophy of Gyro Motion differs between controller types:
   </tr>
 </table>
 
-- **Full Six-Axis Support:** True six-axis motion sensing is now fully supported for Joy-Cons with hotkey support (on\off)
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any Xbox button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
+- **6-Axis mode:** Full, concurrent access to all 6 Xbox analog axes on Joy-cons with hotkey (on/off)
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
@@ -132,7 +132,7 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).
 
   ### Fixes & Adjustments
-  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug).
+  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
   - **EMA Smoothing Filter:** Smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms).
   - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.).
   - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con.
@@ -140,24 +140,27 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration.
   - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
 
-  ### 🎮 Hybrid Trigger Architecture: Stick-to-Trigger Emulation (Joy-con SixAxis)
+  ### 🎮 Right Stick as Analog Triggers (Stick-as-Trigger or Joy-con SixAxis)
 
-One of the most notable architectural differences of *JCAdvance* is the **Hybrid Trigger System**. Nintendo Joy-Cons physically lack analog triggers—their ZL and ZR buttons are simple digital switches (0 or 1). This makes games requiring progressive pressure (like driving simulators, stealth mechanics, or complex aiming) difficult or impossible to play as intended.
+Because Nintendo Switch Pro and Joy-Con controllers feature digital ZL and ZR buttons, playing games that rely on analog trigger sensitivity (such as progressive throttle in driving, target lock-on thresholds, or weapon cocking mechanics) is traditionally difficult. However, since the Pro Controller is a classic two-handed controller, it doesn't offer the same flexibility for gyro motion, so we're not considering it.
 
-To bypass this hardware bottleneck without sacrificing response times, *JCAdvance* routes both physical inputs and stick axes to the virtual Xbox 360 controller's triggers (LT/RT) simultaneously:
+`JCAdvance` resolves this by utilizing the right analog stick. Since looking and aiming are handled completely by the gyroscope, the right stick's Y-axis is mapped to act as a dual analog trigger:<br>
+* **Stick UP (Y+)** smoothly controls the virtual **Right Trigger (RT)** from 0 to 255.
+* **Stick DOWN (Y-)** smoothly controls the virtual **Left Trigger (LT)** from 0 to 255.
 
-1. **Physical Digital Buttons (ZL/ZR):** Retain their instant-response mapping. When pressed, they immediately send a 100% (fully pressed) signal to the virtual LT/RT. This is critical for competitive play, rapid-fire shooting, and instant actions.
-2. **Right Analog Stick (Y-Axis):** Because gyro-aiming completely frees up the right thumb, the Right Stick Y-axis is re-routed to act as a high-precision analog lever for LT/RT. 
-   - Moving the stick **Up** gradually presses the Left Trigger (LT).
-   - Moving the stick **Down** gradually presses the Right Trigger (RT).
+To ensure a comfortable experience, the right stick's X-axis is completely disabled globally when this mode is active. This eliminates accidental horizontal camera twitching when pushing the stick up or down.
 
-#### Key Benefits of this Hybrid Solution:
-* **The Best of Both Worlds:** You do not have to choose between fast digital clicks and slow analog pulls. You have both available on the same controller at the same time. 
-* **Seamless Mechanics Transition:** 
-  * In games like *GTA V/VI*, you can tap **ZL** to instantly lock onto a target, but use the **Right Stick** to smoothly modulate the gas pedal while driving.
-  * In *Red Dead Redemption 2*, you can use the digital buttons for standard shooting, but easily switch to the Right Stick for the precise analog pressure required during the "Dead Eye" duel sequences.
-* **Ergonomic efficiency:** Since gyro-aiming is done via motion, your right thumb naturally rests on the right stick anyway. Transforming the stick into dual-analog paddles makes perfect use of an otherwise idle thumb.
-  
+This feature can be compared to the concept of a flick stick by Jibb Smart, but in a slightly different way and only for separated Joy-cons.
+
+#### Practical Use Cases:
+1. **Red Dead Redemption 2 (Duels & Weapon Cocking):**<br>
+   In RDR2, digital buttons immediately register as a 100% trigger pull, which fails the duel mini-game. With this mode active, you can slowly push the right stick UP to fill the "Draw" meter progressively. In standard combat, you can slowly push the stick UP to draw or cock the hammer of your revolver, then click the physical ZR button to fire instantly.<br>
+2. **GTA V (On-Foot & Driving):**<br>
+   You can hold physical ZL to instantly lock-on/aim with your left hand, and use the right stick UP to smoothly manage progressive trigger actions. When entering a vehicle, the right stick Y-axis automatically acts as a high-precision analog gas (Y+) and brake (Y-) pedal, allowing you to manage vehicle traction without wheel spin. Features such as driving mode and external pedals further expand the car's control options, but more on that below.
+   
+4. **Other Action Games:**
+   Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope.
+
   ### Gyro Motion Space
   This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
