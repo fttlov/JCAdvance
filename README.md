@@ -40,7 +40,7 @@ The core philosophy of Gyro Motion differs between controller types:
 
 **Real-world examples:** <br>
     * *RDR2:* Perform the iconic dueling mechanic (gradually drawing your weapon) by slowly pulling the analog stick down.<br>
-    * *GTA:* Lightly push the stick to cock the hammer or lock-on/aim, and push it further to shoot. You can also use it for progressive throttle and braking while driving.
+    * *GTA:* Lightly push the stick to cock the hammer or lock-on/aim. To shoot: click ZR(RT) or push it further. You can also use it for progressive throttle and braking while driving.
 
 ## What's New
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
