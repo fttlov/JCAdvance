@@ -154,9 +154,11 @@ This feature can be compared to the concept of a flick stick by Jibb Smart, but 
 
 #### Practical Use Cases:
 1. **Red Dead Redemption 2 (Duels & Weapon Cocking):**<br>
-   In RDR2, digital buttons immediately register as a 100% trigger pull, which fails the duel mini-game. With this mode active, you can slowly push the right stick UP to fill the "Draw" meter progressively. In standard combat, you can slowly push the stick UP to draw or cock the hammer of your revolver, then click the physical ZR button to fire instantly.<br>
+   In RDR2, digital buttons immediately register as a 100% trigger pull, which fails the duel mini-game. With this mode active, you can slowly push the right stick UP to fill the "Draw" meter progressively. In standard combat, you can slowly push the stick UP to draw or cock the hammer of your revolver, then click the physical ZR button to fire instantly. Let’s not forget about the smooth handling of carriages and horses using<br>
 2. **GTA V (On-Foot & Driving):**<br>
-   You can hold physical ZL to instantly lock-on/aim with your left hand, and use the right stick UP to smoothly manage progressive trigger actions. When entering a vehicle, the right stick Y-axis automatically acts as a high-precision analog gas (Y+) and brake (Y-) pedal, allowing you to manage vehicle traction without wheel spin. Features such as driving mode and external pedals further expand the car's control options, but more on that below.
+   You can hold physical ZL to instantly lock-on/aim with your left hand, and use the right stick UP to smoothly manage progressive trigger actions. When entering a vehicle, the right stick Y-axis automatically acts as a high-precision analog gas (Y+) and brake (Y-) pedal, allowing you to manage vehicle traction without wheel spin.
+   
+In other words, full analogue control is now available to most users, and features such as driving mode and external pedals further expand the vehicle’s control options, but more on that below.
    
 4. **Other Action Games:**
    Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope.
