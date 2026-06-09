@@ -37,7 +37,7 @@ The core philosophy of Gyro Motion differs between controller types:
 
 * **Stick as Triggers (Analog Trigger Emulation):** Since the right analog stick is freed up by gyro aiming, you can now map it to emulate virtual Xbox analog triggers (LT/RT). This elegantly bypasses the Joy-Con's physical limitation of having only digital (clicky) ZL/ZR buttons.
   * **How it works:** Your physical ZL/ZR buttons stay fully active for instant, 100% digital clicks (perfect for rapid-fire shooting), while the Right Stick acts as a secondary, highly-precise analog lever for gradual input (perfect for driving or aiming mechanics).
-  * **Real-world examples:**
+**Real-world examples:**
     * *Red Dead Redemption 2:* Perform the iconic dueling mechanic (gradually drawing your weapon) by slowly pulling the analog stick down.
     * *GTA:* Lightly push the stick to cock the hammer or lock-on/aim, and push it further to shoot. You can also use it for progressive throttle and braking while driving.
 
