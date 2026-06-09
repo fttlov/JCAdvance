@@ -27,7 +27,7 @@
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Six-Axis Support:** Full motion sensing for Joy-Cons is now a reality
-- **Bug Fixes** and some **new features**
+- **Bug Fixes**, **improvements** and some **new features**
 
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, *JCAdvance* focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting. 
 
