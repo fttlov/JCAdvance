@@ -38,7 +38,7 @@ The core philosophy of Gyro Motion differs between controller types:
 * **JCAdvance allows you to use the right stick's Y-axis as analog triggers** alongside (simultaneously) your physical digital ZL/ZR buttons. This feature can be fully controlled (on/off) in real time using a customisable hotkey<br>
 
 Examples of use:<br>
-* **Red Dead Redemption 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
+* **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
 * **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles or progressive trigger actions on foot.
   
 ## All new features:
