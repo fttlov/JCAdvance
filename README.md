@@ -91,7 +91,7 @@ Examples of use:<br>
 
 ## Important Note
 To prevent double-input issues in games/Steam input (where a game detects both your physical controller and the virtual Xbox controller simultaneously), you should hide your physical gamepad.
-Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility by nefarius.
+Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
 
 <details>
   <summary><b>Quick Setup Guide</b></summary>
