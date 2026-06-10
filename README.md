@@ -25,7 +25,7 @@
  
 ## Key Differences in JCAdvance
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
-- **SixAxis on Joy-cons:** All 6 virtual Xbox analog axes are now concurrently usable on Joy-cons
+- **SixAxis on Joy-cons:** All 6 virtual Xbox analog axes are now concurrently usable
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
