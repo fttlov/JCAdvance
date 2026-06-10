@@ -23,7 +23,7 @@
 - External pedal: connect pedals to emulate triggers or sticks (limited device support) <br>
 - Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
-## Key Differences in JCAdvance
+## Key Differences in JCAdvance:
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
 - **SixAxis on Joy-cons:** All 6 virtual Xbox analog axes are now concurrently usable
 - **GUI:** New config tool and redesigned user-friendly main interface
@@ -41,7 +41,7 @@ Examples of use:<br>
 * **Red Dead Redemption 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
 * **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles or progressive trigger actions on foot.
   
-## What's New
+## All new features:
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
 
 <table>
