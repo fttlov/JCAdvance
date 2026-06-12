@@ -8,15 +8,15 @@
 ← Choose your language
 
 ## What is it
-**Joy-Con Advance** is an Xbox/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the DSAdvance project by r57zone.
+**Joy-Con Advance** is an XBOX/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the DSAdvance project by r57zone.
 
 ## Basic features of the original:
-- Assign gamepad buttons to emulate Xbox buttons or keyboard/mouse keys (a separate profile for each) <br>
+- Assign gamepad buttons to emulate XBOX buttons or keyboard/mouse keys (a separate profile for each) <br>
 - Gyro-based modes: mouse/stick emulation for looking/aiming; wheel emulation for driving; Aircraft <br>
 - HardCoded hotkeys for switching modes and profiles in real time <br>
 - Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
 - Rumble support for Sony/Nintendo gamepads <br>
-- Dual Joy-Cons combined into a single virtual Xbox controller<br>
+- Dual Joy-Cons combined into a single virtual XBOX controller<br>
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
 - Support for two gamepads (second gamepad is limited to basic functions)<br>
@@ -25,7 +25,7 @@
  
 ## Key Differences in JCAdvance:
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
-- **SixAxis on Joy-cons:** All 6 virtual Xbox analog axes are now concurrently usable
+- **SixAxis on Joy-cons:** All 6 virtual XBOX analog axes are now concurrently usable
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
@@ -55,10 +55,10 @@ Examples of use:<br>
   </tr>
 </table>
 
-- **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any Xbox button, keyboard key, or mouse action within a single profile
+- **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any XBOX button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
-- **6-Axis mode:** Full, concurrent access to all 6 Xbox/DS4 analog axes on Joy-cons with hotkey (on/off)
+- **6-Axis mode:** Full, concurrent access to all 6 XBOX/DS4 analog axes on Joy-cons with hotkey (on/off)
 - **Gyro control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
@@ -67,7 +67,7 @@ Examples of use:<br>
 - **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
-- **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual Xbox 360 controller
+- **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
 - **Pedal Compatibility:** External pedal feature now works with almost all standard DirectInput wheels/pedals
@@ -90,7 +90,7 @@ Examples of use:<br>
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
-To prevent double-input issues in games/Steam input (where a game detects both your physical controller and the virtual Xbox controller simultaneously), you should hide your physical gamepad.
+To prevent double-input issues in games/Steam input (where a game detects both your physical controller and the virtual XBOX controller simultaneously), you should hide your physical gamepad.
 Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
 
 <details>
