@@ -58,7 +58,7 @@ Examples of use:<br>
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any XBOX button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
-- **6-Axis mode:** Full, concurrent access to all 6 XBOX/DS4 analog axes on Joy-cons with hotkey (on/off)
+- **6-Axis mode:** Full, concurrent access to all 6 virtual analog axes on Joy-cons
 - **Gyro control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
