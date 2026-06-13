@@ -90,7 +90,7 @@ Examples of use:<br>
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
-To prevent double-input issues in games (where a game detects both your physical controller and the virtual XBOX controller simultaneously), you should hide your physical gamepad.
+To prevent double-input issues in games (where a game detects both your physical controller and the virtual XBOX/DS4 controller simultaneously), you should hide your physical gamepad.
 Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
 
 <details>
