@@ -383,7 +383,7 @@ struct AdvancedGamepad {
 		float LinearityRightX = 50.0f;
 		float LinearityRightY = 50.0f;
 
-		bool InvertLeftXY = false;		//@119
+		bool InvertLeftXY = false;		//@118
 		bool InvertRightXY = false;
 	};
 	_Sticks Sticks;
@@ -585,7 +585,10 @@ struct _AppStatus {
 	float MeleeGForce = 3.0f;		//@119 Порог перегрузки для Melee жеста в G
 	bool EmulateDS4 = false;		//@120 Режим эмуляции DualShock 4 вместо Xbox 360
 	std::string DrivingCalibrationButtonName = "NONE";	//@121
-	int DrivingCalibrationButton = 0;
+	int DrivingCalibrationButton = 0;	
+	bool StickAsTriggerEnabled = false;		//@122
+	std::string StickAsTriggerToggleButtonName = "NONE";
+	int StickAsTriggerToggleButton = 0;
 
 	struct _HotKeys
 	{
@@ -662,7 +665,7 @@ struct _CurrentXboxProfile {
 
 	unsigned int DSEdgeL4 = 0;
 	unsigned int DSEdgeR4 = 0;
-	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;   //@103 по умолчанию оставляем LT (совместимость)	
+	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;	//@103 по умолчанию оставляем LT (совместимость)	
 	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;	// пока не переназначим
 	unsigned int HOME = 0;		//@101 additional joy-con buttons for mapping
 	unsigned int CAPTURE = 0;
@@ -1391,13 +1394,13 @@ inline double OffsetYPR(double Angle1, double Angle2) // CalcMotionStick
 	return normalizedValue;
 }*/
 
-//@121 Математический хелпер для исключения завала осей (компенсация Pitch)
+//@121 хелпер для исключения завала осей (компенсация Pitch)
 inline float GetCompensatedAngle(float gravA, float gravB, float gravC) {
 	float signB = (gravB >= 0.0f) ? 1.0f : -1.0f;
 	float adjustedGravB = signB * sqrtf(gravB * gravB + gravC * gravC);
 	return atan2f(gravA, adjustedGravB);
 }
-//@121 Новый CalcMotionStick сблекджеком и шлюхами
+//@121 Новый CalcMotionStick с блекджеком и шлюхами
 inline float CalcMotionStick(float gravA, float gravB, float gravC, float maxAngleDeg, float offsetRad, float& prevAngle, float& cumulativeOffset, bool& isInit, bool isManualCalibrated, float linearityWheel) {
 	// 1. Вычисляем текущий физический угол наклона руля в радианах [-PI, PI] с компенсацией или без
 	float currentAngleRad;

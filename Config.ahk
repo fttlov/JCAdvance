@@ -529,23 +529,29 @@ Tabs.UseTab("Hotkeys")
 yPos := 55
 
 MainGui.Add("Text", "x20 y" yPos " w450 cBlue", T("--- Gamepad Hotkeys ---"))
-yPos += 55
+yPos += 45
+MainGui.Add("Text", "x20 y" yPos " w450 cBlue", T("--- Aiming ---"))
+yPos += 45
 AddHotkey(ConfigIni, "Motion", "AimingToggleButton", T("Gyro Motion (On/Off)"), LayoutKeys, BindGamepad)
 yPos += 10
 AddHotkey(ConfigIni, "Motion", "AimingButton", T("Motion Control button"), LayoutKeys, BindGamepad)
 yPos += 10
-AddHotkey(ConfigIni, "Motion", "AimingModeToggleButton", T("Switch mode (Mouse/Stick)"), LayoutKeys, BindGamepad)
+AddHotkey(ConfigIni, "Motion", "AimingModeToggleButton", T("Mode switching (Mouse/Stick)"), LayoutKeys, BindGamepad)
+yPos += 10
+AddHotkey(ConfigIni, "Motion", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
 yPos += 15
+MainGui.Add("Text", "x20 y" yPos " w450 cBlue", T("--- Driving ---"))
+yPos += 35
 AddHotkey(ConfigIni, "Motion", "DrivingToggleButton", T("Driving Mode (On/Off)"), LayoutKeys, BindGamepad)
 yPos += 15
 AddHotkey(ConfigIni, "Motion", "DrivingCalibrationButton", T("Wheel Centering / Recalibration"), LayoutKeys, BindGamepad)
 
-yPos += 45
+yPos += 35
 MainGui.Add("Text", "x20 y" yPos " w450 cBlue", T("--- Keyboard Hotkeys ---"))
 yPos += 55
 AddHotkey(ConfigIni, "Gamepad", "ResetKey", T("Reset/Research Gamepad (Keyboard)"), KbmKeys, BindKbm)
 
-yPos += 195
+yPos += 95
 MainGui.Add("Text", "x20 y" yPos " w820 cRed", T("* Note:"))
 yPos += 25
 MainGui.Add("Text", "x20 y" yPos " w450", T("To assign a two-button combination (like R+HOME), you can manually type it into the field above and click Save All"))
@@ -644,10 +650,10 @@ AddToggleCol2(iniFile, sec, key, desc) {
 
 MainGui.Add("Text", "x20 y55 w350 cBlue", T("--- LEFT HAND ---"))
 
-AddInputCol1("DeadZoneLeftStickX", T("DeadZone Left Stick X"))
-AddInputCol1("DeadZoneLeftStickY", T("DeadZone Left Stick Y"))
+AddInputCol1("DeadZoneLeftTrigger", T("DeadZone Left Trigger (0-100)"))
 y1 += 10
-AddInputCol1("DeadZoneLeftTrigger", T("DeadZone Left Trigger"))
+AddInputCol1("DeadZoneLeftStickX", T("DeadZone Left Stick X (0-100)"))
+AddInputCol1("DeadZoneLeftStickY", T("DeadZone Left Stick Y (0-100)"))
 y1 += 10
 AddInputCol1("LinearityLeftStickX", T("Linearity* Left Stick X (0-100)"), "50")
 AddInputCol1("LinearityLeftStickY", T("Linearity* Left Stick Y (0-100)"), "50")
@@ -655,7 +661,7 @@ y1 += 10
 AddToggleCol1(ConfigIni, "Gamepad", "InvertLeftStickX", T("Invert Left Stick X"))
 AddToggleCol1(ConfigIni, "Gamepad", "InvertLeftStickY", T("Invert Left Stick Y"))
 y1 += 10
-AddInputCol1("RumbleStrength", T("Rumble strength (0 to 100)"))
+AddInputCol1("RumbleStrength", T("Rumble strength (0-100)"))
 y1 += 15
 
 MainGui.Add("Text", "x20 y" y1 " w350 cBlue", T("--- HARDWARE SWAPS ---"))
@@ -663,7 +669,8 @@ MainGui.Add("Text", "x20 y" y1 " w350 cBlue", T("--- HARDWARE SWAPS ---"))
 y1 += 30
 AddToggleCol1(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"))
 AddToggleCol1(XboxIni, "SETTINGS", "SWAP-TRIGGERS", T("Swap Left and Right Triggers"))
-y1 += 100
+AddToggleCol1(ConfigIni, "MOTION", "StickAsTriggerEnabled", T("Right Stick (Up/Down) as Triggers"))
+y1 += 80
 MainGui.Add("Text", "x20 y" y1 " w820 cRed", T("* Linearity"))
 y1 += 25
 MainGui.Add("Text", "x20 y" y1 " w820", T("Adjusts stick sensitivity curve:"))
@@ -676,10 +683,10 @@ MainGui.Add("Text", "x20 y" y1 " w820", T("100: Higher sensitivity near the cent
 
 MainGui.Add("Text", "x430 y55 w350 cBlue", T("--- RIGHT HAND ---"))
 
-AddInputCol2("DeadZoneRightStickX", T("DeadZone Right Stick X"))
-AddInputCol2("DeadZoneRightStickY", T("DeadZone Right Stick Y"))
+AddInputCol2("DeadZoneRightTrigger", T("DeadZone Right Trigger (0-100)"))
 y2 += 10
-AddInputCol2("DeadZoneRightTrigger", T("DeadZone Right Trigger"))
+AddInputCol2("DeadZoneRightStickX", T("DeadZone Right Stick X (0-100)"))
+AddInputCol2("DeadZoneRightStickY", T("DeadZone Right Stick Y (0-100)"))
 y2 += 10
 AddInputCol2("LinearityRightStickX", T("Linearity* Right Stick X (0-100)"), "50")
 AddInputCol2("LinearityRightStickY", T("Linearity* Right Stick Y (0-100)"), "50")
@@ -744,7 +751,7 @@ yPos += 35
 
 MainGui.Add("Text", "x20 y" yPos " w780 cRed", T("* Emulated Controller: DS4 Mode for Nintendo controllers only"))
 yPos += 30
-MainGui.Add("Text", "x20 y" yPos " w780", T("For DirectInput games, you can change the controller type to DS4. When you launch JCAdvacne, ‘Wireless Controller’ will appear instead of ‘Xbox 360 Controller’"))
+MainGui.Add("Text", "x20 y" yPos " w780", T("For DirectInput games, like Half-Life 2, F.E.A.R., NFS classic series, you can change the controller type to DS4. When you launch JCAdvacne, ‘Wireless Controller’ will appear instead of ‘Xbox 360 Controller’"))
 
 ; =========================================
 ; TAB 8: PROFILES

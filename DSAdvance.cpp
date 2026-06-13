@@ -806,7 +806,7 @@ inline bool IsValidPedalDevice(const std::string& name, const std::string& confi
 	if (upperName.find("CONTROLLER (XBOX ONE FOR WINDOWS)") != std::string::npos) return false;
 	if (upperName.find("XBOX WIRELESS CONTROLLER") != std::string::npos) return false;
 	if (upperName.find("WIRELESS GAMEPAD") != std::string::npos) return false;	//Joy-con
-	if (upperName.find("WIRELESS CONTROLLER") != std::string::npos) return false; // DualShock 4 & DualSense
+	if (upperName.find("WIRELESS CONTROLLER") != std::string::npos) return false; // DualShock 4 & DualSense?
 	if (upperName.find("PRO CONTROLLER") != std::string::npos) return false;      // Nintendo Switch Pro
 	if (upperName.find("JOY-CON") != std::string::npos) return false;             // Любой из Joy-Con (L/R)
 	if (upperName.find("LOGITECH GAMEPAD F310") != std::string::npos) return false;
@@ -1165,7 +1165,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 
 	//@031 Нужно для GUI Config и двух button Lyaouts. "_MISSING_" помогает отличить отсутствие ключа от явного "NONE"
 	auto ReadXboxKey = [&](std::string nintendoKey, std::string sonyKey, std::string unifiedKey, std::string defVal) {
-		// Если физически подключен геймпад Sony, приоритетно читаем Sony-ключи
 		if (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4) {
 			std::string val = IniFile.ReadString("XBOX", sonyKey, "_MISSING_");
 			if (val != "_MISSING_") return XboxKeyNameToXboxKeyCode(val);
@@ -1189,7 +1188,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 	};
 
 	auto ReadKbmKey = [&](std::string nintendoKey, std::string sonyKey, std::string unifiedKey) {	// Тоже для (KEYBOARD-MOUSE)
-		// Если физически подключен геймпад Sony, приоритетно читаем Sony-ключи
 		if (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4) {
 			std::string val = IniFile.ReadString("KEYBOARD-MOUSE", sonyKey, "_MISSING_");
 			if (val != "_MISSING_") return KeyNameToKeyCode(val);
@@ -1197,7 +1195,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 			val = IniFile.ReadString("KEYBOARD-MOUSE", nintendoKey, "_MISSING_");
 			if (val != "_MISSING_") return KeyNameToKeyCode(val);
 		}
-		// Для всех остальных контроллеров (Nintendo/Xbox) приоритетно читаем Nintendo-ключи
 		else {
 			std::string val = IniFile.ReadString("KEYBOARD-MOUSE", nintendoKey, "_MISSING_");
 			if (val != "_MISSING_") return KeyNameToKeyCode(val);
@@ -1259,7 +1256,7 @@ void LoadXboxProfile(std::string ProfileFile) {
 	// Additional gamepad buttons
 	CurrentXboxProfile.JCSL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SL", "NONE"));
 	CurrentXboxProfile.JCSR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SR", "NONE"));
-	//CurrentXboxProfile.ZL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZL", "LT"));
+	//CurrentXboxProfile.ZL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZL", "LT"));	//уехали наверх
 	//CurrentXboxProfile.ZR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZR", "RT"));
 	CurrentXboxProfile.HOME = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "HOME", "NONE"));
 	CurrentXboxProfile.CAPTURE = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "CAPTURE", "NONE"));
@@ -1417,7 +1414,8 @@ void DefaultMainText() {
 		" gamepad to emulate any of Xbox, Keyboard or Mouse keys. Gyro modes are controlled in real time using hotkeys.\n" 
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\Default.ini\n").c_str());
 		
-		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: \n").c_str());
+		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface for a few seconds \n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
 		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
@@ -1429,15 +1427,14 @@ void DefaultMainText() {
 			T("Layer1_START_MOVE", "press to \033[1mstart\033[0m motion").c_str() :
 			T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m motion").c_str());
 
-
-		//printf("\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
+		u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + C\033[0m\" - Right Stick as Analog Triggers mode (on/off)\n").c_str(), AppStatus.StickAsTriggerToggleButtonName.c_str());
 		u8printf(T("Layer1_Driving", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n").c_str(), AppStatus.DrivingToggleButtonName.c_str());
-
-		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:\n").c_str());
+		
+		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:").c_str());
 		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\", press \"\033[1mPS/Home + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to change\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
 		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status\n").c_str());
 		u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
-		u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
+		//u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
 
 		return;
 	}
@@ -1843,7 +1840,7 @@ void RefreshDevices() {
 		}
 	}
 
-	// Второй проход: Обработка только правых Joy-Con (разделение или склеивание)
+	// Второй проход: Обработка только правых Joy-Con (split / merge)
 	for (int i = 0; i < actualCount; i++) {
 		int handle = jslHandles[i];
 		int ControllerType = JslGetControllerType(handle);
@@ -1891,9 +1888,9 @@ void RefreshDevices() {
 	
 	PrimaryGamepad.Motion.AngleInitialized = false;	//@045 Сбрасываем инициализацию углов развертывания при каждом переподключении устройств
 	PrimaryGamepad.Motion.PitchAngleInitialized = false;
+	PrimaryGamepad.Motion.IsManualCalibrated = false;	// Сбрасываем флаг калибровки
 	SecondaryGamepad.Motion.AngleInitialized = false;
 	SecondaryGamepad.Motion.PitchAngleInitialized = false;
-	PrimaryGamepad.Motion.IsManualCalibrated = false;	// Сбрасываем флаг прецизионной калибровки
 	SecondaryGamepad.Motion.IsManualCalibrated = false;
 
 	AppStatus.BTReset = false;
@@ -1926,7 +1923,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 2.2");
+	SetConsoleTitle("JCAdvance 2.2.2");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -2017,7 +2014,7 @@ int main(int argc, char **argv)
 	AppStatus.SplitJoycons = IniFile.ReadBoolean("Gamepad", "SplitJoycons", false);	//@040 Joy-con split Mode
 
 	//@005 Двухкнопочный Binding для переключения режимов + чтение из Config, юзается новый парсинг в .h + условия активации toggle-функций в main (buttons & mask) == mask. )
-	AppStatus.AimingByPressingMode = IniFile.ReadBoolean("Motion", "AimingByPressingMode", true);		// переключаем gyro by pressed only / always в Config
+	AppStatus.AimingByPressingMode = IniFile.ReadBoolean("Motion", "AimingByPressingMode", true);
 	AppStatus.AimingButtonName = IniFile.ReadString("Motion", "AimingButton", "NONE");
 	AppStatus.AimingButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingButtonName);
 	AppStatus.AimingToggleButtonName = IniFile.ReadString("Motion", "AimingToggleButton", "NONE");
@@ -2028,6 +2025,9 @@ int main(int argc, char **argv)
 	AppStatus.DrivingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingToggleButtonName);	//@045
 	AppStatus.DrivingCalibrationButtonName = IniFile.ReadString("Motion", "DrivingCalibrationButton", "NONE");
 	AppStatus.DrivingCalibrationButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingCalibrationButtonName);
+	AppStatus.StickAsTriggerEnabled = IniFile.ReadBoolean("Motion", "StickAsTriggerEnabled", false);
+	AppStatus.StickAsTriggerToggleButtonName = IniFile.ReadString("Motion", "StickAsTriggerToggleButton", "NONE");
+	AppStatus.StickAsTriggerToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.StickAsTriggerToggleButtonName);	//@047
 
 	PrimaryGamepad.Motion.SteeringWheelAngle = IniFile.ReadFloat("Motion", "SteeringWheelAngle", 150) / 2.0f;
 	PrimaryGamepad.Motion.AircraftEnabled = IniFile.ReadBoolean("Motion", "AircraftEnabled", false);
@@ -2241,7 +2241,7 @@ int main(int argc, char **argv)
 		ret = vigem_connect(client2);
 
 #pragma warning(push)
-#pragma warning(disable: 4996) // Подавляем ошибку C4996 депрекации вызова ViGEm для геймпада 2
+#pragma warning(disable: 4996)
 
 		if (AppStatus.EmulateDS4) {
 			x3602 = vigem_target_ds4_alloc();
@@ -2309,27 +2309,50 @@ int main(int argc, char **argv)
 			continue;
 		}
 
+		//@043 Объявляем независимые переменные для жестов обоих рук
+		MOTION_STATE msL, msR;
+		float gyroLX = 0.0f, gyroLY = 0.0f, gyroLZ = 0.0f;
+		float gyroRX = 0.0f, gyroRY = 0.0f, gyroRZ = 0.0f;
+
 		// Primary controller
 		if (PrimaryGamepad.DeviceIndex2 == -1) {
 			PrimaryGamepad.InputState = JslGetSimpleState(PrimaryGamepad.DeviceIndex);
 			MotionState = JslGetMotionState(PrimaryGamepad.DeviceIndex);
 			JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex, velocityX, velocityY, velocityZ);
+
+			// На одиночном геймпаде жесты левой/правой руки дублируют друг друга
+			msL = MotionState;
+			gyroLX = velocityX; gyroLY = velocityY; gyroLZ = velocityZ;
 		}
 		else { // Split contoller (Joycons)
 			PrimaryGamepad.InputState = JslGetSimpleState(PrimaryGamepad.DeviceIndex);
 			JOY_SHOCK_STATE tempState = JslGetSimpleState(PrimaryGamepad.DeviceIndex2);
-			//MotionState = JslGetMotionState(PrimaryGamepad.DeviceIndex2);
-			//PrimaryGamepad.InputState.stickRX = tempState.stickRX;
-			//PrimaryGamepad.InputState.stickRY = tempState.stickRY;
-			//PrimaryGamepad.InputState.rTrigger = tempState.rTrigger;
-			//JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex2, velocityX, velocityY, velocityZ);
-			//PrimaryGamepad.InputState.buttons |= tempState.buttons;
+
+			// Считываем ускорения с обоих контроллеров параллельно
+			msL = JslGetMotionState(PrimaryGamepad.DeviceIndex);
+			msR = JslGetMotionState(PrimaryGamepad.DeviceIndex2);
+
 			if (AppStatus.GyroFromLeft) {		//@024+@028 gyro левша + joy fix
-				MotionState = JslGetMotionState(PrimaryGamepad.DeviceIndex);
+				// Прицеливание с левого (DeviceIndex)
 				JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex, velocityX, velocityY, velocityZ);
-			} else {
-				MotionState = JslGetMotionState(PrimaryGamepad.DeviceIndex2);
+				gyroLX = velocityX; gyroLY = velocityY; gyroLZ = velocityZ;
+
+				// Жест удара с правого (DeviceIndex2)
+				JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex2, gyroRX, gyroRY, gyroRZ);
+
+				// Назначаем состояние для движения камеры
+				MotionState = msL;
+			}
+			else {
+				// Прицеливание с правого (DeviceIndex2)
 				JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex2, velocityX, velocityY, velocityZ);
+				gyroRX = velocityX; gyroRY = velocityY; gyroRZ = velocityZ;
+
+				// Жест удара с левого (DeviceIndex)
+				JslGetAndFlushAccumulatedGyro(PrimaryGamepad.DeviceIndex, gyroLX, gyroLY, gyroLZ);
+
+				// Назначаем состояние для движения камеры
+				MotionState = msR;
 			}
 			PrimaryGamepad.InputState.stickRX = tempState.stickRX;
 			PrimaryGamepad.InputState.stickRY = tempState.stickRY;
@@ -2347,26 +2370,44 @@ int main(int argc, char **argv)
 				PrimaryGamepad.Motion.GestureXTimer--;
 			}
 
-			// Выделяем силы ускорения по осям (очищены JSL от силы тяжести)
-			float absX = abs(MotionState.accelX); // Сила бокового смещения (влево-вправо)
-			float absY = abs(MotionState.accelY); // Сила вертикального смещения (вверх-вниз)
+			bool isGestureTriggered = false;
+			float punchLimit = AppStatus.MeleeGForce * 0.70f;
+			float sweepLimit = AppStatus.MeleeGForce * 0.90f;
 
-			// Вычисляем динамические пороги на основе настроек пользователя
-			float punchLimit = AppStatus.MeleeGForce * 0.70f; // Снижаем порог прямого удара (сделает его чувствительнее)
-			float sweepLimit = AppStatus.MeleeGForce * 0.90f; // Оставляем боковые удары на уровне ~2.7G (при базе 3.0)
+			if (PrimaryGamepad.DeviceIndex2 == -1) {
+				// Одиночный геймпад (Pro Controller / DualSense)
+				float absX = abs(msL.accelX);
+				float absY = abs(msL.accelY);
 
-			// 1. ДЕТЕКТОР ПРЯМОГО УДАРА (PUNCH)
-			// Снижен порог силы до punchLimit, допуск на естественные колебания руки расширен до 2.2 G
-			bool isPunch = (MotionState.accelZ > punchLimit) && (absX < 2.2f) && (absY < 2.2f);
+				bool isPunch = (msL.accelZ > punchLimit) && (absX < 2.2f) && (absY < 2.2f);
+				bool isHook = (absX > sweepLimit) && (abs(gyroLY) > 32.0f);
+				bool isDownStrike = (gyroLX < -32.0f) && (absY > sweepLimit);
 
-			// 2. ДЕТЕКТОР БОКОВОГО УДАРА (HOOK)
-			bool isHook = (absX > sweepLimit) && (abs(velocityY) > 32.0f);
+				isGestureTriggered = isPunch || isHook || isDownStrike;
+			}
+			else {
+				// Раздельные Joy-Con (проверяем оба контроллера одновременно!)
 
-			// 3. ДЕТЕКТОР УДАРА СВЕРХУ ВНИЗ (DOWNSTRIKE)
-			bool isDownStrike = (velocityX < -32.0f) && (absY > sweepLimit);
+				// 1. Проверка ЛЕВОЙ РУКИ (Left Joy-Con)
+				float absXL = abs(msL.accelX);
+				float absYL = abs(msL.accelY);
+				bool isPunchL = (msL.accelZ > punchLimit) && (absXL < 2.2f) && (absYL < 2.2f);
+				bool isHookL = (absXL > sweepLimit) && (abs(gyroLY) > 32.0f);
+				bool isDownStrikeL = (gyroLX < -32.0f) && (absYL > sweepLimit);
 
-			// Если кулдаун равен нулю и распознан один из трех чистых ударов
-			if (PrimaryGamepad.Motion.GestureXCooldown == 0 && (isPunch || isHook || isDownStrike)) {
+				// 2. Проверка ПРАВОЙ РУКИ (Right Joy-Con)
+				float absXR = abs(msR.accelX);
+				float absYR = abs(msR.accelY);
+				bool isPunchR = (msR.accelZ > punchLimit) && (absXR < 2.2f) && (absYR < 2.2f);
+				bool isHookR = (absXR > sweepLimit) && (abs(gyroRY) > 32.0f);
+				bool isDownStrikeR = (gyroRX < -32.0f) && (absYR > sweepLimit);
+
+				// Жест срабатывает, если удар нанесен ЛЮБОЙ рукой
+				isGestureTriggered = isPunchL || isHookL || isDownStrikeL || isPunchR || isHookR || isDownStrikeR;
+			}
+
+			// Если кулдаун равен нулю и распознан один из ударов
+			if (PrimaryGamepad.Motion.GestureXCooldown == 0 && isGestureTriggered) {
 				PrimaryGamepad.Motion.GestureXTimer = 15;        // Зажимаем назначенную кнопку на 15 кадров (~150 мс)
 				PrimaryGamepad.Motion.GestureXCooldown = 40;     // Блокируем повтор на 40 кадров (~400 мс)
 			}
@@ -2528,8 +2569,7 @@ int main(int argc, char **argv)
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
 
-		//@025 Switch menu Layer 2/3
-		if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && IsKeyPressed('Z')) {
+		if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && IsKeyPressed('Z')) {	//@025 Switch menu Layer 2/3
 			AppStatus.ShowFullMenu = !AppStatus.ShowFullMenu;
 			MainTextUpdate();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
@@ -2905,6 +2945,11 @@ int main(int argc, char **argv)
 			std::swap(report.sThumbLY, report.sThumbRY);
 		}
 
+		if (AppStatus.StickAsTriggerEnabled) {	//@047
+			report.sThumbRX = 0;
+			report.sThumbRY = 0;
+		}
+
 		// Auto stick pressing when value is exceeded
 		if (PrimaryGamepad.GamepadActionMode != MotionDrivingMode) { // Exclude driving mode
 			if (AppStatus.LeftStickMode != LeftStickDefaultMode && (sqrt(PrimaryGamepad.InputState.stickLX * PrimaryGamepad.InputState.stickLX + PrimaryGamepad.InputState.stickLY * PrimaryGamepad.InputState.stickLY) >= PrimaryGamepad.AutoPressStickValue)) {
@@ -2972,6 +3017,16 @@ int main(int argc, char **argv)
 			report.bLeftTrigger = DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255;
 			report.bRightTrigger = DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255;
 		}
+
+		if (AppStatus.StickAsTriggerEnabled) {	//@047
+			if (ry > 0.05f) {       // Сдвиг правого стика вверх -> выжимаем правый триггер RT
+				report.bRightTrigger = (BYTE)(ry * 255);
+			}
+			else if (ry < -0.05f) { // Сдвиг правого стика вниз -> выжимаем левый триггер LT
+				report.bLeftTrigger = (BYTE)(-ry * 255);
+			}
+		}
+
 		//@008	отключаем ст. триггеры для ZL/ZR Joy-Con, если они переназначены
 		if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
 			if ((PrimaryGamepad.InputState.buttons&JSMASK_ZL) && CurrentXboxProfile.ZL != XINPUT_GAMEPAD_LEFT_TRIGGER && !isLeftPedalAnalogActive) {
@@ -3193,6 +3248,13 @@ int main(int argc, char **argv)
 						PrimaryGamepad.LastMotionAIMMode = MotionAimingModeOnlyPressed;
 					}
 				}
+				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+			}
+
+			if (AppStatus.SkipPollCount == 0 && (	//@04 Переключатель режима "Стик вместо аналоговых курков"
+				(AppStatus.StickAsTriggerToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.StickAsTriggerToggleButton) == AppStatus.StickAsTriggerToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('C')))) {
+				AppStatus.StickAsTriggerEnabled = !AppStatus.StickAsTriggerEnabled;
+				MainTextUpdate();
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}
 
