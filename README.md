@@ -25,7 +25,7 @@
  
 ## Key Differences in JCAdvance:
 - **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
-- **SixAxis on Joy-cons:** All 6 virtual XBOX analog axes are now concurrently usable
+- **SixAxis on Joy-cons:** All 6 virtual axes are now concurrently usable (4 by analog + 2 by gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
@@ -35,7 +35,7 @@ The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
 * **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.<br>
 *Since the right analog stick is now completely free*: <br>
-* **JCAdvance allows you to use the right stick's Y-axis as analog triggers** alongside (simultaneously) your physical digital ZL/ZR buttons. This feature can be fully controlled (on/off) in real time using a customisable hotkey. <br>
+* **JCAdvance allows you to use the right stick's Y-axis as analog triggers**. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR). This feature can be fully controlled (on/off) in real time using a customisable hotkey. <br>
 
 Examples of use:<br>
 * **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital ZR trigger <br>
