@@ -29,6 +29,9 @@
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
+<details>
+  <summary><b>Learn more about concept and Joy-con sixaxis </b></summary>
+
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting for different controllers and  ability to use all analog axes of the virtual controller on the Joy-Con.
 
 The core philosophy of Gyro Motion differs between controller types:
@@ -40,7 +43,8 @@ The core philosophy of Gyro Motion differs between controller types:
 Examples of use stick as triggers:<br>
 * **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital trigger <br>
 * **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles; progressive trigger actions on foot.
-  
+</details>  
+ 
 ## All new features:
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
 
