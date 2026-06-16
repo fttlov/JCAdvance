@@ -16,7 +16,7 @@
 - HardCoded hotkeys for switching modes and profiles in real time <br>
 - Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
 - Rumble support for Sony/Nintendo gamepads <br>
-- Dual Joy-Cons combined into a single virtual XBOX controller<br>
+- Dual Cons combined into a single virtual XBOX controller<br>
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
 - Support for two gamepads (second gamepad is limited to basic functions)<br>
@@ -25,12 +25,12 @@
  
 ## Key Differences in JCAdvance:
 - **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
-- **SixAxis on Joy-cons:** All 6 virtual axes are now concurrently usable (4 by analog + 2 by gyro)
+- **SixAxis on Joy-Cons:** All 6 virtual axes are now concurrently usable (4 by analog + 2 by gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
 <details>
-  <summary><h4>Learn more about concept and Joy-con sixaxis</h4></summary>
+  <summary><h4>Learn more about concept and Joy-Con sixaxis</h4></summary>
 
 While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting for different controllers and  ability to use all analog axes of the virtual controller on the Joy-Con.
 
