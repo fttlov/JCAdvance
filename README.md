@@ -24,7 +24,7 @@
 - Minimal memory and CPU usage (0.20% - 0.50%)<br>
  
 ## Key Differences in JCAdvance:
-- **New Gyro Concept:** Focuses on a completely revised approach to Gyro Motion
+- **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
 - **SixAxis on Joy-cons:** All 6 virtual axes are now concurrently usable (4 by analog + 2 by gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
