@@ -28,7 +28,7 @@
 - **SixAxis on Joy-cons:** All 6 virtual axes are now concurrently usable (4 by analog + 2 by gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
-- 
+
 <details>
   <summary><h3>Learn more about concept and Joy-con sixaxis</h3>(Click to open)</summary>
 
