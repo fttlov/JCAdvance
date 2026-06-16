@@ -62,11 +62,11 @@ Examples of use stick as triggers:<br>
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any XBOX button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
-- **6-Axis mode:** Full, concurrent access to all 6 virtual analog axes on Ninrendo controllers
 - **Gyro control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
+- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
-- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information) 
+- **6-Axis mode:** Full, concurrent access to all 6 virtual analog axes on Ninrendo controllers
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
