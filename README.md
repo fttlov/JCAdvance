@@ -25,14 +25,14 @@
  
 ## Key Differences in JCAdvance:
 - **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
-- **6-Axis Analog Support for Joy-Cons:** utilize all 6 virtual Xbox analog axes (4 mapped to sticks + 2 to gyro)
+- **Digital Trigger Bypass for Joy-Cons:** utilize all 6 virtual Xbox analog axes (4 mapped to sticks + 2 to gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
 <details>
-  <summary><h4>Learn more about Gyro concept and 6-Axis</h4></summary>
+  <summary><h4>Learn more about Gyro Сoncept and Digital Trigger Bypass</h4></summary>
 
-While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting for different controllers and  ability to use all analog axes of the virtual controller on the Joy-Con.
+While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting for different controllers and ability to use all analog axes of the virtual controller on the Joy-Cons.
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
