@@ -66,7 +66,8 @@ Examples of use stick as triggers:<br>
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
-- **6-Axis mode:** Full, concurrent access to all 6 virtual analog axes on Ninrendo controllers
+- **Stcik as triggers:** Full, concurrent access to all 6 virtual analog axes on Ninrendo controllers
+- **Stcik as buttons:** If you’re not using the sticks as triggers, use them as buttons
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
