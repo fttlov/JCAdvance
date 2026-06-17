@@ -134,7 +134,30 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
   *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. Legacy `KMProfiles` are retained for backward compatibility.
    
   ### Polling Rate & Performance
-  Default program polling rate is now 125 Hz (sleepTimeout=8 in config.ini; 1 sec = 1000ms / 8). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. 
+  Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. 
+
+  ### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
+
+A single Nintendo Joy-Con controller natively operates at a **125 Hz** polling rate (an 8 ms connection interval negotiated with Windows). However, when you connect a combined pair of Joy-Cons, the system-level behavior changes dramatically.
+
+#### Asynchronous Bluetooth Polling
+
+Left and Right Joy-Cons are completely independent Bluetooth devices. They transmit their data packets asynchronously (staggered in time) rather than at the exact same millisecond. 
+* The Left Joy-Con might transmit its reports at `0 ms`, `8 ms`, `16 ms`, and `24 ms`.
+* The Right Joy-Con might transmit its reports at `4 ms`, `12 ms`, `20 ms`, and `28 ms`.
+
+While your Bluetooth adapter doesn't "overclock" its hardware, its radio module naturally manages independent time-slots for both devices simultaneously. From the Windows operating system's perspective, new controller data arrives in the queue **every 4 milliseconds** (resulting in a combined throughput of **250 Hz**).
+
+#### Eliminating Input Lag
+
+If you keep your emulator's loop at **125 Hz** (`SleepTimeOut = 8`), the program only checks the Windows input queue every 8 ms. This means the Right Joy-Con's aiming data (arriving at `4 ms`) is forced to wait in the OS buffer for 4 ms before being processed at `8 ms`.
+
+By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
+1. The engine queries the input queue every 4 ms.
+2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`.
+3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible.
+
+*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted *
   
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
