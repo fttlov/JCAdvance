@@ -47,7 +47,7 @@ Examples of use stick as triggers:<br>
 * **Stick as buttons** - Don't use the sticks as triggers? Use them as buttons! Assign any virtual Xbox button, keyboard button, or mouse button to one of the stick's four directions. <br>
 Note: In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).
 
-</details>  
+</details>
  
 ## All new features:
 - **Config tool:** all primary settings, Gyro options, button mapping, and hotkeys now can be configured via a GUI
