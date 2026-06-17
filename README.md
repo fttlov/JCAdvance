@@ -43,6 +43,10 @@ The core philosophy of Gyro Motion differs between controller types:
 Examples of use stick as triggers:<br>
 * **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital trigger <br>
 * **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles; progressive trigger actions on foot.
+
+* **Stick as buttons** - Don't use the sticks as triggers? Use them as buttons! Assign any virtual Xbox button, keyboard button, or mouse button to one of the stick's four directions. <br>
+Note: In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).
+
 </details>  
  
 ## All new features:
@@ -145,7 +149,7 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration.
   - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
 
-  ### 🎮 Right Stick as Analog Triggers (Stick-as-Trigger or Joy-con SixAxis)
+  ### 🎮 Right Stick as Analog Triggers
 
 Because Nintendo Switch Pro and Joy-Con controllers feature digital ZL and ZR buttons, playing games that rely on analog trigger sensitivity (such as progressive throttle in driving, target lock-on thresholds, or weapon cocking mechanics) is traditionally difficult. However, since the Pro Controller is a classic two-handed controller, it doesn't offer the same flexibility for gyro motion, so we're not considering it.
 
@@ -168,6 +172,39 @@ In other words, full analogue control is now available to most users, and featur
 4. **Other Action Games:**
    Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope.
 
+ ### 🎮 Right Stick as buttons (added after right stick as triggers)
+
+As we already know, When gyro-aiming is active, the right analog stick is completely freed from camera looking duties (for Joy-cons). Letting it sit idle is a waste of a highly precise physical input. `JCAdvance` solves this by introducing **Right Stick Mode** (`RightStickMode`), which allows you to repurpose the right stick into a versatile custom input modifier tailored to your profile's needs.
+
+Now the right stick can be configured into three distinct profiles via the AHK configurator or the profile's `.ini` file:
+
+* **0 — Default (Camera Mode):** The right stick functions as a standard analog stick for camera looking or aiming.
+* **1 — Analog Triggers (as triggers):** 
+  * The vertical Y-axis (Up/Down) smoothly controls the virtual **Right Trigger (RT)** and **Left Trigger (LT)** from 0 to 255.
+  * Since the horizontal X-axis is not used for trigger emulation, you can still bind two virtual buttons to the left and right directions of the stick.
+* **2 — Directional Buttons (as buttons):** 
+  * Transforms the entire right analog stick into a virtual 4-directional D-pad (`RS-UP`, `RS-DOWN`, `RS-LEFT`, `RS-RIGHT`) mapped to custom Xbox buttons or KB/M keys in your active profile.
+
+---
+
+### Axis Isolation & Diagonal Filtering
+
+To ensure a highly responsive, error-free experience in both Mode 1 and Mode 2, `JCAdvance` utilizes real-time mathematical filtering. 
+
+When you push a sensitive analog stick, your thumb rarely moves in a perfectly straight line—there is always a slight diagonal tilt. To prevent accidental double-inputs (such as triggering a horizontal shortcut button while trying to push the stick vertical), the C++ engine compares the absolute values of the axes on every frame using `fabs()`:
+
+$$\text{Vertical Dominates} \implies |ry| \ge |rx|$$
+$$\text{Horizontal Dominates} \implies |rx| > |ry|$$
+
+* **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
+* **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
+
+#### Practical Combined Combos:
+1. **Action & RPG Games (Mode 2):**  
+   Use the right stick as a dedicated weapon wheel, item hotbar, or spell selection pad. Since aiming is handled entirely by the free-hand gyro, you can swap weapons or use potions instantly without taking your hands off the controls.
+2. **GTA V & Cyberpunk 2077 (Mode 1):**  
+   When driving, use the right stick's Y-axis for progressive, spin-free analog acceleration (Y+) and braking (Y-). Meanwhile, use the horizontal X-axis (`RS-LEFT` / `RS-RIGHT`) for on-the-fly digital shortcuts—such as switching radio stations, checking the map, or throwing grenades—without any input clashing or camera twitching.
+ 
   ### Gyro Motion Space
   This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
