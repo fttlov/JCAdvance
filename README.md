@@ -70,10 +70,10 @@ Note: In "Stick as trigger" mode, you can only assign two buttons to the free X-
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
-- **Stcik as triggers for Joy-cons:** utilize all 6 virtual controller analog axes
-- **Stcik as buttons for Joy-cons:** If you’re not using the sticks as triggers, use them as buttons
+- **Right Stcik as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
+- **Right Stcik as buttons mode:** using the stick directions as virtual buttons for Joy-cons
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
-- **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
+- **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
