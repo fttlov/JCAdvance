@@ -157,7 +157,7 @@ By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
 2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`.
 3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible.
 
-*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted *
+*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted.
   
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
