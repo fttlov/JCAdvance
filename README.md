@@ -70,8 +70,8 @@ Note: In "Stick as trigger" mode, you can only assign two buttons to the free X-
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
-- **Stcik as triggers:** Full, concurrent access to all 6 virtual analog axes on Ninrendo controllers
-- **Stcik as buttons:** If you’re not using the sticks as triggers, use them as buttons
+- **Stcik as triggers for Joy-cons:** utilize all 6 virtual controller analog axes
+- **Stcik as buttons for Joy-cons:** If you’re not using the sticks as triggers, use them as buttons
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Left Joy-Con Gyro:** Option to read Gyro data from the left Joy-Con in combined mode
 - **EMA Filter:** Smooths out jittery movements
@@ -180,10 +180,10 @@ Now the right stick can be configured into three distinct profiles via the AHK c
 
 * **0 — Default (Camera Mode):** The right stick functions as a standard analog stick for camera looking or aiming.
 * **1 — Analog Triggers (as triggers):** 
-  * The vertical Y-axis (Up/Down) smoothly controls the virtual **Right Trigger (RT)** and **Left Trigger (LT)** from 0 to 255.
-  * Since the horizontal X-axis is not used for trigger emulation, you can still bind two virtual buttons to the left and right directions of the stick.
+  * The vertical Y-axis (Up/Down) smoothly controls the virtual **Right Trigger (RT)** and **Left Trigger (LT)** from 0 to 255. Takes priority over other modes when activated via a hotkey.
 * **2 — Directional Buttons (as buttons):** 
   * Transforms the entire right analog stick into a virtual 4-directional D-pad (`RS-UP`, `RS-DOWN`, `RS-LEFT`, `RS-RIGHT`) mapped to custom Xbox buttons or KB/M keys in your active profile.
+Note: Since the horizontal X-axis is not used for stick as triggers (mode "1"), you can still bind two virtual buttons to the left and right directions of the stick.
 
 ---
 
