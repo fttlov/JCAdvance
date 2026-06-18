@@ -589,11 +589,17 @@ struct _AppStatus {
 	bool StickAsTriggerEnabled = false;		//@122
 	std::string StickAsTriggerToggleButtonName = "NONE";
 	int StickAsTriggerToggleButton = 0;
+	bool AutoCalibrationEnabled = true; // @124
+	bool IsManualCalibrating = false;
+	int ManualCalibrationTimer = 0;
+	bool StartupCalibrationFrozen = false; //
 
 	struct _HotKeys
 	{
 		std::string ResetKeyName;
 		int ResetKey = 0;
+		std::string CalibrateKeyName = "NONE";
+		int CalibrateKey = 0;
 	};
 	_HotKeys HotKeys;
 	bool DeadZoneMode = false;
@@ -644,6 +650,13 @@ struct _CurrentXboxProfile {
 	unsigned int RightStick = XINPUT_GAMEPAD_RIGHT_THUMB;
 	bool SwapSticksAxis = true;
 	bool SwapTriggers = true;
+
+	int RightStickMode = 0; //@123 Stick as button: 0 = Default, 1 = Triggers, 2 = Buttons
+	unsigned int RightStickUp = 0;
+	unsigned int RightStickDown = 0;
+	unsigned int RightStickLeft = 0;
+	unsigned int RightStickRight = 0;
+
 	// Motion wheel
 	int WheelActivationButton = 0;
 	unsigned int WheelDefault = 0;
@@ -665,8 +678,8 @@ struct _CurrentXboxProfile {
 
 	unsigned int DSEdgeL4 = 0;
 	unsigned int DSEdgeR4 = 0;
-	unsigned int ZL = XINPUT_GAMEPAD_LEFT_TRIGGER;	//@103 по умолчанию оставляем LT (совместимость)	
-	unsigned int ZR = XINPUT_GAMEPAD_RIGHT_TRIGGER;	// пока не переназначим
+	unsigned int ZL = 0;
+	unsigned int ZR = 0;
 	unsigned int HOME = 0;		//@101 additional joy-con buttons for mapping
 	unsigned int CAPTURE = 0;
 };
