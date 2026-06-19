@@ -103,11 +103,13 @@ Stick as trigger имеет приоритет над другими режим�
   <summary><h4>Быстрая настройка</h4> (разверунуть)</summary>
 Скачиваем по ссылке выше и устанавливаем HidHide, затем:
   
-1. Добавляем JCAdvance.exe и Config.exe
+1. Запускаем HidHide Configuration Client
+
+2. Добавляем JCAdvance.exe и Config.exe
  
-2. Ставим галку рядом с нужным геймпадом
+3. Ставим галку рядом с нужным геймпадом
  
-3. Ставим галку enable device hiding
+4. Ставим галку enable device hiding
  <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150"></td>
