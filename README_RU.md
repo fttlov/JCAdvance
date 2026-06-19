@@ -87,7 +87,7 @@ Stick as trigger имеет приоритет над другими режим�
 </table>
 
 ## Необходимое ПО:
-[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Драйвер виртуального XBOX Gamepad от nefarius <br>
+[ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) - Драйвер виртуального XBOX/DS4 контроллера от nefarius <br>
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) или новее
 
 ## Как пользоваться:
