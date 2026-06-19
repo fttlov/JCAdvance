@@ -275,9 +275,9 @@ I tested this feature using an old "Logitech Wingman" wheel and it f@cking works
 
 ## Potential Issues
 - ~~DPI / Resolution Scaling: `Config.exe` is built using AutoHotkey. High DPI settings or unusual Windows resolutions may cause UI elements to overlap or cut off. If this happens, temporarily lower your OS scaling, change resolution.~~ Fixed
-- **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files.
-- Steam Input conflict. Disable it (for Switch, Playstation .etc) or use HidHide.
-- **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue.
+- **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files
+- Steam Input conflict. Disable it (for Switch, Playstation .etc) or use HidHide
+- **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
 
 ### The list of supported controllers is limited by Joyshocklibrary
 And will not be expanded until the transition to SDL, which is a long way off
