@@ -248,7 +248,7 @@ Reading this description might make it seem like playing this way is impossible 
   Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2
 
   ### Gyro Melee Gesture
-  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button
+  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The only practical use for an accelerometer. You can also adjust the impact force (G-force).
 
   ### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles)
