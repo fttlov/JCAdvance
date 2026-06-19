@@ -74,8 +74,8 @@ Stick as triggers mode takes priority when activated via a hotkey.
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - Added customizable hotkey for manually recalibrating the gyroscope (place it on a flat surface and press hotkey)
-- **Right Stcik as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
-- **Right Stcik as buttons mode:** using the stick directions as virtual buttons for Joy-cons
+- **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
+- **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **EMA Filter:** Smooths out jittery movements
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
