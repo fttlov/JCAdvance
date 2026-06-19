@@ -200,7 +200,7 @@ In other words, full analogue control is now available to most users, and featur
 
  ### 🎮 Right Stick as buttons (added after right stick as triggers)
 
-As we already know, When gyro-aiming is active, the right analog stick is completely freed from camera looking duties (for Joy-cons). Letting it sit idle is a waste of a highly precise physical input. `JCAdvance` solves this by introducing **Right Stick Mode** (`RightStickMode`), which allows you to repurpose the right stick into a versatile custom input modifier tailored to your profile's needs.
+As we already know, When gyro-aiming is active, the right analog stick is completely freed from camera looking duties (for Joy-cons). Letting it sit idle is a waste of a physical input. `JCAdvance` solves this by introducing **Right Stick Mode** (`RightStickMode`), which allows you to repurpose the right stick into a versatile custom input modifier tailored to your profile's needs.
 
 Now the right stick can be configured into three distinct profiles via the AHK configurator or the profile's `.ini` file:
 
