@@ -293,7 +293,7 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
 1. Скачать Source, распаковать
 2. Скачать Visual Studio 17 [установить](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/VS17_Install.png) с этими компонентами <br>
 3. Скачать Windows SDK 10.0.1776.x и [установить](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/SDK_Install.png) (добавить x64 при необходимости) <br>
-Имеете SDK новее не забудьте сделать Retarget Solution
+Если уже установлее SDK новее, сделать Retarget Solution
 4. Откройте DSAdvance.vcxproj, выберите `Release` build type, `x86` или `x64` архитектуру и скомпелируйте
 5. Для компиляции Config.ahk используйте Ahk2exe с base file: v2 U32  или U64. Скрипту нужны: JoyShockLibrary.dll в корне и иконки из папки `\Icon` <br>
 JCadvance, Joyshocklibrary.dll и Config.exe должны быть оиднаковой разрядности.
