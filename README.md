@@ -110,9 +110,9 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
   <br>
   Download and install HidHide. Open the HidHide Configuration Client and:
   
-  1. Add `JCAdvance.exe` and `Config.exe` to the Applications list.
-  2. Select your physical gamepad in the Devices tab.
-  3. Select the **"Enable device hiding"** option.
+  1. Add `JCAdvance.exe` and `Config.exe` to the Applications list
+  2. Select your physical gamepad in the Devices tab
+  3. Select the **"Enable device hiding"** option
 
   <table align="center">
     <tr>
