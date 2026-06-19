@@ -92,18 +92,18 @@ Stick as triggers mode takes priority when activated via a hotkey.
 </table>
  
 ## Requirements
-- [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius.
-- [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer.
+- [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius
+- [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer
 
 ## How to Use
-1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page.
-2. Unzip the archive to any folder.
-3. Open `Config.exe` to configure your buttons and hotkeys.
+1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
+2. Unzip the archive to any folder
+3. Open `Config.exe` to configure your buttons and hotkeys
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
 To prevent double-input issues in games (where a game detects both your physical controller and the virtual XBOX/DS4 controller simultaneously), you should hide your physical gamepad.
-Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
+Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 
 <details>
   <summary><b>Quick Setup Guide</b></summary>
@@ -130,14 +130,14 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility.
 
   ### Interface and Profiles
   A new 3-layer menu system has been introduced:
-  - **Layer 0:** Shown before connecting devices.
-  - **Layer 1:** Active after controllers are connected.
-  - **Layer 2:** Classic detailed menu (retained for compatibility, touchpad hotkey info, and legacy profile management).
+  - **Layer 0:** Shown before connecting devices
+  - **Layer 1:** Active after controllers are connected
+  - **Layer 2:** Classic detailed menu (retained for compatibility, touchpad hotkey info, and legacy profile management)
 
-  *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. Legacy `KMProfiles` are retained for backward compatibility.
+  *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. Legacy `KMProfiles` are retained for backward compatibility
    
   ### Polling Rate & Performance
-  Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources. 
+  Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
 
   ### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
 
@@ -146,42 +146,42 @@ A single Nintendo Joy-Con controller natively operates at a **125 Hz** polling r
 #### Asynchronous Bluetooth Polling
 
 Left and Right Joy-Cons are completely independent Bluetooth devices. They transmit their data packets asynchronously (staggered in time) rather than at the exact same millisecond. 
-* The Left Joy-Con might transmit its reports at `0 ms`, `8 ms`, `16 ms`, and `24 ms`.
-* The Right Joy-Con might transmit its reports at `4 ms`, `12 ms`, `20 ms`, and `28 ms`.
+* The Left Joy-Con might transmit its reports at `0 ms`, `8 ms`, `16 ms`, and `24 ms`
+* The Right Joy-Con might transmit its reports at `4 ms`, `12 ms`, `20 ms`, and `28 ms`
 
-While your Bluetooth adapter doesn't "overclock" its hardware, its radio module naturally manages independent time-slots for both devices simultaneously. From the Windows operating system's perspective, new controller data arrives in the queue **every 4 milliseconds** (resulting in a combined throughput of **250 Hz**).
+While your Bluetooth adapter doesn't "overclock" its hardware, its radio module naturally manages independent time-slots for both devices simultaneously. From the Windows operating system's perspective, new controller data arrives in the queue **every 4 milliseconds** (resulting in a combined throughput of **250 Hz**)
 
 #### Eliminating Input Lag
 
 If you keep your emulator's loop at **125 Hz** (`SleepTimeOut = 8`), the program only checks the Windows input queue every 8 ms. This means the Right Joy-Con's aiming data (arriving at `4 ms`) is forced to wait in the OS buffer for 4 ms before being processed at `8 ms`.
 
 By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
-1. The engine queries the input queue every 4 ms.
-2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`.
-3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible.
+1. The engine queries the input queue every 4 ms
+2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`
+3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
 
-*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted.
+*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted
   
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
-  *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).
+  *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
 
   ### Fixes & Adjustments
   - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
-  - **EMA Smoothing Filter:** Smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms).
-  - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.).
-  - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con.
-  - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously.
-  - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration.
-  - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con.
+  - **EMA Smoothing Filter:** Smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms)
+  - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.)
+  - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con
+  - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously
+  - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration
+  - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con
 
   ### 🎮 Right Stick as Analog Triggers
 
 Because Nintendo Switch Pro and Joy-Con controllers feature digital ZL and ZR buttons, playing games that rely on analog trigger sensitivity (such as progressive throttle in driving, target lock-on thresholds, or weapon cocking mechanics) is traditionally difficult. However, since the Pro Controller is a classic two-handed controller, it doesn't offer the same flexibility for gyro motion, so we're not considering it.
 
 `JCAdvance` resolves this by utilizing the right analog stick. Since looking and aiming are handled completely by the gyroscope, the right stick's Y-axis is mapped to act as a dual analog trigger:<br>
-* **Stick UP (Y+)** smoothly controls the virtual **Right Trigger (RT)** from 0 to 255.
-* **Stick DOWN (Y-)** smoothly controls the virtual **Left Trigger (LT)** from 0 to 255.
+* **Stick UP (Y+)** smoothly controls the virtual **Right Trigger (RT)** from 0 to 255
+* **Stick DOWN (Y-)** smoothly controls the virtual **Left Trigger (LT)** from 0 to 255
 
 To ensure a comfortable experience, the right stick's X-axis is completely disabled globally when this mode is active. This eliminates accidental horizontal camera twitching when pushing the stick up or down.
 
@@ -196,7 +196,7 @@ This feature can be compared to the concept of a flick stick by Jibb Smart, but 
 In other words, full analogue control is now available to most users, and features such as driving mode and external pedals further expand the vehicle’s control options, but more on that below.
    
 4. **Other Action Games:**
-   Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope.
+   Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope
 
  ### 🎮 Right Stick as buttons (added after right stick as triggers)
 
@@ -204,12 +204,12 @@ As we already know, When gyro-aiming is active, the right analog stick is comple
 
 Now the right stick can be configured into three distinct profiles via the AHK configurator or the profile's `.ini` file:
 
-* **0 — Default (Camera Mode):** The right stick functions as a standard analog stick for camera looking or aiming.
+* **0 — Default (Camera Mode):** The right stick functions as a standard analog stick for camera looking or aiming
 * **1 — Analog Triggers (as triggers):** 
-  * The vertical Y-axis (Up/Down) smoothly controls the virtual **Right Trigger (RT)** and **Left Trigger (LT)** from 0 to 255. Takes priority over other modes when activated via a hotkey.
+  * The vertical Y-axis (Up/Down) smoothly controls the virtual **Right Trigger (RT)** and **Left Trigger (LT)** from 0 to 255. Takes priority over other modes when activated via a hotkey
 * **2 — Directional Buttons (as buttons):** 
   * Transforms the entire right analog stick into a virtual 4-directional D-pad (`RS-UP`, `RS-DOWN`, `RS-LEFT`, `RS-RIGHT`) mapped to custom Xbox buttons or KB/M keys in your active profile.
-Note: Since the horizontal X-axis is not used for stick as triggers (mode "1"), you can still bind two virtual buttons to the left and right directions of the stick.
+Note: Since the horizontal X-axis is not used for stick as triggers (mode "1"), you can still bind two virtual buttons to the left and right directions of the stick
 
 ---
 
@@ -249,16 +249,16 @@ With a relatively horizontal grip (R and ZR pointing at the screen), the cursor 
 Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
   ### Split Mode & Joy-Con Mapping
-  Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2.
+  Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2
 
   ### Gyro Melee Gesture
-  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button.
+  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button
 
   ### DualShock Emulation
-  Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles).
+  Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles)
 
   ### Improved Driving Mode
-  The `CalcMotionStick` logic was rewritten to prevent the virtual wheel from snapping in the opposite direction when reaching maximum steering angles. Added manual calibration: if the wheel gets off-center, hold your controller in a comfortable position and press the calibration hotkey to reset the center.
+  The `CalcMotionStick` logic was rewritten to prevent the virtual wheel from snapping in the opposite direction when reaching maximum steering angles. Added manual calibration: if the wheel gets off-center, hold your controller in a comfortable position and press the calibration hotkey to reset the center
 
   ### External Pedals Support
   Originally designed for custom Arduino-based pedals (and a few others), this feature has been expanded to support standard DirectInput wheels/pedals.
