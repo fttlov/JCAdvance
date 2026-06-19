@@ -227,12 +227,6 @@ $$\text{Horizontal Dominates} \implies |rx| > |ry|$$
 * **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
 * **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
 
-#### Practical Combined Combos:
-1. **Action & RPG Games (Mode 2):**  
-   Use the right stick as a dedicated weapon wheel, item hotbar, or spell selection pad. Since aiming is handled entirely by the free-hand gyro, you can swap weapons or use potions instantly without taking your hands off the controls.
-2. **GTA V & Cyberpunk 2077 (Mode 1):**  
-   When driving, use the right stick's Y-axis for progressive, spin-free analog acceleration (Y+) and braking (Y-). Meanwhile, use the horizontal X-axis (`RS-LEFT` / `RS-RIGHT`) for on-the-fly digital shortcuts—such as switching radio stations, checking the map, or throwing grenades—without any input clashing or camera twitching.
- 
   ### Gyro Motion Space
   This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
 
