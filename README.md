@@ -302,7 +302,7 @@ And will not be expanded until the transition to SDL, which is a long way off
 3. Download Windows SDK 10.0.1776.x and [install](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/SDK_Install.png) with these components (select x64 if you need) <br>
 If you have newer SDK don't forget to retarget the project
 4. Choose the `Release` build type , either `x86` or `x64`, and compile the project
-5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64. The script reads JoyShockLibrary.dll and icons from the `\Icon` folder.
+5. To compile the Config tool, use Ahk2exe with the base file: v2 U32 or U64. The script reads JoyShockLibrary.dll and icons from the `\Icon` folder <br>
 JCadvance, Joyshocklibrary.dll and Config.exe must be the same architecture
 
 ### Editing
