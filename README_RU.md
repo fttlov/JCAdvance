@@ -91,10 +91,10 @@ Stick as trigger имеет приоритет над другими режим�
 [Microsoft Visual C++ Redistributable 2017](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) или новее
 
 ## Как пользоваться:
-1. Скачиваем последний релиз [здесь](https://github.com/fttlov/JCAdvance/releases) 
-2. Распаковываем архив в любую папку
-3. Настраиваем кнопки и хоткеи в Config.exe
-4. Запускаем `JCAdvance.exe`, подключаем геймпад и наслаждаемся!
+1. Скачать последний релиз [здесь](https://github.com/fttlov/JCAdvance/releases) 
+2. Распаковать архив в любую папку
+3. Настроить кнопки и хоткеи в Config.exe
+4. Запустить `JCAdvance.exe`, подключить геймпад - игать
 
 ## Важно!
 Некоторые игры не будут корректно работать из-за проблемы двойного ввода - одновременной инициализации реального геймпада и виртуального.
