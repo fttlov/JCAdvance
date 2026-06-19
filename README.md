@@ -252,7 +252,7 @@ Reading this description might make it seem like playing this way is impossible 
 
   ### Changes to auto-calibration
   Previously, it ran continuously (at startup and during gameplay). While this allowed the controller to self-calibrate anytime it was placed on a table, it could also trigger accidentally if you held the controller too still, misinterpreting natural hand tremors.<br>
-Now, auto-calibration triggers only once at startup. To fix any sensor drift during long sessions, a manual calibration hotkey has been added (place on a flat surface, press the key, wait for the chime). Also added an audio cue for successful auto-calibration on startup
+Now, auto-calibration triggers only once at startup. To fix any sensor drift during long sessions, a manual calibration hotkey has been added (place on a flat surface, press the key, wait for the beep). Also added an audio "beep" for successful auto-calibration on startup
 
   ### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles)
