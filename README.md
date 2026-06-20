@@ -141,7 +141,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 
   ### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
 
-A single Nintendo Joy-Con controller natively operates at a **125 Hz** polling rate (an 8 ms connection interval negotiated with Windows). However, when you connect a combined pair of Joy-Cons, the system-level behavior changes dramatically. You can test this yourself by using [library](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll)  with debug output to the console (rename it to JoyShockLibrary.dll and replace the current one).
+One Joy-Con is polled by the system via Bluetooth at a frequency of 125 Hz (with a communication interval of 8 ms, as specified by Windows). When a second Joy-Con is connected, the frequency doubles. You can test this yourself by using [library](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll)  with debug output to the console (rename it to JoyShockLibrary.dll and replace the current one).
 
 #### Asynchronous Bluetooth Polling
 
