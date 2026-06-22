@@ -68,18 +68,18 @@ Stick as triggers mode takes priority when activated via a hotkey.
 - **Universal Mapping:** Map any digital Nintendo/Sony gamepad button to emulate any XBOX button, keyboard key, or mouse action within a single profile
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
-- **Custom Hotkeys:** Activate Gyro modes with customizable key combinations (e.g., `R + HOME`)
+- **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
 - **Gyro control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
-- **Gyro recalibrating:** Сustomizable hotkey for manually recalibrating the gyroscope (place it on a flat surface and press hotkey)
+- **Gyro recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
+- **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
-- **Polling Rate Option:** Increase the polling rate for smoother motion response
-- **EMA Filter:** Smooths out jittery movements
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
+- **EMA Filter:** Smooths out jittery movements
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
