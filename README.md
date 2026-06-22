@@ -73,7 +73,8 @@ Stick as triggers mode takes priority when activated via a hotkey.
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
-- Added customizable hotkey for manually recalibrating the gyroscope (place it on a flat surface and press hotkey)
+- **Gyro recalibrating:** Сustomizable hotkey for manually recalibrating the gyroscope (place it on a flat surface and press hotkey)
+- **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
@@ -90,7 +91,70 @@ Stick as triggers mode takes priority when activated via a hotkey.
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150" alt="Main Interface"></td>
   </tr>
 </table>
- 
+
+<details>
+<summary><b>🎮 Controller & Keyboard Hotkeys Reference (Click to expand)</b></summary>
+
+### 💻 Keyboard Hotkeys
+*   `ALT + Esc` — Exit application.
+*   `ALT + V` — Swap Primary and Secondary gamepad slots.
+*   `ALT + I` — Display controller battery status on the screen.
+*   `ALT + F9` — Toggle dead zones diagnostics overlay.
+*   `ALT + 1` *(or Gamepad Hotkey)* — Toggle Driving Mode On / Off **`[Configurable]`**.
+*   `ALT + 2` *(or Gamepad Hotkey)* — Unlock / Lock Gyro Motion On / Off **`[Configurable]`**.
+*   `ALT + A` *(or Gamepad Hotkey)* — Switch Gyro Aiming Mode (Mouse vs Stick) **`[Configurable]`**.
+*   `ALT + D` *(or Gamepad Hotkey)* — Toggle Right Stick as Analog Triggers mode **`[Configurable]`**.
+*   `ALT + S` — Toggle Left Stick Auto-Press Emulation mode.
+*   `ALT + B` — Toggle controller backlight (Sony only).
+*   `ALT + W` — Toggle Sony Touchpad click mode-switching behavior.
+*   `ALT + Up / Down` — Switch active profile (Xbox profile or KBM profile).
+*   `ALT + Left / Right` or `ALT + Q` — Switch Emulation Mode.
+*   `ALT + < / >` — Adjust rumble strength.
+*   `ALT + C` *(or Gamepad Hotkey)* — Calibrate gyro manually (keep controller flat on a table) **`[Configurable]`**.
+*   `CTRL + R` *(or Gamepad Hotkey)* — Reset and re-search connected controllers **`[Configurable]`**.
+
+---
+
+### 🟦 Sony Controller Hotkeys (Modifier: `PS` Button)
+*   `PS` *(single tap)* — Open Windows Xbox Game Bar.
+*   `PS + Triangle` — Increase Gyro Sensitivity by 10 units (Sens +) **`[Configurable]`**.
+*   `PS + Cross` — Decrease Gyro Sensitivity by 10 units (Sens -) **`[Configurable]`**.
+*   `PS + R3 (Right Stick Click)` — Reset Gyro Sensitivity to default.
+*   `PS + Square` — Windows Volume Down.
+*   `PS + Circle` — Windows Volume Up.
+*   `PS + R1` — Take Screenshot (single tap) / Record Video (hold) **`[Configurable]`**.
+*   `PS + L1` — Toggle Lightbar backlight On / Off.
+*   `PS + L3 (Left Stick Click)` — Switch Left Stick Auto-Press mode.
+*   `PS + Share` — Toggle Touchpad click mode-switching behavior.
+*   `PS + Options` — Adjust rumble strength (0% to 100% in 10% steps).
+*   `PS + DPAD Up / Down` — Switch active profile.
+*   `PS + DPAD Left / Right` — Switch Emulation Mode.
+
+---
+
+### 🟥 Nintendo Controller Hotkeys (Modifier: `Capture` Button)
+*   `Capture + Home` — Open Windows Xbox Game Bar.
+*   `Capture + X` — Increase Gyro Sensitivity by 10 units (Sens +) **`[Configurable]`**.
+*   `Capture + B` — Decrease Gyro Sensitivity by 10 units (Sens -) **`[Configurable]`**.
+*   `Capture + R3 (Right Stick Click)` — Reset Gyro Sensitivity to default.
+*   `Capture + Y` — Windows Volume Down.
+*   `Capture + A` — Windows Volume Up.
+*   `Capture + R` — Take Screenshot (single tap) / Record Video (hold) **`[Configurable]`**.
+*   `Capture + Plus` — Adjust rumble strength (0% to 100% in 10% steps).
+*   `Capture + DPAD Up / Down` — Switch active profile.
+*   `Capture + DPAD Left / Right` — Switch Emulation Mode.
+
+---
+
+### 🟪 Sony Touchpad Actions (DualSense / DualShock 4)
+*   **Left Area Touch/Click** — Activate **Driving Mode** (gyro steering wheel).
+*   **Right Area Touch/Click** — Activate **Aiming Mode** (gyro mouse/stick).
+*   **Center Area Touch/Click** — Reset to **Default Mode** (and briefly displays battery levels on Lightbar).
+*   **Center-Top Edge Slide** — Adjust controller LED backlight brightness dynamically.
+*   **Center-Bottom Touch/Click** — Switch to **Desktop Mode** (loads mouse and keyboard navigation profile).
+
+</details>
+
 ## Requirements
 - [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius
 - [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer
