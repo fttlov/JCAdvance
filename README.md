@@ -131,7 +131,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 
 <details>
  
-<summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
+<summary><h2>Technical details, instructions and bug fixes</h2> (Click to open)</summary>
   
   ### Interface and Profiles
 A new 3-layer menu system has been introduced:
