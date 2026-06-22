@@ -16,7 +16,7 @@
 - HardCoded hotkeys for switching modes and profiles in real time <br>
 - Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
 - Rumble support for Sony/Nintendo gamepads <br>
-- Dual Cons combined into a single virtual XBOX controller<br>
+- joy-Cons combined into a single virtual XBOX controller<br>
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - Support for Sony DualSense adaptive triggers (pistol, rifle, sniper rifle, bow, car pedal) <br>
 - Support for two gamepads (second gamepad is limited to basic functions)<br>
