@@ -38,7 +38,7 @@ The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
 * **Joy-Cons:** True, free-hand full gyro motion control. Using the right stick for aiming in FPS/TPS becomes obsolete.<br>
 *Since the physical right analog stick is now completely free on Joy-cons*: <br>
-* **JCAdvance allows you to use the right stick's Y-axis as analog triggers**. These will work alongside the digital buttons you have already assigned to the virtual triggers (like ZL ZR), and can be fully controlled (on/off) in real time using a customisable hotkey. <br>
+* **JCAdvance allows you to use the right stick's Y-axis as analog virtual triggers**. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled (on/off) in real time using a customisable hotkey. <br>
 
 Examples of use stick as triggers:<br>
 * **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital trigger <br>
