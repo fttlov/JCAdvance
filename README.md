@@ -174,7 +174,6 @@ A new 3-layer menu system has been introduced:
     *   `PS + Share` — Toggle Touchpad click mode-switching behavior.
     *   `PS + Options` — Adjust rumble strength (0% to 100% in 10% steps).
     *   `PS + DPAD Up / Down` — Switch active profile.
-    *   `PS + DPAD Left / Right` — Switch Emulation Mode.
     
     ---
     
@@ -188,7 +187,6 @@ A new 3-layer menu system has been introduced:
     *   `Capture + R` — Take Screenshot (single tap) / Record Video (hold) **`[Configurable]`**.
     *   `Capture + Plus` — Adjust rumble strength (0% to 100% in 10% steps).
     *   `Capture + DPAD Up / Down` — Switch active profile.
-    *   `Capture + DPAD Left / Right` — Switch Emulation Mode.
     
     ---
     
