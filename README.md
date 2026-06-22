@@ -203,7 +203,7 @@ A new 3-layer menu system has been introduced:
       </tr>
     </table>
     
-    <sub>🇷🇺 Picture from **[DSADvance official github](https://github.com/r57zone/DSAdvance)**</sub>
+    <sub> Picture from **[DSADvance official github](https://github.com/r57zone/DSAdvance)**</sub>
 
   </details>
 
