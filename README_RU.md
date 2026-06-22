@@ -215,7 +215,7 @@ Stick as trigger имеет приоритет над другими режим�
 
 #### Почему именено 250 Гц (SleepTimeOut = 4)
 
-Удалось выяснить, что один Joy-Con опрашивается системой через bluetooth с частотой **125 Гц** (интервал связи 8 мс, согласованный с Windows). При подключении второго Joy-Con чатота удваивается. Можно проверить самостоятельно, использовав [эту](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll) библиотеку с debug выводом в консоль (переименовать в JoyShockLibrary.dll и заменить текущую).
+Удалось выяснить, что один Joy-Con опрашивается системой через bluetooth с частотой **125 Гц** (интервал связи 8 мс, согласованный с Windows). При подключении второго Joy-Con частота удваивается. Можно проверить самостоятельно, использовав [эту](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll) библиотеку с debug выводом в консоль (переименовать в JoyShockLibrary.dll и заменить текущую).
 
 #### Асинхронный опрос по Bluetooth
 
