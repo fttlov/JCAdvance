@@ -86,7 +86,7 @@ Stick as triggers mode takes priority when activated via a hotkey.
 - **Pedal Compatibility:** External pedal feature now works with almost all standard DirectInput wheels/pedals
 - **Clean Main Menu:** Displays active settings and hotkeys at a glance
 
- <table align="center">
+<table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150" alt="Main Interface"></td>
   </tr>
@@ -152,6 +152,12 @@ Stick as triggers mode takes priority when activated via a hotkey.
 *   **Center Area Touch/Click** — Reset to **Default Mode** (and briefly displays battery levels on Lightbar).
 *   **Center-Top Edge Slide** — Adjust controller LED backlight brightness dynamically.
 *   **Center-Bottom Touch/Click** — Switch to **Desktop Mode** (loads mouse and keyboard navigation profile).
+
+<table align="center">
+  <tr>
+    <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png?raw=true" width="250" alt="Main Interface"></td>
+  </tr>
+</table>
 
 </details>
 
