@@ -1262,8 +1262,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 	// Additional gamepad buttons
 	CurrentXboxProfile.JCSL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SL", "NONE"));
 	CurrentXboxProfile.JCSR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "SR", "NONE"));
-	//CurrentXboxProfile.ZL = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZL", "LT"));	//уехали наверх
-	//CurrentXboxProfile.ZR = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "ZR", "RT"));
 	CurrentXboxProfile.HOME = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "HOME", "NONE"));
 	CurrentXboxProfile.CAPTURE = XboxKeyNameToXboxKeyCode(IniFile.ReadString("JOYCONS", "CAPTURE", "NONE"));
 	CurrentXboxProfile.DSEdgeL4 = XboxKeyNameToXboxKeyCode(IniFile.ReadString("DUALSENSE-EDGE", "L4", "NONE"));
@@ -1328,6 +1326,11 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.ButtonsStates.WheelAdvancedMode = !(PrimaryGamepad.ButtonsStates.WheelUpLeft.KeyCode == 0 && PrimaryGamepad.ButtonsStates.WheelUpRight.KeyCode == 0 && PrimaryGamepad.ButtonsStates.WheelDownLeft.KeyCode == 0 && PrimaryGamepad.ButtonsStates.WheelDownRight.KeyCode == 0);
 
 	PrimaryGamepad.ButtonsStates.MeleeGesture.KeyCode = ReadKbmKey("MELEE-GESTURE", "MELEE-GESTURE", "MELEE-GESTURE"); //@043
+
+	PrimaryGamepad.Motion.BaseSensX = PrimaryGamepad.Motion.SensX;	//@051
+	PrimaryGamepad.Motion.BaseSensY = PrimaryGamepad.Motion.SensY;
+	PrimaryGamepad.Motion.BaseJoySensX = PrimaryGamepad.Motion.JoySensX;
+	PrimaryGamepad.Motion.BaseJoySensY = PrimaryGamepad.Motion.JoySensY;
 }
 
 void DefaultMainText() {
@@ -1418,11 +1421,11 @@ void DefaultMainText() {
 		u8printf(T("Layer1_Descript", "\n \033[4mDescription\033[0m:").c_str());
 		u8printf(T("Layer1_About", "\n JCAdvance is an Xbox gamepad emulator with advanced Gyro features. You can map most of any button on your \n"
 		" gamepad to emulate any of Xbox, Keyboard or Mouse keys. Gyro modes are controlled in real time using hotkeys.\n" 
-		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\Default.ini\n").c_str());
+		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait a beep, \"\033[1m%s\033[0m\" or \"\033[1mALT + C\033[0m\" to calibrate manualy\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
 		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the beep or press \"\033[1m%s\033[0m\" to calibrate manualy\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+		u8printf(T("Layer1_Sense", "\n Press \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" or \"\033[1mCapture + X/B\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
 		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
@@ -1431,218 +1434,44 @@ void DefaultMainText() {
 		u8printf(T("Layer1_Move_Button", "\n \033[1mControl Button\033[0m: \"\033[93m%s\033[0m\", %s\n").c_str(),
 			AppStatus.AimingButtonName.c_str(),
 			AppStatus.AimingByPressingMode ?
-			T("Layer1_START_MOVE", "press to \033[1mstart\033[0m motion").c_str() :
-			T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m motion").c_str());
+			T("Layer1_START_MOVE", "press to \033[4mstart\033[0m motion").c_str():
+			T("Layer1_STOP_MOVE", "press to \033[4m\stop\033[0m motion").c_str());
 
-		u8printf(T("Layer1_Driving", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off)\n").c_str(), AppStatus.DrivingToggleButtonName.c_str());
+		u8printf(T("Layer1_Driving", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off), \"\033[1m%s\033[0m\" to recentering wheel\n").c_str(), AppStatus.DrivingToggleButtonName.c_str(), AppStatus.DrivingCalibrationButtonName.c_str());
 		
 		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:").c_str());
 		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\", press \"\033[1mPS/Home + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to change\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
 		u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" - Right Stick as Analog Triggers mode (on/off)\n").c_str(), AppStatus.StickAsTriggerToggleButtonName.c_str());
-		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status\n").c_str());
-		u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
+		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status, \"\033[1mALT + Z\033[0m\" to see other hotkeys").c_str());
+		//u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
 		//u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
 
 		return;
 	}
 
-	//else {									 //Layer3 old/Full
-	printf("\n Connected controllers: ");
-	switch (PrimaryGamepad.ControllerType) {
-	case SONY_DUALSENSE:
-		printf("Sony DualSense (all functions)");
-		break;
-	case SONY_DUALSHOCK4:
-		printf("Sony DualShock 4 (all functions)");
-		break;
-	case NINTENDO_JOYCONS:
-		printf("Nintendo Joy-Cons (");
-		if (PrimaryGamepad.HidHandle != NULL && PrimaryGamepad.HidHandle2 != NULL) printf("left & right");
-		else if (PrimaryGamepad.HidHandle != NULL) printf("left - not enough");
-		else if (PrimaryGamepad.HidHandle2 != NULL) printf("right - not enough");
-		printf(") (all functions)");
-		break;
-	case NINTENDO_SWITCH_PRO:
-		printf("Nintendo Switch Pro (all functions)");
-		break;
-	default:
-		break;
-	}
-	if (AppStatus.SecondaryGamepadEnabled) {
-		if (SecondaryGamepad.DeviceIndex != -1) {
-			printf(", ");
-			switch (SecondaryGamepad.ControllerType) {
-			case SONY_DUALSENSE:
-				printf("Sony DualSense (simplified)");
-				break;
-			case SONY_DUALSHOCK4:
-				printf("Sony DualShock 4 (simplified)");
-				break;
-			case NINTENDO_JOYCONS:
-				printf("Nintendo Joy-Cons (");
-				if (SecondaryGamepad.HidHandle != NULL && SecondaryGamepad.HidHandle2 != NULL) printf("left & right");
-				else if (SecondaryGamepad.HidHandle != NULL) printf("left - limited input");
-				else if (SecondaryGamepad.HidHandle2 != NULL) printf("right - limited input");
-				printf(") (simplified)");
-				break;
-			case NINTENDO_SWITCH_PRO:
-				printf("Nintendo Switch Pro Controller (simplified)");
-				break;
-			default:
-				break;
-			}
-		}
-	} else if (AppStatus.ControllerCount > 1 && SecondaryGamepad.DeviceIndex != -1) printf(", the second gamepad is disabled in the config");
-	printf(".\n");
-	//}
+	u8printf(T("Layer3_Title", "\n \033[4mHotkey & Touchpad Reference Guide\033[0m:\n").c_str());
 
-	printf("\n Press \"%s\" or \"CTRL + R\" to reset/search for controllers, \"ALT + V\" to swap the 1st and 2nd ones.\n", AppStatus.HotKeys.ResetKeyName.c_str());
-	if (AppStatus.ControllerCount > 0 && AppStatus.ShowBatteryStatus) {
-		printf(" Controller 1");
-		if (PrimaryGamepad.USBConnection) printf(" wired"); else printf(" wireless");
-		if (PrimaryGamepad.ControllerType != NINTENDO_JOYCONS)
-			printf(", battery charge: %d\%%", PrimaryGamepad.BatteryLevel);
-		else {
-			if (PrimaryGamepad.HidHandle != NULL && PrimaryGamepad.HidHandle2 != NULL) printf(", battery charge: %d\%%, %d\%%", PrimaryGamepad.BatteryLevel, PrimaryGamepad.BatteryLevel2);
-			else if (PrimaryGamepad.HidHandle != NULL) printf(", battery charge: %d\%%", PrimaryGamepad.BatteryLevel);
-			else if (PrimaryGamepad.HidHandle2 != NULL) printf(", battery charge: %d\%%", PrimaryGamepad.BatteryLevel2);
-		}
-		if (PrimaryGamepad.BatteryMode == 0x2)
-			printf(" (charging)");
+	// Group: System & Media
+	u8printf(T("Layer3_GroupMedia", "\n [System & Media]\n").c_str());
+	u8printf(T("Layer3_Volume", "  Volume:          Press \"PS + \xE2\x96\xA1/\xE2\x97\x8B\" or \"Capture + Y/A\" to adjust Windows volume.\n").c_str());
+	u8printf(T("Layer3_Screen", "  Screenshots:     Press \"PS + R1\" or \"Capture + R\" to take screenshot (hold to record).\n").c_str());
+	u8printf(T("Layer3_Gamebar", "  Xbox Game Bar:   Press \"PS\" alone or \"Capture + Home\" to open Game Bar.\n").c_str());
 
-		if (AppStatus.SecondaryGamepadEnabled && AppStatus.ControllerCount > 1 && SecondaryGamepad.DeviceIndex != -1) {
-			printf(". Controller 2");
-			if (SecondaryGamepad.USBConnection) printf(" wired"); else printf(" wireless");
-			if (SecondaryGamepad.ControllerType != NINTENDO_JOYCONS)
-				printf(", battery charge: %d\%%", SecondaryGamepad.BatteryLevel);
-			else {
-				if (SecondaryGamepad.HidHandle != NULL && SecondaryGamepad.HidHandle2 != NULL) printf(", battery level: %d\%%, %d\%%", SecondaryGamepad.BatteryLevel, SecondaryGamepad.BatteryLevel2);
-				else if (SecondaryGamepad.HidHandle != NULL) printf(", battery level: %d\%%", SecondaryGamepad.BatteryLevel);
-				else if (SecondaryGamepad.HidHandle2 != NULL) printf(", battery level: %d\%%", SecondaryGamepad.BatteryLevel2);
-			}
-			if (SecondaryGamepad.BatteryMode == 0x2)
-				printf(" (charging)");
-		}
+	// Group: Controller Settings
+	u8printf(T("Layer3_GroupSettings", "\n [Controller Settings]\n").c_str());
+	//u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + C\033[0m\" - Right Stick as Analog Triggers mode (on/off)\n").c_str(), AppStatus.DrivingCalibrationButtonName.c_str());
+	u8printf(T("Layer3_Rumble", "  Rumble Power:    Press \"PS + Options\" or \"Capture + Plus\" or \"ALT + </>\" to adjust rumble.\n").c_str());
+	u8printf(T("Layer3_Lstick", "  L-Stick Mode:    Press \"PS + L3\" or \"ALT + S\" to toggle Auto-Press mode.\n").c_str());
+	u8printf(T("Layer3_Backlight", "  Backlight:       Press \"PS + L1\" or \"ALT + B\" to toggle controller backlight (Sony only).\n").c_str());
+	u8printf(T("Layer3_Deadzones", "  Diagnostics:     Press \"ALT + F9\" to view stick and trigger dead zones.\n").c_str());
 
-		printf(".\n");
-	}
-
-	if (AppStatus.GamepadEmulationMode == EmuGamepadEnabled)
-		printf(" Emulation: Xbox gamepad, profile: \"%s\".\n Change profiles with \"ALT + Up/Down\" or \"PS/Home + DPAD Up/Down\".\n", XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
-	else if (AppStatus.GamepadEmulationMode == EmuGamepadOnlyDriving)
-		printf(" Emulation: Xbox gamepad (only driving) & mouse aiming.\n");
-	else if (AppStatus.GamepadEmulationMode == EmuGamepadDisabled)
-		printf(" Emulation: Only mouse (for mouse aiming).\n");
-	else if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) {
-		if (AppStatus.IsDesktopMode)
-			printf(" Emulation: keyboard and mouse, desktop control, profile: \"Desktop\".\n");
-		else
-			printf_s(" Emulation: Keyboard and mouse, game profile: \"%s\".\n Change profiles with \"ALT + Up/Down\" or \"PS/Home + DPAD Up/Down\".\n", KMProfiles[KMProfileIndex].substr(0, KMProfiles[KMProfileIndex].size() - 4).c_str());
-	}
-	printf(" Press \"ALT + Q/Left/Right\", \"PS/Home + DPAD Left/Right\" to switch emulation.\n");
-	//printf(" Press touchpad areas or \"Capture/Home\" buttons to change operating modes.\n");
-	//printf(" If there's no touch panel, switch using a touchpad press (enabled in the config) or use \"ALT + 1/2\".\n");
-	//printf(" Pressing \"Home\" or \"ALT + 2\" again - switches aim mode (always/L2), \"Capture\" - resets.\n");
-	printf(" To manage modes below: bind Hotkeys in Config.exe or Press touchpad areas buttons(Sony) or use ALT + 1/2/A\.\n");	//@004 Правки в print 1
-	printf(" Press \"%s\" or \"ALT + 1\" to activate Driving Mode (on/off)\n", AppStatus.DrivingToggleButtonName.c_str());
-	printf(" Press \"%s\" or \"ALT + 2\" to unlock Gyro Motion (on/off)\n", AppStatus.AimingToggleButtonName.c_str());
-	//printf(" Aiming Button: \"%s\"\n", AppStatus.AimingButtonName.c_str());
-	u8printf(T("Layer1_Move_Button", " Control Button \"\033[1m%s\033[0m\", %s\n").c_str(),
-		AppStatus.AimingButtonName.c_str(),
-		AppStatus.AimingByPressingMode ?
-		T("Layer1_START_MOVE", "press to \033[1mstart\033[0m motion").c_str() :
-		T("Layer1_STOP_MOVE", "press to \033[1mstop\033[0m motion").c_str());
-
-	if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) {
-		printf(" Adaptive triggers mode: ");
-		switch (PrimaryGamepad.AdaptiveTriggersMode) {
-			case 0:
-				printf("none");
-				break;
-			case 1:
-				printf("dependent (driving/aiming - pistol)");
-				break;
-			case 2:
-				printf("dependent (driving/aiming - automatic)");
-				break;
-			case 3:
-				printf("dependent (driving/aiming - rifle)");
-				break;
-			case 4:
-				printf("rumble translation");
-				break;
-			case 5:
-				printf("pistol");
-				break;
-			case 6:
-				printf("automatic");
-				break;
-			case 7:
-				printf("rifle");
-				break;
-			case 8:
-				printf("bow");
-				break;
-			case 9:
-				printf("сar pedal");
-				break;
-			default:
-				printf("unknown");
-				break;
-			}
-		printf(". Press \"ALT + 3/4\" to switch.\n");
-	}
-
-	if (AppStatus.ExternalPedalsDInputConnected) {
-		printf(" External DInput pedals are connected. Mode: ");
-		if (AppStatus.ExternalPedalsMode == ExPedalsAlwaysRacing)
-			printf("always pedals.");
-		else
-			printf("dependent (driving/aiming).");
-		printf(" Press \"ALT + E\" to switch.");
-	}
-	if (AppStatus.ExternalPedalsArduinoConnected)
-		printf(" External pedals Arduino connected.\n");
-
-	//if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Mouse"); else printf("\n Aiming mode = Mouse-Joystick");
-	//printf(", press \"ALT + A\" or \"PS/Capture + R1\" to switch.\n");
-
-	if (AppStatus.AimMode == AimMouseMode) printf("\n Aiming mode = Gyro Mouse"); else printf("\n Aiming mode = Gyro Stick");	//@004 Правки в print 2
-	printf(", press \"%s\" or \"ALT + A\" to switch.\n", AppStatus.AimingModeToggleButtonName.c_str());	//  вывод кнопки из Config 
-	//printf(" Set Gyro move behavior in the Config (1 = by pressing AimButton, 0 = always on)\n");
-	//printf(" Mouse/Stick moves when: \"%s\"\n", AppStatus.AimingByPressingMode ? "pressing AimingButton" : "AimingButton not pressed ");
-
-	printf(" Rumble strength is %d%%, press \"ALT + </>\", \"PS + Options\", or \"Capture + Plus\" to adjust.\n", PrimaryGamepad.RumbleStrength);
-
-	printf(" %s touchpad press for mode switching - \"ALT + W\" or \"PS + Share\" (Sony only).\n", AppStatus.ChangeModesWithClick ? "Disable" : "Enable");
-
-	if (AppStatus.LeftStickMode == LeftStickDefaultMode)
-		printf(" Left stick mode: default");
-	else if (AppStatus.LeftStickMode == LeftStickAutoPressMode)
-		printf(" Left stick mode: auto-press based on value");
-	else if (AppStatus.LeftStickMode == LeftStickPressOnceMode)
-		printf(" Left stick mode: single press based on value");
-	printf(", press \"ALT + S\" or \"PS/Home + LS\" to switch.\n");
-
-	if (AppStatus.ScreenshotMode == ScreenShotCustomKeyMode)
-		printf(" Screenshot mode: Custom key (%s)", &AppStatus.MicCustomKeyName);
-	else if (AppStatus.ScreenshotMode == ScreenShotXboxGameBarMode)
-		printf(" Screenshot mode: Xbox Game Bar");
-	else if (AppStatus.ScreenshotMode == ScreenShotSteamMode)
-		printf(" Screenshot mode: Steam (%s)", &AppStatus.SteamScrKeyName);
-	else if (AppStatus.ScreenshotMode == ScreenShotMultiMode)
-		printf(" Screenshot mode: Xbox Game Bar & Steam (F12)");
-	printf(", press \"ALT + X\" to switch.\n");
-
-	printf("\n Press \"PS\" or \"Capture + Home\" to open Xbox Game Bar.\n");
-	printf(" Press \"PS/Capture + X\" or microphone button (Sony DualSense) for a screenshot, or hold to record video.\n");
-	printf(" Press \"PS + /\\\" or \"Capture + X\" to adjust aiming sensitivity. Press \"PS/Capture + RS\" to reset.\n");
-	printf(" Press \"PS + []/O\" or \"Capture + Y/A\" to control Windows volume.\n");
-
-	printf("\n Press \"ALT + F9\" to view stick and trigger dead zones.\n");
-	printf(" Press \"ALT + I\" or the center of the touchpad (Sony only) to view battery status.\n");
-	printf(" Press \"ALT + B\" or \"PS + L1\" to toggle backlight (Sony only).\n");
-	printf(" Press \"ALT + Escape\" to exit.\n");
+	// Group: Sony Touchpad Areas
+	u8printf(T("Layer3_GroupTouch", "\n [Sony Touchpad Areas]\n").c_str());
+	u8printf(T("Layer3_TouchLeft", "  Left Area:       Click/Touch to activate Driving Mode (motion wheel).\n").c_str());
+	u8printf(T("Layer3_TouchRight", "  Right Area:      Click/Touch to activate Aiming Mode (gyro motion).\n").c_str());
+	u8printf(T("Layer3_TouchCenter", "  Center Area:     Click/Touch to reset to Default Mode (shows battery level).\n").c_str());
+	u8printf(T("Layer3_TouchSlide", "  Center-Top Edge: Slide left/right to adjust LED backlight brightness.\n").c_str());
+	u8printf(T("Layer3_TouchBottom", "  Center-Bottom:   Click/Touch to switch to Desktop Mode controls.\n").c_str());
 }
 
 //void RussianMainText() {
@@ -1915,7 +1744,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (!PrimaryGamepad.USBConnection || !SecondaryGamepad.USBConnection) {
 				AppStatus.BTReset = true; // Bug with Bluetooth controllers, in which in Input Bluetooth controllers random values (JoyShockLibarary?). Resetting again helps.
 			}*/
-			AppStatus.DeviceChangeDebounce = 60;	//@022 ConnectFix таймер (60 тиков x Sleeptimeout) на обновление
+			AppStatus.DeviceChangeDebounce = 120;	//@022 ConnectFix таймер (120 тиков x Sleeptimeout) на обновление
 		}
 		break;
 		/*case WM_CLOSE:
@@ -1931,7 +1760,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 2.2.2");
+	SetConsoleTitle("JCAdvance 2.3");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -2269,7 +2098,7 @@ int main(int argc, char **argv)
 	}
 
 	//float velocityX, velocityY, velocityZ;
-	float velocityX = 0.0f, velocityY = 0.0f, velocityZ = 0.0f;	//@033 добивил нолики
+	float velocityX = 0.0f, velocityY = 0.0f, velocityZ = 0.0f;	//@033 добавил нолики
 	TouchpadTouch FirstTouch, SecondTouch;
 
 	//auto previous_time = std::chrono::high_resolution_clock::now();
@@ -2530,7 +2359,7 @@ int main(int argc, char **argv)
 		}
 
 		// Switch emulation mode
-		if (AppStatus.SkipPollCount == 0 && (
+		/*if (AppStatus.SkipPollCount == 0 && (
 			(IsKeyPressed(VK_MENU) && (IsKeyPressed('Q') || IsKeyPressed(VK_LEFT) || IsKeyPressed(VK_RIGHT)) && 
 			(!(GetConsoleWindow() != GetForegroundWindow() && AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse && AppStatus.IsDesktopMode == false)) ) || // Don't switch modes with keys when emulating keyboard and mouse for games (for games that use the ALT + ←/→ keys)
 			((PrimaryGamepad.InputState.buttons & JSMASK_LEFT || PrimaryGamepad.InputState.buttons & JSMASK_RIGHT) && PrimaryGamepad.InputState.buttons & JSMASK_PS) // Switching modes always works on a gamepad.
@@ -2612,7 +2441,7 @@ int main(int argc, char **argv)
 			PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
 
 			MainTextUpdate();
-		}
+		}*/
 
 		//@007 AimingMode (мышь / стик)
 		if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingModeToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) == AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
@@ -3006,7 +2835,7 @@ int main(int argc, char **argv)
 
 		// Передаем значения виртуальному Xbox с учетом инверсии осей
 		report.sThumbLX = PrimaryGamepad.Sticks.InvertLeftX == false ? lx * 32767 : -lx * 32767;
-		report.sThumbLY = PrimaryGamepad.Sticks.InvertLeftX == false ? ly * 32767 : -ly * 32767;
+		report.sThumbLY = PrimaryGamepad.Sticks.InvertLeftY == false ? ly * 32767 : -ly * 32767;
 		report.sThumbRX = PrimaryGamepad.Sticks.InvertRightX == false ? rx * 32767 : -rx * 32767;
 		report.sThumbRY = PrimaryGamepad.Sticks.InvertRightY == false ? ry * 32767 : -ry * 32767;
 
@@ -3040,9 +2869,6 @@ int main(int argc, char **argv)
 			} else
 				AppStatus.LeftStickPressOnce = false;
 		}
-
-		//report.bLeftTrigger = DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255;
-		//report.bRightTrigger = DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255;
 		
 		//@044 Вычисляем, активны ли сейчас педали в качестве аналоговых триггеров Xbox L2/R2
 		bool isLeftPedalAnalogActive = AppStatus.ExternalPedalsDInputConnected && (
@@ -3253,20 +3079,40 @@ int main(int argc, char **argv)
 			report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
 		}
 
-		if (!(PrimaryGamepad.InputState.buttons & JSMASK_PS && PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE && PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE)) { // During special functions, nothing is pressed in the game
+		unsigned int mappedButtons = PrimaryGamepad.InputState.buttons;		//@051 Новый код модификаторов PS и Capture через mappedButtons
+		if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE) {
+			unsigned int hotkeyMask = JSMASK_UP | JSMASK_DOWN | JSMASK_LEFT | JSMASK_RIGHT | JSMASK_N | JSMASK_S | JSMASK_W | JSMASK_E | JSMASK_L | JSMASK_R | JSMASK_LCLICK | JSMASK_RCLICK | JSMASK_SHARE;
+			mappedButtons &= ~hotkeyMask; // Стираем кнопки хоткеев из маски для игры
+		}
+
+		{ // Mapping standard game buttons using the safe masked layout
 			DWORD XboxButtons = report.wButtons;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_L ? CurrentXboxProfile.LeftBumper : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_R ? CurrentXboxProfile.RightBumper : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_LCLICK ? CurrentXboxProfile.LeftStick : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_RCLICK ? CurrentXboxProfile.RightStick : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_UP ? CurrentXboxProfile.DPADUp : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_DOWN ? CurrentXboxProfile.DPADDown : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_LEFT ? CurrentXboxProfile.DPADLeft : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_RIGHT ? CurrentXboxProfile.DPADRight : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_N ? CurrentXboxProfile.Y : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_W ? CurrentXboxProfile.X : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_S ? CurrentXboxProfile.A : 0;
-			XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_E ? CurrentXboxProfile.B : 0;
+			XboxButtons |= mappedButtons & JSMASK_L ? CurrentXboxProfile.LeftBumper : 0;
+			XboxButtons |= mappedButtons & JSMASK_R ? CurrentXboxProfile.RightBumper : 0;
+			XboxButtons |= mappedButtons & JSMASK_LCLICK ? CurrentXboxProfile.LeftStick : 0;
+			XboxButtons |= mappedButtons & JSMASK_RCLICK ? CurrentXboxProfile.RightStick : 0;
+			XboxButtons |= mappedButtons & JSMASK_UP ? CurrentXboxProfile.DPADUp : 0;
+			XboxButtons |= mappedButtons & JSMASK_DOWN ? CurrentXboxProfile.DPADDown : 0;
+			XboxButtons |= mappedButtons & JSMASK_LEFT ? CurrentXboxProfile.DPADLeft : 0;
+			XboxButtons |= mappedButtons & JSMASK_RIGHT ? CurrentXboxProfile.DPADRight : 0;
+			XboxButtons |= mappedButtons & JSMASK_N ? CurrentXboxProfile.Y : 0;
+			XboxButtons |= mappedButtons & JSMASK_W ? CurrentXboxProfile.X : 0;
+			XboxButtons |= mappedButtons & JSMASK_S ? CurrentXboxProfile.A : 0;
+			XboxButtons |= mappedButtons & JSMASK_E ? CurrentXboxProfile.B : 0;
+
+			// Additional buttons
+			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
+				XboxButtons |= mappedButtons & JSMASK_FNL ? CurrentXboxProfile.DSEdgeL4 : 0;
+				XboxButtons |= mappedButtons & JSMASK_FNR ? CurrentXboxProfile.DSEdgeR4 : 0;
+			}
+			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
+				XboxButtons |= mappedButtons & JSMASK_SL ? CurrentXboxProfile.JCSL : 0;
+				XboxButtons |= mappedButtons & JSMASK_SR ? CurrentXboxProfile.JCSR : 0;
+				XboxButtons |= (mappedButtons & JSMASK_ZL) ? CurrentXboxProfile.ZL : 0;	//@009
+				XboxButtons |= (mappedButtons & JSMASK_ZR) ? CurrentXboxProfile.ZR : 0;
+				XboxButtons |= mappedButtons & JSMASK_HOME ? CurrentXboxProfile.HOME : 0;
+				XboxButtons |= mappedButtons & JSMASK_CAPTURE ? CurrentXboxProfile.CAPTURE : 0;
+			}
 
 			if (PrimaryGamepad.Motion.GestureXTimer > 0 && CurrentXboxProfile.MeleeGesture != 0) {	//@043
 				XboxButtons |= CurrentXboxProfile.MeleeGesture;
@@ -3307,20 +3153,6 @@ int main(int argc, char **argv)
 						XboxButtons |= CurrentXboxProfile.RightStickLeft;
 					}
 				}
-			}
-
-			// Aditional buttons
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_FNL ? CurrentXboxProfile.DSEdgeL4 : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_FNR ? CurrentXboxProfile.DSEdgeR4 : 0;
-			}
-			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SL ? CurrentXboxProfile.JCSL : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SR ? CurrentXboxProfile.JCSR : 0;
-				XboxButtons |= (PrimaryGamepad.InputState.buttons & JSMASK_ZL) ? CurrentXboxProfile.ZL : 0;		//@009
-				XboxButtons |= (PrimaryGamepad.InputState.buttons & JSMASK_ZR) ? CurrentXboxProfile.ZR : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_HOME ? CurrentXboxProfile.HOME : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE ? CurrentXboxProfile.CAPTURE : 0;
 			}
 
 			// Custom keys
@@ -3426,7 +3258,7 @@ int main(int argc, char **argv)
 		}
 
 		// Screenshot / record key
-		bool IsSharePressed = PrimaryGamepad.InputState.buttons & JSMASK_MIC || ((PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_S); // + DualShock 4 & Nintendo
+		bool IsSharePressed = PrimaryGamepad.InputState.buttons & JSMASK_MIC || ((PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_R); //@051 Change JSMASK_N to _R  + DualShock 4 & Nintendo
 		bool IsScreenshotPressed = false;
 		bool IsRecordPressed = false;
 
@@ -3469,14 +3301,67 @@ int main(int argc, char **argv)
 				PrimaryGamepad.ShareHandled = false;
 		}
 
-		// Custom sens
+		//@051 Custom sens (±5 steps with averages recalculation). Remove "* PrimaryGamepad.Motion.CustomMulSens" from snippet
 		if (AppStatus.SkipPollCount == 0 && (PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_N) {
-			PrimaryGamepad.Motion.CustomMulSens += 0.2f;
-			if (PrimaryGamepad.Motion.CustomMulSens > 2.4f)
-				PrimaryGamepad.Motion.CustomMulSens = 0.2f;
+			PrimaryGamepad.Motion.SensX += 0.025f;     // +10 в масштабе INI (10 * 0.005)
+			PrimaryGamepad.Motion.SensY += 0.025f;
+			PrimaryGamepad.Motion.JoySensX += 0.0125f; // +10 в масштабе INI (10 * 0.0025)
+			PrimaryGamepad.Motion.JoySensY += 0.0125f;
+
+			// Ограничение максимума (500 единиц)
+			PrimaryGamepad.Motion.SensX = ClampFloat(PrimaryGamepad.Motion.SensX, 0.025f, 2.5f);
+			PrimaryGamepad.Motion.SensY = ClampFloat(PrimaryGamepad.Motion.SensY, 0.025f, 2.5f);
+			PrimaryGamepad.Motion.JoySensX = ClampFloat(PrimaryGamepad.Motion.JoySensX, 0.0125f, 1.25f);
+			PrimaryGamepad.Motion.JoySensY = ClampFloat(PrimaryGamepad.Motion.JoySensY, 0.0125f, 1.25f);
+
+			// Перерасчет средних значений для физики движения
+			PrimaryGamepad.Motion.SensAvg = (PrimaryGamepad.Motion.SensX + PrimaryGamepad.Motion.SensY) * 0.5f;
+			PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
+
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+			Beep(1200, 250);
+			u8printf("\n[Sens Change] Mouse X: %.0f, Y: %.0f | Joy X: %.0f, Y: %.0f",
+				PrimaryGamepad.Motion.SensX / 0.005f, PrimaryGamepad.Motion.SensY / 0.005f,
+				PrimaryGamepad.Motion.JoySensX / 0.0025f, PrimaryGamepad.Motion.JoySensY / 0.0025f);
 		}
-		if ((PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_RCLICK) PrimaryGamepad.Motion.CustomMulSens = 1.0f; //printf("%5.2f\n", CustomMulSens);
+		if (AppStatus.SkipPollCount == 0 && (PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_S) {
+			PrimaryGamepad.Motion.SensX -= 0.025f;     // -10 в масштабе INI
+			PrimaryGamepad.Motion.SensY -= 0.025f;
+			PrimaryGamepad.Motion.JoySensX -= 0.0125f; // -10 в масштабе INI
+			PrimaryGamepad.Motion.JoySensY -= 0.0125f;
+
+			// Ограничение минимума (10 единиц)
+			PrimaryGamepad.Motion.SensX = ClampFloat(PrimaryGamepad.Motion.SensX, 0.025f, 2.5f);
+			PrimaryGamepad.Motion.SensY = ClampFloat(PrimaryGamepad.Motion.SensY, 0.025f, 2.5f);
+			PrimaryGamepad.Motion.JoySensX = ClampFloat(PrimaryGamepad.Motion.JoySensX, 0.0125f, 1.25f);
+			PrimaryGamepad.Motion.JoySensY = ClampFloat(PrimaryGamepad.Motion.JoySensY, 0.0125f, 1.25f);
+
+			// Перерасчет средних значений для физики движения
+			PrimaryGamepad.Motion.SensAvg = (PrimaryGamepad.Motion.SensX + PrimaryGamepad.Motion.SensY) * 0.5f;
+			PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
+
+			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+			Beep(800, 250);
+			u8printf("\n[Sens Change] Mouse X: %.0f, Y: %.0f | Joy X: %.0f, Y: %.0f",
+				PrimaryGamepad.Motion.SensX / 0.005f, PrimaryGamepad.Motion.SensY / 0.005f,
+				PrimaryGamepad.Motion.JoySensX / 0.0025f, PrimaryGamepad.Motion.JoySensY / 0.0025f);
+		}
+		if ((PrimaryGamepad.InputState.buttons & JSMASK_PS || PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && PrimaryGamepad.InputState.buttons & JSMASK_RCLICK) {
+			if (PrimaryGamepad.Motion.SensX != PrimaryGamepad.Motion.BaseSensX || PrimaryGamepad.Motion.JoySensX != PrimaryGamepad.Motion.BaseJoySensX) {
+				PrimaryGamepad.Motion.SensX = PrimaryGamepad.Motion.BaseSensX;
+				PrimaryGamepad.Motion.SensY = PrimaryGamepad.Motion.BaseSensY;
+				PrimaryGamepad.Motion.JoySensX = PrimaryGamepad.Motion.BaseJoySensX;
+				PrimaryGamepad.Motion.JoySensY = PrimaryGamepad.Motion.BaseJoySensY;
+
+				// Перерасчет средних значений для физики движения
+				PrimaryGamepad.Motion.SensAvg = (PrimaryGamepad.Motion.SensX + PrimaryGamepad.Motion.SensY) * 0.5f;
+				PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
+
+				u8printf("\n[Sens Reset] Mouse X: %.0f, Y: %.0f | Joy X: %.0f, Y: %.0f",
+					PrimaryGamepad.Motion.SensX / 0.005f, PrimaryGamepad.Motion.SensY / 0.005f,
+					PrimaryGamepad.Motion.JoySensX / 0.0025f, PrimaryGamepad.Motion.JoySensY / 0.0025f);
+			}
+		}
 
 		// Gamepad modes
 
@@ -3502,7 +3387,7 @@ int main(int argc, char **argv)
 				if (InputSize < PrimaryGamepad.Motion.Tightening && PrimaryGamepad.Motion.Tightening > 0)
 					TightenedSensitivity *= InputSize / PrimaryGamepad.Motion.Tightening;	//030 Tightening fix for Aircraft
 
-				report.sThumbLX = std::clamp((int)(ClampFloat(-(velocityY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX * PrimaryGamepad.Motion.CustomMulSens), -1, 1) * 32767 + report.sThumbLX), -32767, 32767);
+				report.sThumbLX = std::clamp((int)(ClampFloat(-(velocityY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX), -1, 1) * 32767 + report.sThumbLX), -32767, 32767);
 				//report.sThumbLY = (SHORT)(CalcMotionStick(MotionState.gravY, MotionState.gravZ, PrimaryGamepad.Motion.AircraftPitchAngle, PrimaryGamepad.Motion.OffsetAxisY) * 32767) * PrimaryGamepad.Motion.AircraftPitchInverted;	//@045
 				report.sThumbLY = (SHORT)(CalcMotionStick(MotionState.gravY, MotionState.gravZ, MotionState.gravX, PrimaryGamepad.Motion.AircraftPitchAngle, PrimaryGamepad.Motion.OffsetAxisY, PrimaryGamepad.Motion.PitchPrevAngleRad, PrimaryGamepad.Motion.PitchCumulativeOffsetRad, PrimaryGamepad.Motion.PitchAngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, 50.0f) * 32767) * PrimaryGamepad.Motion.AircraftPitchInverted;
 			}
@@ -3541,8 +3426,8 @@ int main(int argc, char **argv)
 					report.sThumbRY = std::clamp((int)(ClampFloat(velocityX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensY * PrimaryGamepad.Motion.CustomMulSens, -1, 1) * 32767 + report.sThumbRY), -32767, 32767);
 				}*/
 				
-			//@028 Немного переписываем сниппет, Tightened в config + add EMA Filter 1. Считываем кумулятивные данные один раз для обоих режимов
-			float effGyroX = velocityX;
+			//@028 Немного переписываем сниппет, Tightened в config + add EMA Filter 
+			float effGyroX = velocityX;//1. Считываем кумулятивные данные один раз для обоих режимов
 			float effGyroY = velocityY;
 			float effGyroZ = velocityZ;
 
@@ -3565,20 +3450,20 @@ int main(int argc, char **argv)
 
 			const float InputSize = sqrtf(effGyroX * effGyroX + effGyroY * effGyroY + effGyroZ * effGyroZ); //3. Расчет физики затухания чувствительности (Snippet by JibbSmart)
 
-			float TightenedSensitivity = AppStatus.AimMode == AimMouseMode ? PrimaryGamepad.Motion.SensAvg * PrimaryGamepad.Motion.CustomMulSens * 50.f : PrimaryGamepad.Motion.JoySensAvg * PrimaryGamepad.Motion.CustomMulSens * 50.f;
+			float TightenedSensitivity = AppStatus.AimMode == AimMouseMode ? PrimaryGamepad.Motion.SensAvg * 50.f : PrimaryGamepad.Motion.JoySensAvg * 50.f;
 
 			if (InputSize < PrimaryGamepad.Motion.Tightening && PrimaryGamepad.Motion.Tightening > 0) 	//4/ Используем переменную Tightening из конфига
 				TightenedSensitivity *= InputSize / PrimaryGamepad.Motion.Tightening;
 
 			if (AppStatus.AimMode == AimMouseMode) { //5. Mouse
-				MouseMove(-effGyroY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.SensX * PrimaryGamepad.Motion.CustomMulSens, -effGyroX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.SensY * PrimaryGamepad.Motion.CustomMulSens);
+				MouseMove(-effGyroY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.SensX, -effGyroX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.SensY);
 			}
 			else { //6. Joystick
 				//report.sThumbRX = std::clamp((int)(ClampFloat(-(effGyroY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX * PrimaryGamepad.Motion.CustomMulSens), -1, 1) * 32767 + report.sThumbRX), -32767, 32767);
 				//report.sThumbRY = std::clamp((int)(ClampFloat(effGyroX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensY * PrimaryGamepad.Motion.CustomMulSens, -1, 1) * 32767 + report.sThumbRY), -32767, 32767);
 				//@035 Считываем «чистый» аналоговый наклон гиро-стика в диапазоне от -1.0f до 1.0f
-				float gyroRX = ClampFloat(-(effGyroY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX * PrimaryGamepad.Motion.CustomMulSens), -1, 1);
-				float gyroRY = ClampFloat(effGyroX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensY * PrimaryGamepad.Motion.CustomMulSens, -1, 1);
+				float gyroRX = ClampFloat(-(effGyroY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX), -1, 1);
+				float gyroRY = ClampFloat(effGyroX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensY, -1, 1);
 
 				//7. Применяем кривую линейности (Response Curve) от правого стика
 				gyroRX = ApplyLinearity(gyroRX, PrimaryGamepad.Sticks.LinearityRightX);

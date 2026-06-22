@@ -149,8 +149,6 @@ for tabName in ["Special", "Hotkeys", "Gyro", "Analog", "Steering", "Profiles", 
     TabList.Push(tabName)
 }
 
-;Tabs := MainGui.Add("Tab3", "x10 y10 w830 h700", TabList)
-;Tabs := MainGui.Add("Tab3", "x10 y10 w830 h850", TabList)
 Tabs := MainGui.Add("Tab3", "x10 y10 w830", TabList)
 
 ; =========================================
@@ -168,15 +166,15 @@ AddToggle(iniFile, sec, key, desc, pos := "") {
     CtrlSettings[key] := {type: "chk", ctrl: chk, file: iniFile, sec: sec}
 }
 
-AddInput(iniFile, sec, key, desc, defaultVal := "0", pos := "", labelWidth := 220, editWidth := 80) {
+AddInput(iniFile, sec, key, desc, defaultVal := "0", pos := "", labelWidth := 220, editWidth := 70) {
     val := IniRead(A_ScriptDir "\" iniFile, sec, key, defaultVal)
     
     ; Задаем позицию для текста подписи
     txtOpt := (pos != "") ? pos " w" labelWidth : "xs+15 y+10 w" labelWidth
     MainGui.Add("Text", txtOpt, desc ":")
     
-    ; Поле ввода создается строго справа (x+10) и чуть выше (yp-3) для компенсации высоты рамки поля
-    edt := MainGui.Add("Edit", "x+10 yp-3 w" editWidth, val)
+    ; Поле ввода создается строго справа (x+10) и чуть выше (yp-"n") для компенсации высоты рамки поля
+    edt := MainGui.Add("Edit", "x+10 yp-2 w" editWidth " h18", val)
     CtrlSettings[key] := {type: "edt", ctrl: edt, file: iniFile, sec: sec}
 }
 
@@ -554,7 +552,7 @@ MainGui.Add("GroupBox", "x155 y" yPos " w480 h125 Center Section", "Melee")
 MainGui.SetFont("cDefault Norm s10") ; ЯВНЫЙ СБРОС ЦВЕТА И СТИЛЯ НА СТАНДАРТНЫЙ
 
 ; Описание (обычный цвет текста)
-MainGui.Add("Text", "x170 y" (yPos+20) " w450", T("Gyro Melee gesture. Make a gesture: a punch, `na hook or a blow hammer to press virtual button:"))
+MainGui.Add("Text", "x170 y" (yPos+20) " w450", T("Special 'Melee' gesture. Make a gesture: a punch, `na hook or a blow hammer to press virtual button:"))
 
 yPos += 55
 	
@@ -636,7 +634,9 @@ AddHotkey(ConfigIni, "Motion", "DrivingCalibrationButton", T("Wheel Centering / 
 
 MainGui.Add("Text", "xs+15 y+20 w450 h2 0x10")
 
-MainGui.Add("Text", "xs+15 y+18 w450", T("Others"))
+MainGui.SetFont("Bold")
+MainGui.Add("Text", "xs+15 y+18 w450", T("Misc"))
+MainGui.SetFont("Norm s10")
 AddHotkey(ConfigIni, "Motion", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
 
 
@@ -674,7 +674,7 @@ AddMappedDropdown(ConfigIni, "Motion", "GyroSpace", T("Gyro Motion Space *"), ["
 
 ; --- Группа 2: Чувствительность и фильтрация ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x210 y230 w410 h210 Center Section", T("Sensitivity and Filters"))
+MainGui.Add("GroupBox", "x210 y230 w410 h190 Center Section", T("Sensitivity and Filters"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddInput(XboxIni, "SETTINGS", "MouseSensX", T("Mouse X"), "160", "xs+110 ys+25", 150, 40)
@@ -685,15 +685,16 @@ AddInput(ConfigIni, "Motion", "MouseSmooth", T("EMA** for Mouse"), , "xs+110 y+1
 AddInput(ConfigIni, "Motion", "StickSmooth", T("EMA** for Stick"), , "xs+110 y+10", 150, 40)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x20 y+15 w820 cRed", "* Gyro Space:")
+MainGui.Add("Text", "x20 y+32 w820 cRed", "* Gyro Space:")
 MainGui.Add("Text", "x20 y+5 w820", T("This setting controls how gyroscope data from hand movements is processed and translated into cursor or stick input."))
 MainGui.Add("Text", "x20 y+10 w820", T("For two-handed controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll)"))
-MainGui.Add("Text", "x20 y+5 w820", T("2 — Twist the controller like tank steering levers (Yaw)"))
-MainGui.Add("Text", "x20 y+10 w820", T("For Joy-Cons, different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) will skew `ncursor/stick movement relative to your arm's motion. In any case, rotating the wrist always has a negative effect."))
-MainGui.Add("Text", "x20 y+5 w820", T("The best way to use the Joy-Con for gyro aiming is the horizontal grip. This minimises interference from the other axes."))
-MainGui.Add("Text", "x20 y+10 w820", T("1 — Wrist angle between -90 and 90 degrees has no effect and the cursor/stick accurately follows your hand"))
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand"))
+MainGui.Add("Text", "x20 y+7 w820", T("0 — Turn the controller like a car steering wheel (Roll)"))
+MainGui.Add("Text", "x20 y+2 w820", T("2 — Twist the controller like tank steering levers (Yaw)"))
+MainGui.Add("Text", "x20 y+10 w820", T("For Joy-Cons, different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) `nand grip (horizontal or vertical) will skew cursor/stick movement relative to your arm's motion. Choose one:"))
+MainGui.Add("Text", "x20 y+7 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand (axis offset)"))
+MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 and 90 degrees has no effect and the cursor/stick accurately follows your hand"))
+MainGui.Add("Text", "x20 y+10 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control"))
+
 MainGui.Add("Text", "x20 y+15 w820 cRed", T("** Caution:"))
 MainGui.Add("Text", "x20 y+5 w820", T("EMA smooth filter add input latency. For 60fps games (value - latency): 25   ~2.7ms;  50   ~8ms;  75   ~24ms"))
 
@@ -764,7 +765,7 @@ MainGui.SetFont("cDefault Norm s10")
 AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength (0-100)"), , "xs+125 ys+30", 170, 75)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x25 y+95 w800 cRed", T("* Linearity"))
+MainGui.Add("Text", "x25 y+110 w800 cRed", T("* Linearity"))
 MainGui.Add("Text", "x25 y+5 w820", T("Adjusts stick sensitivity curve:"))
 MainGui.Add("Text", "x25 y+5 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
 MainGui.Add("Text", "x25 y+5 w820", T("50 (Default): Perfectly linear response"))
@@ -811,7 +812,7 @@ AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "x
 
 
 ; --- Сноски и примечания (внизу вкладки, с просторным отступом y+25) ---
-MainGui.Add("Text", "x25 y+130 w820 cRed", T("External Pedals:"))
+MainGui.Add("Text", "x25 y+140 w820 cRed", T("External Pedals:"))
 MainGui.Add("Text", "x25 y+5 w820", T("Use pedals as analog triggers. Note: This is an experimental feature; proper functioning is not guaranteed."))
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))
@@ -824,7 +825,7 @@ MainGui.Add("Text", "x25 y+5 w820", T("For DirectInput games, like Half-Life 2, 
 ; =========================================
 Tabs.UseTab("Profiles")
 
-MainGui.Add("Text", "x20 y65 w810 Center", T("Profile Manager"))
+MainGui.Add("Text", "x5 y65 w810 Center", T("Profile Manager"))
 
 MainGui.Add("GroupBox", "x20 y120 w790 h140 Center cBlue", T("Load Delete Profile"))
 MainGui.Add("Text", "x40 y160 w450", T("Current Active Profile: ") ActiveProfile)
@@ -835,7 +836,7 @@ Loop Files, A_ScriptDir "\XboxProfiles\*.ini", "F" {
 }
 
 MainGui.Add("Text", "x40 y203 w130", T("Select Profile:"))
-ProfileDdl := MainGui.Add("DropDownList", "x170 y200 w180 Choose1", ProfileList)
+ProfileDdl := MainGui.Add("DropDownList", "x170 y202 w180 Choose1", ProfileList)
 ProfileDdl.Text := ActiveProfile
 
 LoadProfileBtn := MainGui.Add("Button", "x370 y198 w120 h26", T("Load Profile"))
@@ -991,7 +992,7 @@ MainGui.OnEvent("Close", ConfirmExit)
 
 
 ; =========================================
-; ПРОФЕССИОНАЛЬНЫЙ СКРОЛЛ (Parent-Child Viewport)
+; SCROLLING (for low resolutions & high DPI)
 ; =========================================
 MainGui.Show("Hide") 
 

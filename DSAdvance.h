@@ -455,6 +455,10 @@ struct AdvancedGamepad {
 		bool PitchAngleInitialized = false;
 		float LinearityWheel = 50.0f;
 		bool IsManualCalibrated = false;
+		float BaseSensX = 0.0f;
+		float BaseSensY = 0.0f;
+		float BaseJoySensX = 0.0f;
+		float BaseJoySensY = 0.0f;
 	};
 	_Motion Motion;
 
@@ -592,7 +596,7 @@ struct _AppStatus {
 	bool AutoCalibrationEnabled = true; // @124
 	bool IsManualCalibrating = false;
 	int ManualCalibrationTimer = 0;
-	bool StartupCalibrationFrozen = false; //
+	bool StartupCalibrationFrozen = false;
 
 	struct _HotKeys
 	{
