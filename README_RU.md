@@ -84,6 +84,7 @@ Stick as trigger имеет приоритет над другими режим�
  <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_ru.png" width="150"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2_ru.png" width="150"></td>
   </tr>
 </table>
 
