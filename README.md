@@ -155,7 +155,6 @@ A new 3-layer menu system has been introduced:
     *   `ALT + B` — Toggle controller backlight (Sony only).
     *   `ALT + W` — Toggle Sony Touchpad click mode-switching behavior.
     *   `ALT + Up / Down` — Switch active profile (Xbox profile or KBM profile).
-    *   `ALT + Left / Right` or `ALT + Q` — Switch Emulation Mode.
     *   `ALT + < / >` — Adjust rumble strength.
     *   `ALT + C` *(or Gamepad Hotkey)* — Calibrate gyro manually (keep controller flat on a table) **`[Configurable]`**.
     *   `CTRL + R` *(or Gamepad Hotkey)* — Reset and re-search connected controllers **`[Configurable]`**.
