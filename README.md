@@ -44,7 +44,7 @@ Examples of use stick as triggers:<br>
 * **RDR 2:** Slowly pull the right stick UP to fill the draw meter in duels (bypassing the digital trigger issue); smoothly cock your revolver's hammer and fire or just rapid fire by digital trigger <br>
 * **GTA V:** Using the right stick (up/down) for analog gas/brakes in vehicles; progressive trigger actions on foot.
 
-* **Stick as buttons** - Don't use the sticks as triggers? Use them as buttons! Assign any virtual Xbox, keyboard or mouse buttons to one of the stick's four directions. <br>
+* **Stick as buttons** - Don't use the right stick as triggers? Use them as buttons! Assign any virtual Xbox, keyboard or mouse buttons to one of the stick's four directions. <br>
 
 Note: <br>
 In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).<br>
