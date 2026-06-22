@@ -155,7 +155,7 @@ Stick as triggers mode takes priority when activated via a hotkey.
 
 <table align="center">
   <tr>
-    <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png" width="250" alt="Main Interface"></td>
+    <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png" width="333" alt="Main Interface"></td>
   </tr>
 </table>
 
