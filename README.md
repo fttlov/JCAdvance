@@ -128,6 +128,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 </details>  
 
 <details>
+ 
   <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
   <br>
 
