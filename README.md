@@ -202,7 +202,7 @@ A new 3-layer menu system has been introduced:
         <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png" width="333" alt="Main Interface"></td>
       </tr>
     </table>
-<sub>🇷🇺 Picture from **[DSADvance official github](https://github.com/r57zone/DSAdvance)**</sub>
+    <sub>🇷🇺 Picture from **[DSADvance official github](https://github.com/r57zone/DSAdvance)**</sub>
 
 
   </details>
