@@ -92,8 +92,53 @@ Stick as triggers mode takes priority when activated via a hotkey.
   </tr>
 </table>
 
+
+
+## Requirements
+- [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius
+- [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer
+
+## How to Use
+1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
+2. Unzip the archive to any folder
+3. Open `Config.exe` to configure your buttons and hotkeys
+4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
+
+## Important Note
+To prevent double-input issues in games (where a game detects both your physical controller and the virtual XBOX/DS4 controller simultaneously), you should hide your physical gamepad.
+Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
+
 <details>
-<summary><b>🎮 Controller & Keyboard Hotkeys Reference (Click to expand)</b></summary>
+  <summary><b>Quick Setup Guide</b></summary>
+  <br>
+  Download and install HidHide. Open the HidHide Configuration Client and:
+  
+  1. Add `JCAdvance.exe` and `Config.exe` to the Applications list
+  2. Select your physical gamepad in the Devices tab
+  3. Select the **"Enable device hiding"** option
+
+  <table align="center">
+    <tr>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150" alt="HidHide Setup 1"></td>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150" alt="HidHide Setup 2"></td>
+    </tr>
+  </table>
+
+  For a complete guide, visit the [official HidHide Setup Guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
+</details>  
+
+<details>
+  <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
+  <br>
+
+  ### Interface and Profiles
+  A new 3-layer menu system has been introduced:
+  - **Layer 0:** Shown before connecting devices
+  - **Layer 1:** Active after controllers are connected
+  - **Layer 2:** Hotkey menu
+
+    <details>
+<summary><b>🎮 All Controller & Keyboard Hotkeys Reference (Click to expand)</b></summary>
 
 ### 💻 Keyboard Hotkeys
 *   `ALT + Esc` — Exit application.
@@ -161,50 +206,11 @@ Stick as triggers mode takes priority when activated via a hotkey.
 
 </details>
 
-## Requirements
-- [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius
-- [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer
-
-## How to Use
-1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
-2. Unzip the archive to any folder
-3. Open `Config.exe` to configure your buttons and hotkeys
-4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
-
-## Important Note
-To prevent double-input issues in games (where a game detects both your physical controller and the virtual XBOX/DS4 controller simultaneously), you should hide your physical gamepad.
-Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
-
-<details>
-  <summary><b>Quick Setup Guide</b></summary>
-  <br>
-  Download and install HidHide. Open the HidHide Configuration Client and:
-  
-  1. Add `JCAdvance.exe` and `Config.exe` to the Applications list
-  2. Select your physical gamepad in the Devices tab
-  3. Select the **"Enable device hiding"** option
-
-  <table align="center">
-    <tr>
-      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150" alt="HidHide Setup 1"></td>
-      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide2.png" width="150" alt="HidHide Setup 2"></td>
-    </tr>
-  </table>
-
-  For a complete guide, visit the [official HidHide Setup Guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
-</details>  
-
-<details>
-  <summary><h2>Technical details and bug fixes</h2> (Click to open)</summary>
-  <br>
-
-  ### Interface and Profiles
-  A new 3-layer menu system has been introduced:
-  - **Layer 0:** Shown before connecting devices
-  - **Layer 1:** Active after controllers are connected
-  - **Layer 2:** Classic detailed menu (retained for compatibility, touchpad hotkey info, and legacy profile management)
-
   *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. Legacy `KMProfiles` are retained for backward compatibility
+
+  ### New Smart Sensitivity Adjustment
+
+How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
    
   ### Polling Rate & Performance
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
