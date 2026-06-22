@@ -189,11 +189,11 @@ Stick as trigger имеет приоритет над другими режим�
   *   **Проведение пальцем по верхнему краю** — Плавная регулировка яркости световой панели геймпада.
   *   **Касание/клик снизу** — Перейти в **режим Рабочего стола** (Desktop режим с профилем управления мышью и клавиатурой).
   
-      <table align="center">
-        <tr>
-          <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png" width="333" alt="Main Interface"></td>
-        </tr>
-      </table>
+    <table align="center">
+      <tr>
+        <td><img src="https://github.com/fttlov/JCAdvance_test/blob/main/Icon/DSAdvance_Touchpad.png" width="333" alt="Main Interface"></td>
+      </tr>
+    </table>
   
   
   </details>
