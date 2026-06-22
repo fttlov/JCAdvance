@@ -48,7 +48,7 @@ Examples of use stick as triggers:<br>
 
 Note: <br>
 In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).<br>
-Stick as triggers mode takes priority when activated via a hotkey.
+"Stick as trigger"  mode takes priority when activated via a hotkey.
 
 </details>
  
