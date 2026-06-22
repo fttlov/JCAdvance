@@ -134,7 +134,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 <summary><h2>Technical details, instructions and bug fixes</h2> (Click to open)</summary>
   
   ### Interface and Profiles
-A new 3-layer menu system has been introduced:
+A new 3-layer menu:
 - **Layer 0:** Shown before connecting devices
 - **Layer 1:** Active after controllers are connected
 - **Layer 2:** Hotkey menu
