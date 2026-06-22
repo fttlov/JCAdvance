@@ -211,7 +211,7 @@ A new 3-layer menu system has been introduced:
 
   ### New Smart Sensitivity Adjustment
 
-How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
+How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
    
   ### Polling Rate & Performance
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
