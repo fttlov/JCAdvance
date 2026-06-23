@@ -152,6 +152,7 @@ A new 3-layer menu:
     *   `ALT + A` *(or Gamepad Hotkey)* — Switch Gyro Aiming Mode (Mouse vs Stick) **`[Configurable]`**.
     *   `ALT + D` *(or Gamepad Hotkey)* — Toggle Right Stick as Analog Triggers mode **`[Configurable]`**.
     *   `ALT + S` — Toggle Left Stick Auto-Press Emulation mode.
+    *   `ALT + F` — Toggle Control button behavior (start/stop gyro motion)
     *   `ALT + B` — Toggle controller backlight (Sony only).
     *   `ALT + W` — Toggle Sony Touchpad click mode-switching behavior.
     *   `ALT + Up / Down` — Switch active profile.
@@ -212,6 +213,19 @@ A new 3-layer menu:
   ### New Smart Sensitivity Adjustment
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
+
+### Gyro Tightening (Dynamic Smoothing)
+
+**How it works:**
+Tightening is a dynamic, speed-based low-pass filter (originally designed by JibbSmart) used to eliminate hand tremors, pulse twitches, and natural hardware sensor noise. 
+Unlike a traditional "deadzone" that blocks small inputs entirely, Tightening smoothly dampens the sensitivity only when the controller is moving very slowly or being held still. 
+When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input.
+
+**Recommended Values:**
+* **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands and high-quality controllers (like **DualSense** or **DualShock 4**). Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
+* **`1.0` - `2.0` (The Golden Mean / Default):** Ideal for most players. It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
+* **`3.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
+* **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold.
    
   ### Polling Rate & Performance
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
