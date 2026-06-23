@@ -74,6 +74,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
+- **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart 
 - **Gyro manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
@@ -214,7 +215,12 @@ A new 3-layer menu:
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
-### Gyro Tightening (Dynamic Smoothing)
+  ### Changes to auto-calibration
+  Previously, it ran continuously (at startup and during gameplay). While this allowed the controller to self-calibrate anytime it was placed on a table, it could also trigger accidentally if you held the controller too still, misinterpreting natural hand tremors.<br>
+Now, auto-calibration triggers only once at startup. To fix any sensor drift during long game sessions, a manual calibration hotkey has been added (place on a flat surface, press the key, wait for the beep). Also added an audio "beep" for successful auto-calibration on startup. <br>
+You can easily re-enable auto-calibration in config.ini by setting AutoCalibrationEnabled to 1
+
+  ### Gyro Tightening (Dynamic Smoothing)
 
 **How it works:**
 Tightening is a dynamic, speed-based low-pass filter (originally designed by JibbSmart) used to eliminate hand tremors, pulse twitches, and natural hardware sensor noise. 
@@ -340,10 +346,6 @@ Reading this description might make it seem like playing this way is impossible 
 
   ### Gyro Melee Gesture
   A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The only practical use for an accelerometer. You can also adjust the impact force (G-force).
-
-  ### Changes to auto-calibration
-  Previously, it ran continuously (at startup and during gameplay). While this allowed the controller to self-calibrate anytime it was placed on a table, it could also trigger accidentally if you held the controller too still, misinterpreting natural hand tremors.<br>
-Now, auto-calibration triggers only once at startup. To fix any sensor drift during long game sessions, a manual calibration hotkey has been added (place on a flat surface, press the key, wait for the beep). Also added an audio "beep" for successful auto-calibration on startup
 
   ### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles)
