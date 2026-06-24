@@ -74,7 +74,8 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
-- **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart 
+- **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
+- **Сalibration indicator** a vibrating signal (also led for Joy-Con) to indicate successful calibration
 - **Gyro manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
@@ -172,7 +173,7 @@ A new 3-layer menu:
     *   `PS + Circle` — Windows Volume Up.
     *   `PS + R1` — Take Screenshot (single tap) / Record Video (hold) **`[Configurable]`**.
     *   `PS + L1` — Toggle Lightbar backlight On / Off.
-    *   `PS + L3 (Left Stick Click)` — Switch Left Stick Auto-Press mode.
+    *   `PS + L3 (Left Stick Click)` — Switch Left Stick "Auto-Sprint" Mode.
     *   `PS + Share` — Toggle Touchpad click mode-switching behavior.
     *   `PS + Options` — Adjust rumble strength (0% to 100% in 10% steps).
     *   `PS + DPAD Up / Down` — Switch active profile.
@@ -188,7 +189,8 @@ A new 3-layer menu:
     *   `Capture + A` — Windows Volume Up.
     *   `Capture + R` — Take Screenshot (single tap) / Record Video (hold) **`[Configurable]`**.
     *   `Capture + Plus` — Adjust rumble strength (0% to 100% in 10% steps).
-    *   `Capture + DPAD Up / Down` — Switch active profile.
+    *   `HOME + L3 (Left Stick Click)` — Switch Left Stick "Auto-Sprint" Mode.
+    *   `HOME + DPAD Up / Down` — Switch active profile.
     
     ---
     
@@ -215,11 +217,25 @@ A new 3-layer menu:
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
-  ### Changes to auto-calibration
-  Previously, it ran continuously (at startup and during gameplay). While this allowed the controller to self-calibrate anytime it was placed on a table, it could also trigger accidentally if you held the controller too still, misinterpreting natural hand tremors.<br>
-Now, auto-calibration triggers only once at startup. To fix any sensor drift during long game sessions, a manual calibration hotkey has been added (place on a flat surface, press the key, wait for the beep). Also added an audio "beep" for successful auto-calibration on startup. <br>
-You can easily re-enable auto-calibration in config.ini by setting AutoCalibrationEnabled to 1
+  ### 🎯 Gyro Calibration & Drift Prevention
+To keep your gyro aiming perfectly accurate and eliminate "cursor drift", the emulator features a smart calibration system.
+Automatic Calibration (Default & Recommended)
+By default, the emulator constantly recalibrates your controller in the background.
+Whenever you notice a slight cursor drift, simply place the controller on a flat surface for about 2 seconds. The emulator will silently recalculate the true zero point and the drift will vanish.
+Startup Indicator: When you launch the app and the controller finds its first perfect zero, you will feel a firm double-rumble. You are ready to play!
 
+Manual Calibration (Hotkey)
+If you prefer to control when calibration happens, you can force it manually at any time:
+Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.
+Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
+Wait for the success signal (double rumble).
+Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed.
+
+⚙️ Config.ini Settings (Under [Motion])
+AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.
+AutoCalibrationEnabled=0 if you want to lock the calibration only to the startup/manual trigger.
+LedCalibrationDebug=0 — Set to 1 to enable visual debugging. Every time the background calibration successfully updates the zero-point, the 4 side-LEDs on your Joy-Con will briefly flash. Great for testing!
+  
   ### Gyro Tightening (Dynamic Smoothing)
 
 **How it works:**
@@ -323,6 +339,13 @@ $$\text{Horizontal Dominates} \implies |rx| > |ry|$$
 
 * **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
 * **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
+
+  ### 🎮 Left stick: "Auto-Sprint" Mode
+
+In many games, running or sprinting is assigned to a separate button. JCAdvance allows you to assign this button to the left stick directions. You can set the trigger threshold to AutoPressStickValue=90 (stick deflected by 90%) and select one of the following modes:
+- 0: Default (nothing happens)
+- 1: The button activates if the stick > AutoPressStickValue only in the front half (45 degrees)
+- 2: The button activates if the stick > AutoPressStickValue in any direction (for old games)
 
   ### Gyro Motion Space
   This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
