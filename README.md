@@ -74,11 +74,11 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Motion control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
+- **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
 - **Сalibration indicator** a vibrating signal (also led for Joy-Con) to indicate successful calibration
 - **Gyro manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
-- **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
@@ -106,7 +106,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 ## How to Use
 1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
 2. Unzip the archive to any folder
-3. Open `Config.exe` to configure your buttons and hotkeys
+3. Open `Config.exe` to configure your buttons and hotkeys (change Nintendo/Sony layout in Settings tab)
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
