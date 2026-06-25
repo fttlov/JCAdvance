@@ -8,7 +8,7 @@
 ← Choose your language
 
 ## What is it
-**Joy-Con Advance** is an XBOX/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It is based on the DSAdvance project by r57zone.
+**Joy-Con Advance** is an XBOX/DS4 gamepad emulator featuring advanced options for Joy-Cons, Pro Controllers, DualShock 4, and DualSense Edge. It's based on the DSAdvance project by r57zone.
 
 ## Basic features of the original:
 - Assign gamepad buttons to emulate XBOX buttons or keyboard/mouse keys (a separate profile for each) <br>
@@ -32,7 +32,7 @@
 <details>
   <summary><h4>Learn more about Gyro Сoncept and Digital Trigger Bypass</h4></summary>
 
-While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** setting for different controllers and ability to use all analog axes of the virtual controller on the Joy-Cons.
+While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space** and **Tightening** setting for different controllers and ability to use all analog axes of the XBOX virtual controller on the Joy-Cons.
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
