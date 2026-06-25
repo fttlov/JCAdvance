@@ -71,13 +71,13 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
 - **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
-- **Gyro control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button
+- **Motion control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
-- **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
 - **Сalibration indicator** a vibrating signal (also led for Joy-Con) to indicate successful calibration
 - **Gyro manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
+- **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
@@ -214,46 +214,47 @@ A new 3-layer menu:
 
 *Profiles:* The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session.
 
-  ### New Smart Sensitivity Adjustment
+  ### New Smart Gyro Sensitivity Adjustment
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
   ### 🎯 Gyro Calibration & Drift Prevention
-To keep your gyro aiming perfectly accurate and eliminate "cursor drift", the emulator features a smart calibration system.
-Automatic Calibration (Default & Recommended)
-By default, the emulator constantly recalibrates your controller in the background.
-Whenever you notice a slight cursor drift, simply place the controller on a flat surface for about 2 seconds. The emulator will silently recalculate the true zero point and the drift will vanish.
-Startup Indicator: When you launch the app and the controller finds its first perfect zero, you will feel a firm double-rumble. You are ready to play!
+To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
 
-Manual Calibration (Hotkey)
-If you prefer to control when calibration happens, you can force it manually at any time:
-Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.
+#### Automatic Calibration (Default & Recommended)
+By default, the emulator constantly recalibrates your controller in the background, **provided it is completely stationary**. <br>
+However, during a long gaming session, the gamepad is constantly in motion, and auto-calibration may not work. Due to MEMS-sensor imperfections (such as thermal drift — sensor heating), especially with Joy-Cons, a cumulative gyro drift effect can occur — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
+If you notice a slight drift, simply place the controller on a flat surface for about 2 seconds. The emulator will silently recalculate the true zero point and the drift will vanish.
+
+#### Manual Calibration (Hotkey)
+If you prefer to control when calibration happens, you can disable autocalibration and force it manually at any time:
+Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
-Wait for the success signal (double rumble).
+Wait for the success signal - double rumble.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed.
 
-⚙️ Config.ini Settings (Under [Motion])
-AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.
-AutoCalibrationEnabled=0 if you want to lock the calibration only to the startup/manual trigger.
-LedCalibrationDebug=0 — Set to 1 to enable visual debugging. Every time the background calibration successfully updates the zero-point, the 4 side-LEDs on your Joy-Con will briefly flash. Great for testing!
+#### Config.ini Settings (Under [Motion])
+AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
+AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double vibration). After that, calibration is possible only in manual mode by hotkeys.<br>
+LedCalibrationDebug=1 — enable visual debugging (Joy-Con only). Every time the background calibration successfully updates the zero-point, the 4 side-LEDs on your Joy-Con will briefly flash. Suitable for testing and understanding the auto-calibration process.
   
-  ### Gyro Tightening (Dynamic Smoothing)
+  ### Tightening (Dynamic Smoothing)
 
 **How it works:**
-Tightening is a dynamic, speed-based low-pass filter (originally designed by JibbSmart) used to eliminate hand tremors, pulse twitches, and natural hardware sensor noise. 
+Tightening is a zero-latency, velocity-based threshold filter that attenuates micro-movements to eliminate hand tremors and pulse twitches and natural hardware sensor noise.<br>
 Unlike a traditional "deadzone" that blocks small inputs entirely, Tightening smoothly dampens the sensitivity only when the controller is moving very slowly or being held still. 
 When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input.
 
 **Recommended Values:**
-* **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands and high-quality controllers (like **DualSense** or **DualShock 4**). Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
-* **`1.0` - `2.0` (The Golden Mean / Default):** Ideal for most players. It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
+* **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands. Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
+* ** `2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
 * **`3.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
 * **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold.
    
   ### Polling Rate & Performance
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
 
-  ### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
+#### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
 
 One Joy-Con is polled by the system via Bluetooth at a frequency of 125 Hz (with a communication interval of 8 ms, as specified by Windows). When a second Joy-Con is connected, the frequency doubles. You can test this yourself by using [library](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll)  with debug output to the console (rename it to JoyShockLibrary.dll and replace the current one).
 
@@ -279,15 +280,6 @@ By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
   *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
-
-  ### Fixes & Adjustments
-  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
-  - **EMA Smoothing Filter:** Smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms)
-  - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.)
-  - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con
-  - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously
-  - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration
-  - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con
 
   ### 🎮 Right Stick as Analog Triggers
 
@@ -327,9 +319,7 @@ Note: <br>
 In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).<br>
 Stick as triggers mode takes priority when activated via a hotkey.
 
----
-
-### Axis Isolation & Diagonal Filtering
+#### Axis Isolation & Diagonal Filtering
 
 To ensure a highly responsive, error-free experience in both Mode 1 and Mode 2, `JCAdvance` utilizes real-time mathematical filtering. 
 
@@ -354,11 +344,11 @@ In many games, running or sprinting is assigned to a separate button. JCAdvance 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
 It is hard to explain, but I will try. <br>
-For two-handed gamepads: let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
+**For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
 0 — "steering wheel" movement to the left <br>
 2 — tilt the right side of the gamepad (R1) away from you while bringing the left side (L1) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
 
-For Joy-Cons, the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
+**For Joy-Cons** the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
 0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
 1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
 With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
@@ -370,6 +360,9 @@ Reading this description might make it seem like playing this way is impossible 
 
   ### Gyro Melee Gesture
   A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The only practical use for an accelerometer. You can also adjust the impact force (G-force).
+
+  ### EMA Smoothing Filter
+  Anthoer smooths out shaky hands. *Note:* Adds slight latency (e.g., at 60fps: value 25 ~2.7ms, value 50 ~8ms, value 75 ~24ms)
 
   ### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., older *Need for Speed* titles)
@@ -383,6 +376,14 @@ Reading this description might make it seem like playing this way is impossible 
   *Setup:* Connect your device, enable **"Dinput Search"** in the Steering tab of `Config.exe`, and launch `JCAdvance.exe`. If you see your dedice name `[Pedals Search] ID 0: Found device 'Your Device Name' -> APPROVED!` in the console, it is configured correctly. If inputs do not register, adjust the `PedalAxis` options in the Configurator. If automatic detection fails, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the exact name of your steering wheel/pedals from joy.cpl.  <br>
 
 I tested this feature using an old "Logitech Wingman" wheel and it f@cking works! 
+
+  ### Fixes & Adjustments
+  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
+  - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.)
+  - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con
+  - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously
+  - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration
+  - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con
 
   ### Testing & Debugging Limitations
   - **Sony Controllers:** The developer currently lacks access to physical DualShock/DualSense controllers. While the original emulation code remains intact, some untested issues may occur.
