@@ -12,7 +12,7 @@
 
 ## Basic features of the original:
 - Assign gamepad buttons to emulate XBOX buttons or keyboard/mouse keys (a separate profile for each) <br>
-- Gyro-based modes: mouse/right stick emulation for looking/aiming; wheel emulation for driving; Aircraft <br>
+- Gyro-based modes: mouse/right stick emulation for looking/aiming; steering wheel emulation; Aircraft <br>
 - HardCoded hotkeys for switching modes and profiles in real time <br>
 - Customizable sensitivity, deadzones, inverting and left/right stick/trigger switching <br>
 - Rumble support for Sony/Nintendo gamepads <br>
