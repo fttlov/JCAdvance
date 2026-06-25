@@ -226,7 +226,7 @@ How it works: Launch the game, use the in-game settings to configure the control
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
 
-#### Automatic Calibration (Default & Recommended)
+#### Automatic Calibration (Recommended)
 By default, the emulator constantly recalibrates your controller in the background by two methods: <br>
 1. **Active: Stillness (The "Desk" Method):** 
    Whenever you hold the controller perfectly still or place it on a flat surface for about 1-2 second, the algorithm detects the silence and instantly recalculates the absolute zero point.  <br>
