@@ -106,7 +106,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 ## How to Use
 1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
 2. Unzip the archive to any folder
-3. Open `Config.exe`, choose gamepad layout, language in `Settings tab` and setup other options
+3. Open `Config.exe`, choose gamepad layout in `Settings tab` and setup other options
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
