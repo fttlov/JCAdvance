@@ -445,6 +445,8 @@ Added configuration and support files for editing the code in modern VS Code wit
 You can easily translate the JCAdvance configurator and console interface into any language without recompiling the program. See \Language folder in Release 
 </details>
 
+__________
+
 ## Support the Project
 
 Enjoying your favorite game with J.C. Advance? Buy me a 🍺
