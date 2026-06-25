@@ -229,7 +229,7 @@ To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", 
 #### Automatic Calibration (Recommended)
 By default, the emulator constantly recalibrates your controller in the background by two methods: <br>
 1. **Active: Stillness (The "Desk" Method):** 
-   Whenever you hold the controller perfectly still or place it on a flat surface for about 1-2 second, the algorithm detects the silence and instantly recalculates the absolute zero point.  <br>
+   Whenever you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point.  <br>
 2. **PAssive: Sensor Fusion (The "In-Air" Method):** 
    You don't always have to put the controller down! The emulator constantly compares the gyro rotation against the gravity sensor (accelerometer). Because normal gameplay (mostly horizontal panning) isn't enough for the sensors to calculate 3D space, you can actively force a recalibration: simply draw a smooth sweeping **"Infinity sign** in the air with your controller 2-3 seconds. This complex 3D motion exposes all axes to gravity, allowing the algorithm to calculate and subtract the drift error on the fly.
    
