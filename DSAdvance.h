@@ -181,9 +181,9 @@ inline HANDLE hSerial;
 inline std::thread *pArduinoReadThread = NULL;
 inline float PedalsValues[2];
 
-inline std::vector<std::string> KMProfiles;
-inline int KMProfileIndex = 0;
-inline int KMGameProfileIndex = 0;
+//inline std::vector<std::string> KMProfiles;
+//inline int KMProfileIndex = 0;
+//inline int KMGameProfileIndex = 0;
 inline std::vector<std::string> XboxProfiles;
 inline int XboxProfileIndex = 0;
 
@@ -313,6 +313,7 @@ struct _ButtonsState {
 	Button WheelDownRight;
 
 	Button MeleeGesture; //@119
+	Button AutoSprint;	//@126
 };
 
 struct AdvancedGamepad {
@@ -597,6 +598,9 @@ struct _AppStatus {
 	bool IsManualCalibrating = false;
 	int ManualCalibrationTimer = 0;
 	bool StartupCalibrationFrozen = false;
+	int CalibRumbleTimer = 0;
+	int LedDebugTimer = 0;
+	bool LedCalibrationDebug;
 
 	struct _HotKeys
 	{
@@ -654,6 +658,8 @@ struct _CurrentXboxProfile {
 	unsigned int RightStick = XINPUT_GAMEPAD_RIGHT_THUMB;
 	bool SwapSticksAxis = true;
 	bool SwapTriggers = true;
+
+	unsigned int AutoSprintButton = 0;	//@126
 
 	int RightStickMode = 0; //@123 Stick as button: 0 = Default, 1 = Triggers, 2 = Buttons
 	unsigned int RightStickUp = 0;
@@ -1168,7 +1174,7 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 		{"R2", JSMASK_ZR},
 		{"L4", JSMASK_FNL},
 		{"R4", JSMASK_FNR},
-		{"L", JSMASK_L},	//@110 Нет L1 R1 у joycon блять
+		{"L", JSMASK_L},	//@110 Нет L1 R1 у joycon
 		{"R", JSMASK_R},
 		{"ZL", JSMASK_ZL},
 		{"ZR", JSMASK_ZR},
