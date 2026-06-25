@@ -403,7 +403,7 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
 
 __________
 
-### Возможные проблемы:
+## Возможные проблемы:
 - ~~Congfig.exe написан на AHK и он немного капризен к низкими разрешениям и высоким DPI в Windows. Если текст не влезает в окно или наклдывается друг на друга, временно уменьшите значение DPI или смените разрешение экрана~~ Исправлено
 - Возможна ложно-позитивная реакция антивируса на Config.exe из-за вызовов библиотек. Его source открыт, но если вы параноик - немедленно удалите "вирус" и ковыряйте конфиги
 - Конфликт со Steam input. Отключить поддержку нужных геймпадов или использовать HidHide
@@ -412,7 +412,7 @@ __________
 ### Список поддерживаемых контроллеров ограничен библиотекой Joyshocklibrary
 И не будет расширяться до перехода на SDL в очень необозримом будущем.
 
-### Credits
+## Credits
 * [DSAdvance](https://github.com/r57zone/DSAdvance) - that was the starting point for me. r57zone has done a really great job and I thank him for that.
 * [JoyShockLibrary](https://github.com/JibbSmart/JoyShockLibrary) for a cool gamepad library that makes it easy to get controller rotation. Also uses some code from this library and [JibbSmart snippet](https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df) for aiming.
 * [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
@@ -424,7 +424,7 @@ __________
 <details>
   <summary><h3>Сборка</h3> (развернуть)</summary>
 
-### Сборка
+## Сборка
 0. Если вы ничего не понимаете в программировании, как и я, чётко следуйте инструкции:
 1. Скачать Source, распаковать
 2. Скачать Visual Studio 17 [установить](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/VS17_Install.png) с этими компонентами <br>
