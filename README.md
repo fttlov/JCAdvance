@@ -262,8 +262,8 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 
 **Recommended Values:**
 * **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands. Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
-* ** `2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
-* **`3.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
+* ** `1.0 - 2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
+* **`2.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
 * **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold.
    
   ### Polling Rate & Performance
