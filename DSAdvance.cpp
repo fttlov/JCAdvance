@@ -1328,7 +1328,7 @@ void DefaultMainText() {
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait double rumble or press \"\033[1m%s\033[0m\" to calibrate manualy\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the rumble or press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
 		u8printf(T("Layer1_Sense", "\n Press \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" or \"\033[1mCapture + X/B\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
