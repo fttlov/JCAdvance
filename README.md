@@ -223,7 +223,7 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
   ### 🎯 Gyro Calibration & Drift Prevention
-  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. 
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
 
 #### Automatic Calibration (Default & Recommended)
