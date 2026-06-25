@@ -106,7 +106,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 ## How to Use
 1. Download the latest release from the [Releases](https://github.com/fttlov/JCAdvance/releases) page
 2. Unzip the archive to any folder
-3. Open `Config.exe` to configure your buttons and hotkeys (change Nintendo/Sony layout in Settings tab)
+3. Open `Config.exe`, choose gamepad layout language in `Settings tab` and than setup oher options
 4. Run `JCAdvance.exe`, connect your gamepad, and enjoy!
 
 ## Important Note
@@ -219,24 +219,35 @@ A new 3-layer menu:
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
   ### 🎯 Gyro Calibration & Drift Prevention
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. 
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
 
 #### Automatic Calibration (Default & Recommended)
-By default, the emulator constantly recalibrates your controller in the background, **provided it is completely stationary**. <br>
-However, during a long gaming session, the gamepad is constantly in motion, and auto-calibration may not work. Due to MEMS-sensor imperfections (such as thermal drift — sensor heating), especially with Joy-Cons, a cumulative gyro drift effect can occur — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
-If you notice a slight drift, simply place the controller on a flat surface for about 2 seconds. The emulator will silently recalculate the true zero point and the drift will vanish.
+By default, the emulator constantly recalibrates your controller in the background by two methods: <br>
+1. **Active: Stillness (The "Desk" Method):** 
+   Whenever you hold the controller perfectly still or place it on a flat surface for about 1-2 second, the algorithm detects the silence and instantly recalculates the absolute zero point.  <br>
+2. **PAssive: Sensor Fusion (The "In-Air" Method):** 
+   You don't always have to put the controller down! The emulator constantly compares the gyro rotation against the gravity sensor (accelerometer). Because normal gameplay (mostly horizontal panning) isn't enough for the sensors to calculate 3D space, you can actively force a recalibration: simply draw a smooth sweeping **"Infinity sign** in the air with your controller 2-3 seconds. This complex 3D motion exposes all axes to gravity, allowing the algorithm to calculate and subtract the drift error on the fly.
+   
+However, these methods do not offer a 100% guarantee. During a long gaming session, the gamepad is constantly in motion, and auto-calibration may not work. Due to MEMS-sensor imperfections (such as thermal drift — sensor heating), especially with Joy-Cons, a cumulative gyro drift effect can occur — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
+If you notice a slight drift, simply set up one of the auto-calibration conditions described above.
 
 #### Manual Calibration (Hotkey)
-If you prefer to control when calibration happens, you can disable autocalibration and force it manually at any time:
+If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
 Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
 Wait for the success signal - double rumble.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed.
 
+#### Indication
+During automatic calibration, the first successful calibration is always accompanied by a double short vibration signal. Subsequent automatic calibrations are indicated by the LEDs only when the option `LedCalibrationDebug=1` is enabled..<br>
+During manual calibration, the vibration signal is triggered after each successful calibration.
+
 #### Config.ini Settings (Under [Motion])
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
-AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double vibration). After that, calibration is possible only in manual mode by hotkeys.<br>
-LedCalibrationDebug=1 — enable visual debugging (Joy-Con only). Every time the background calibration successfully updates the zero-point, the 4 side-LEDs on your Joy-Con will briefly flash. Suitable for testing and understanding the auto-calibration process.
+AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkeys.<br>
+LedCalibrationDebug=1 — enable visual debugging. Suitable for testing and understanding the auto-calibration process. It works with the Joy-Con, and possibly with the Switch Pro and DualSense.
+Note: Only Stillness (The "Desk" Method) have rumble/led indication <br>
   
   ### Tightening (Dynamic Smoothing)
 
