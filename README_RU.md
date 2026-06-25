@@ -438,6 +438,8 @@ JCadvance, Joyshocklibrary.dll и Config.exe должны быть оиднак�
 Для редактирования также можно использовать VS Code с clangd. Соотв. файлы для совместимости добавлены
 </details>
 
+__________
+
 ## Поддержка проекта 🍺
 
 Понравилась программа - купите автору пивка!
@@ -534,6 +536,8 @@ JCadvance, Joyshocklibrary.dll и Config.exe должны быть оиднак�
 </details>
 
 </details>
+
+__________
 
 ### Обратная связь
 `fttlkov@gmail.com`
