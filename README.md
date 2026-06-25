@@ -132,6 +132,8 @@ Best way - using the [HidHide](https://github.com/nefarius/HidHide) utility
   For a complete guide, visit the [official HidHide Setup Guide](https://docs.nefarius.at/projects/HidHide/Simple-Setup-Guide/).
 </details>  
 
+__________
+
 <details>
  
 <summary><h2>Technical details, instructions and bug fixes</h2> (Click to open)</summary>
