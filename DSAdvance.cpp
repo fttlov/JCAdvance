@@ -1036,6 +1036,43 @@ void KMStickMode(AdvancedGamepad &Gamepad, bool DontResetInputState, bool StickI
 	}
 }
 
+void LoadConfig() {	//@056 Читаем конфиг во время работы (по дате файла) и применяем изменения (в main)
+	CIniReader IniFile("Config.ini");
+	AppStatus.GyroSpace = IniFile.ReadInteger("Motion", "GyroSpace", 1);
+	PrimaryGamepad.Motion.Tightening = IniFile.ReadFloat("Motion", "Tightening", 2.0f);
+	PrimaryGamepad.Motion.MouseSmooth = ClampFloat(IniFile.ReadFloat("Motion", "MouseSmooth", 0), 0, 99) * 0.01f;
+	PrimaryGamepad.Motion.JoySmooth = ClampFloat(IniFile.ReadFloat("Motion", "JoySmooth", 0), 0, 99) * 0.01f;
+	PrimaryGamepad.Motion.MotionWheelButtonsDeadZone = IniFile.ReadFloat("Motion", "MotionWheelButtonsDeadZone", 12.0f);
+	AppStatus.MeleeGForce = IniFile.ReadFloat("Motion", "MeleeGForce", 3.0f); // У тебя в коде дефолт 3.0, но читает из конфига
+	AppStatus.GyroFromLeft = IniFile.ReadBoolean("Motion", "GyroFromLeft", false);
+	AppStatus.AimingToggleButtonName = IniFile.ReadString("Motion", "AimingToggleButton", "NONE");
+	AppStatus.AimingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingToggleButtonName);
+	AppStatus.AimingButtonName = IniFile.ReadString("Motion", "AimingButton", "NONE");
+	AppStatus.AimingButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingButtonName);
+	AppStatus.AimingModeToggleButtonName = IniFile.ReadString("Motion", "AimingModeToggleButton", "NONE");
+	AppStatus.AimingModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingModeToggleButtonName);
+	AppStatus.DrivingToggleButtonName = IniFile.ReadString("Motion", "DrivingToggleButton", "NONE");
+	AppStatus.DrivingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingToggleButtonName);
+	AppStatus.DrivingCalibrationButtonName = IniFile.ReadString("Motion", "DrivingCalibrationButton", "NONE");
+	AppStatus.DrivingCalibrationButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingCalibrationButtonName);
+	AppStatus.StickAsTriggerToggleButtonName = IniFile.ReadString("Motion", "StickAsTriggerToggleButton", "NONE");
+	AppStatus.StickAsTriggerToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.StickAsTriggerToggleButtonName);
+	AppStatus.HotKeys.ResetKeyName = IniFile.ReadString("Gamepad", "ResetKey", "NONE");
+	AppStatus.HotKeys.ResetKey = KeyNameToKeyCode(AppStatus.HotKeys.ResetKeyName);
+	AppStatus.HotKeys.CalibrateKeyName = IniFile.ReadString("Gamepad", "CalibrateKey", "NONE");
+	AppStatus.HotKeys.CalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.CalibrateKeyName);
+	PrimaryGamepad.RumbleStrength = IniFile.ReadInteger("Gamepad", "RumbleStrength", 100);
+	AppStatus.SleepTimeOut = IniFile.ReadInteger("Gamepad", "SleepTimeOut", 15);
+	AppStatus.SkipPollTimeOut = SkipPollTimeOutMS / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+	AppStatus.PSReleasedTimeOut = PSReleasedTimeOutMS / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+	AppStatus.ButtonCheckTimeOut = ButtonReleasedTimeOutMS / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+	AppStatus.FrameTime = AppStatus.SleepTimeOut / 1000.0f;
+	AppStatus.ExternalPedalsDInputSearch = IniFile.ReadBoolean("ExternalPedals", "DInput", false);
+	AppStatus.ExternalPedalsDeviceName = IniFile.ReadString("ExternalPedals", "DeviceName", "AUTO");
+	AppStatus.Pedal1Axis = ParseAxisName(IniFile.ReadString("ExternalPedals", "Pedal1Axis", "V"));
+	AppStatus.Pedal2Axis = ParseAxisName(IniFile.ReadString("ExternalPedals", "Pedal2Axis", "U"));
+}
+
 void LoadXboxProfile(std::string ProfileFile) {
 	CIniReader IniFile("XboxProfiles\\" + ProfileFile);
 
@@ -1104,7 +1141,17 @@ void LoadXboxProfile(std::string ProfileFile) {
 	CurrentXboxProfile.RightStick = ReadXboxKey("R3", "R3", "RS", "RS");
 
 	AppStatus.AimMode = IniFile.ReadBoolean("SETTINGS", "AimingMode", AimMouseMode);
-	AppStatus.AimingByPressingMode = IniFile.ReadBoolean("SETTINGS", "AimingByPressingMode", true);
+	//AppStatus.AimingByPressingMode = IniFile.ReadBoolean("SETTINGS", "AimingByPressingMode", true);
+	bool newAimingByPressing = IniFile.ReadBoolean("SETTINGS", "AimingByPressingMode", true);
+	if (AppStatus.AimingByPressingMode != newAimingByPressing) {
+		AppStatus.AimingByPressingMode = newAimingByPressing;
+
+		// Мгновенно обновляем текущий режим геймпада (если прицеливание сейчас активно)
+		if (PrimaryGamepad.GamepadActionMode == MotionAimingMode || PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed) {
+			PrimaryGamepad.GamepadActionMode = AppStatus.AimingByPressingMode ? MotionAimingModeOnlyPressed : MotionAimingMode;
+			PrimaryGamepad.LastMotionAIMMode = PrimaryGamepad.GamepadActionMode;
+		}
+	}
 
 	PrimaryGamepad.Motion.SensX = IniFile.ReadFloat("SETTINGS", "MouseSensX", 160) * 0.005f;		//@046
 	PrimaryGamepad.Motion.SensY = IniFile.ReadFloat("SETTINGS", "MouseSensY", 150) * 0.005f;
@@ -1328,8 +1375,9 @@ void DefaultMainText() {
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the rumble or press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
-		u8printf(T("Layer1_Sense", "\n Press \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" or \"\033[1mCapture + X/B\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
+		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the rumble or press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the rumble\n").c_str());
+		u8printf(T("Layer1_Sense", "\n Press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
 		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
@@ -1357,17 +1405,17 @@ void DefaultMainText() {
 
 	// Group: System & Media
 	u8printf(T("Layer3_GroupMedia", "\n [System & Media]\n").c_str());
-	u8printf(T("Layer3_Volume", "  Volume:          Press \"PS + \xE2\x96\xA1/\xE2\x97\x8B\" or \"Capture + Y/A\" to adjust Windows volume.\n").c_str());
-	u8printf(T("Layer3_Screen", "  Screenshots:     Press \"PS + R1\" or \"Capture + R\" to take screenshot (hold to record).\n").c_str());
-	u8printf(T("Layer3_Gamebar", "  Xbox Game Bar:   Press \"PS\" alone or \"Capture + Home\" to open Game Bar.\n").c_str());
+	u8printf(T("Layer3_Volume", "  Volume:          Press \"Capture + Y/A\" or \"PS + \xE2\x96\xA1/\xE2\x97\x8B\" to adjust Windows volume.\n").c_str());
+	u8printf(T("Layer3_Screen", "  Screenshots:     Press \"Capture + R\" or \"PS + R1\" to take screenshot (hold to record).\n").c_str());
+	u8printf(T("Layer3_Gamebar", "  Xbox Game Bar:   Press \"Capture + Home\" or \"PS\" alone to open Game Bar.\n").c_str());
 
 	// Group: Controller Settings
 	u8printf(T("Layer3_GroupSettings", "\n [Controller Settings]\n").c_str());
 	//u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + C\033[0m\" - Right Stick as Analog Triggers mode (on/off)\n").c_str(), AppStatus.DrivingCalibrationButtonName.c_str());
 	u8printf(T("Layer3_AImMode", "  Gyro Behavior:   Press \"ALT + F\" to switching Control button behavior (start/stop motion).\n").c_str());
 	u8printf(T("Layer3_Lstick", "  L-Stick Mode:    Press \"PS/HOME + L3\" or \"ALT + S\" to toggle Left Stick mode (AutoSprintButton).\n").c_str());
-	u8printf(T("Layer3_Rumble", "  Rumble Power:    Press \"PS + Options\" or \"Capture + Plus\" or \"ALT + </>\" to adjust rumble.\n").c_str());
-	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manualy\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+	u8printf(T("Layer3_Rumble", "  Rumble Power:    Press \"Capture + Plus\" or \"PS + Options\" or \"ALT + </>\" to adjust rumble.\n").c_str());
+	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
 	u8printf(T("Layer3_Backlight", "  Backlight:       Press \"PS + L1\" or \"ALT + B\" to toggle controller backlight (Sony only).\n").c_str());
 	u8printf(T("Layer3_Deadzones", "  Diagnostics:     Press \"ALT + F9\" to view stick and trigger dead zones.\n").c_str());
 
@@ -1627,6 +1675,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+//@056 Функция возвращает время последнего изменения файла в виде числа
+uint64_t GetFileModifiedTime(const std::string& filePath) {
+	WIN32_FILE_ATTRIBUTE_DATA fileInfo;
+	if (GetFileAttributesExA(filePath.c_str(), GetFileExInfoStandard, &fileInfo)) {
+		ULARGE_INTEGER time;
+		time.LowPart = fileInfo.ftLastWriteTime.dwLowDateTime;
+		time.HighPart = fileInfo.ftLastWriteTime.dwHighDateTime;
+		return time.QuadPart;
+	}
+	return 0; // Если файла нет
+}
+
 int main(int argc, char **argv)
 {
 	SetConsoleTitle("JCAdvance 3.0");
@@ -1691,7 +1751,6 @@ int main(int argc, char **argv)
 	AppStatus.ChangeModesWithoutAreas = IniFile.ReadBoolean("Gamepad", "ChangeModesWithoutAreas", false);
 	AppStatus.JoyconChangeModesWithButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Gamepad", "JoyconChangeModesWithButton", "NONE"));
 
-	//AppStatus.AimMode = IniFile.ReadBoolean("Motion", "AimingMode", AimMouseMode);
 	AppStatus.AimingButton = SonyNintendoKeyNameToJoyShockKeyCode(IniFile.ReadString("Motion", "AimingButton", "L2"));
 	AppStatus.JoyconRumbleMerge = IniFile.ReadBoolean("Gamepad", "JoyconRumbleMerge", false);
 	AppStatus.GyroFromLeft = IniFile.ReadBoolean("Motion", "GyroFromLeft", false);		//@024 Gyro левша
@@ -1866,6 +1925,7 @@ int main(int argc, char **argv)
 		}
 	}
 
+	LoadConfig();	//056
 	LoadXboxProfile(XboxProfiles[XboxProfileIndex]); // Loading a standard Xbox profile
 
 	RefreshDevices();
@@ -1943,6 +2003,11 @@ int main(int argc, char **argv)
 	//auto previous_time = std::chrono::high_resolution_clock::now();
 	//static DWORD lastTime = GetTickCount();
 
+	uint64_t LastConfigTime = GetFileModifiedTime("Config.ini");	//@056 Запоминаем время изменения конфигов при старте
+	std::string CurrentProfilePath = "XboxProfiles\\" + XboxProfiles[XboxProfileIndex];
+	uint64_t LastProfileTime = GetFileModifiedTime(CurrentProfilePath);
+	int HotReloadTimer = 10000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	// Таймер, чтобы не дергать Windows слишком часто (10 сек.)
+
 	while (!(GetAsyncKeyState(VK_LMENU) & 0x8000 && GetAsyncKeyState(VK_ESCAPE) & 0x8000))
 	{
 		if (PeekMessage(&WindowMsgs, NULL, 0, 0, PM_REMOVE)) {
@@ -1963,6 +2028,49 @@ int main(int argc, char **argv)
   		{
 			RefreshDevices();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+		}
+
+		//@056 чтение из ini во время работы применение изменений
+		if (HotReloadTimer > 0) {
+			HotReloadTimer--;
+		}
+		else {
+			// Сбрасываем таймер на 3 секунды
+			HotReloadTimer = 3000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+
+			// 1. Проверяем Config.ini
+			uint64_t currentConfigTime = GetFileModifiedTime("Config.ini");
+			if (currentConfigTime != LastConfigTime && currentConfigTime != 0) {
+				LastConfigTime = currentConfigTime;
+
+				LoadConfig();
+
+				u8printf("\n[HOT RELOAD] Config.ini updated!");
+				Beep(1200, 100);
+			}
+
+			// 2. Проверяем текущий профиль игры (XboxProfile)
+			uint64_t currentProfileTime = GetFileModifiedTime(CurrentProfilePath);
+			if (currentProfileTime != LastProfileTime && currentProfileTime != 0) {
+				LastProfileTime = currentProfileTime;
+
+				// Запоминаем старые значения режимов ПЕРЕД загрузкой
+				bool oldAimMode = AppStatus.AimMode;
+				bool oldAimingByPressingMode = AppStatus.AimingByPressingMode;
+
+				// Загружаем профиль (новые значения применяются здесь)
+				LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
+
+				// Проверяем, изменились ли режимы, которые выводятся в шапку консоли
+				if (oldAimMode != AppStatus.AimMode || oldAimingByPressingMode != AppStatus.AimingByPressingMode) {
+					// Очищаем и перерисовываем консоль ТОЛЬКО если режим реально переключился
+					MainTextUpdate();
+				}
+
+				// Печатаем лог (он появится либо под новой шапкой, либо просто добавится вниз)
+				u8printf("\n[HOT RELOAD] %s updated!", XboxProfiles[XboxProfileIndex].c_str());
+				Beep(1500, 100);
+			}
 		}
 
 		// Swap gamepads

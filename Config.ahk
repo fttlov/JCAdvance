@@ -73,7 +73,7 @@ if (!FileExist(A_ScriptDir "\XboxProfiles\" ActiveProfile)) {
     
     if (foundAlternative != "") {
         ActiveProfile := foundAlternative
-        try IniWrite(ActiveProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
+        try SmartIniWrite(ActiveProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
     } else {
         ActiveProfile := "default.ini"
     }
@@ -236,7 +236,7 @@ DeleteProfileEvent(selectedProfile) {
         FileDelete(A_ScriptDir "\XboxProfiles\" selectedProfile)
         
         if (selectedProfile == ActiveProfile) {
-            IniWrite("default.ini", A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
+            SmartIniWrite("default.ini", A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
         }
         
         MsgBox(T("Profile deleted successfully!"), T("Success"), "Iconi")
@@ -723,10 +723,10 @@ AddInput(XboxIni, "SETTINGS", "JoySensX", T("Stick X"), "100", "xs+110 y+10", 15
 AddInput(XboxIni, "SETTINGS", "JoySensY", T("Stick Y"), "90", "xs+110 y+10", 150, 40)
 AddInput(ConfigIni, "Motion", "Tightening", T("Tightening **"), "5.0", "xs+110 y+10", 150, 40)
 AddInput(ConfigIni, "Motion", "MouseSmooth", T("EMA*** for Mouse"), , "xs+110 y+10", 150, 40)
-AddInput(ConfigIni, "Motion", "StickSmooth", T("EMA*** for Stick"), , "xs+110 y+10", 150, 40)
+AddInput(ConfigIni, "Motion", "JSmooth", T("EMA*** for Stick"), , "xs+110 y+10", 150, 40)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x20 y+40 w820 cRed", "* Gyro Space:")
+MainGui.Add("Text", "x20 y+40 w820 cRed", "* Gyro Space (by Jibb Smart):")
 MainGui.Add("Text", "x20 y+3 w820", T("This setting controls how gyroscope data from hand movements is processed and translated into cursor or stick input."))
 MainGui.Add("Text", "x20 y+10 w820", T("For two-handed controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
 MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll)"))
@@ -737,7 +737,7 @@ MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 and 90 degr
 MainGui.Add("Text", "x20 y+10 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T("** Tightening:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter that attenuates micro-movements to eliminate hand tremors and pulse `ntwitches and hardware sensor noise (by JibbSmart). 0 - Disabled; 2 - default for Sony gamepads, 3 - 5 for Joy-cons"))
+MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors nand pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T(" *** Caution:"))
 MainGui.Add("Text", "x20 y+1 w820", T("EMA smooth filter add input latency. For 60fps games (value - latency): 25   ~2.7ms;  50   ~8ms;  75   ~24ms"))
@@ -902,7 +902,7 @@ DeleteProfileBtn.OnEvent("Click", (*) => DeleteProfileEvent(ProfileDdl.Text))
 LoadProfileEvent(selectedProfile) {
     if (selectedProfile == "")
         return
-    IniWrite(selectedProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
+    SmartIniWrite(selectedProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
     Reload()
 }
 
@@ -936,17 +936,17 @@ CreateProfileEvent(profileName) {
         For key in JslKeys {
             if (key != "NONE") {
                 if (key == "SL" || key == "SR" || key == "HOME" || key == "CAPTURE") {
-                    IniWrite("NONE", targetFile, "JOYCONS", key)
+                    SmartIniWrite("NONE", targetFile, "JOYCONS", key)
                 } else if (key == "L4" || key == "R4") {
-                    IniWrite("NONE", targetFile, "DUALSENSE-EDGE", key)
+                    SmartIniWrite("NONE", targetFile, "DUALSENSE-EDGE", key)
                 } else {
-                    IniWrite("NONE", targetFile, "Xbox", key)
+                    SmartIniWrite("NONE", targetFile, "Xbox", key)
                 }
-                IniWrite("NONE", targetFile, "KEYBOARD-MOUSE", key)
+                SmartIniWrite("NONE", targetFile, "KEYBOARD-MOUSE", key)
             }
         }
         
-        IniWrite(profileName, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
+        SmartIniWrite(profileName, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
         MsgBox(T("Profile '") profileName T("' created successfully!"), T("Success"), "Iconi")
         Reload()
     } catch as err {
@@ -971,7 +971,7 @@ radNintendo.OnEvent("Click", (*) => SetLayout("Nintendo"))
 radSony.OnEvent("Click", (*) => SetLayout("Sony"))
 
 SetLayout(value, *) {
-    IniWrite(value, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Layout")
+    SmartIniWrite(value, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Layout")
     Reload()
 }
 
@@ -986,7 +986,7 @@ LangDdl.Text := CurrentLang
 LangDdl.OnEvent("Change", (ctrl, *) => ChangeLanguageEvent(ctrl.Text))
 
 ChangeLanguageEvent(selectedLang) {
-    IniWrite(selectedLang, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Language")
+    SmartIniWrite(selectedLang, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Language")
     Reload()
 }
 
@@ -1143,6 +1143,20 @@ OnMouseWheel(wParam, lParam, msg, hwnd) {
         OnVScroll(0, 0, 0, Viewport.Hwnd)
 }
 
+; --- ФУНКЦИЯ УМНОГО СОХРАНЕНИЯ ---
+SmartIniWrite(Value, Filename, Section, Key) {
+    ; Читаем текущее значение из файла (если ключа нет, возвращаем спец. строку)
+    oldVal := IniRead(Filename, Section, Key, "@@@NULL@@@")
+    
+    ; Переводим новое значение в строку для точного сравнения
+    newVal := String(Value)
+    
+    ; Если значения отличаются — физически перезаписываем файл
+    if (oldVal != newVal) {
+        IniWrite(newVal, Filename, Section, Key)
+    }
+}
+
 ; =========================================
 ; SAVE LOGIC
 ; =========================================
@@ -1156,8 +1170,8 @@ SaveAllConfigs(*) {
                 Loop Parse secText, "`n", "`r" {
                     parts := StrSplit(A_LoopField, "=")
                     if (parts.Length == 2) {
-                        val := Trim(parts[2])
-                        keyToClear := Trim(parts[1])
+                        val := Trim(parts[2])         ; Виртуальная кнопка Xbox
+                        keyToClear := Trim(parts[1])  ; Физическая кнопка геймпада
                         
                         isXboxBtn := false
                         for x in XboxMapping {
@@ -1184,8 +1198,16 @@ SaveAllConfigs(*) {
                             }
                         }
 
-                        if (isXboxBtn && shouldClear)
-                            IniWrite("NONE", A_ScriptDir "\" XboxIni, sec, keyToClear)
+                        ; --- УМНАЯ ПРОВЕРКА ---
+                        ; Если интерфейс всё еще содержит этот же бинд, не трогаем его!
+                        stillMapped := false
+                        if (CtrlXbox.Has(val) && CtrlXbox[val].Text == keyToClear)
+                            stillMapped := true
+                        if (CtrlExtraXbox.Has(keyToClear) && CtrlExtraXbox[keyToClear].Text == val)
+                            stillMapped := true
+
+                        if (isXboxBtn && shouldClear && !stillMapped)
+                            SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, sec, keyToClear)
                     }
                 }
             }
@@ -1197,7 +1219,7 @@ SaveAllConfigs(*) {
             btn := ctrl.Text
             if (btn != "NONE" && btn != "") {
                 if (btn != "SL" && btn != "SR" && btn != "HOME" && btn != "CAPTURE" && btn != "L4" && btn != "R4") {
-                    IniWrite(key, A_ScriptDir "\" XboxIni, "Xbox", btn) 
+                    SmartIniWrite(key, A_ScriptDir "\" XboxIni, "Xbox", btn) 
                 }
             }
         }
@@ -1206,12 +1228,12 @@ SaveAllConfigs(*) {
         for key in ["SL", "SR", "HOME", "CAPTURE"] {
             ctrl := CtrlExtraXbox[key]
             val := (ctrl.Text != "") ? ctrl.Text : "NONE"
-            IniWrite(val, A_ScriptDir "\" XboxIni, "JOYCONS", key)
+            SmartIniWrite(val, A_ScriptDir "\" XboxIni, "JOYCONS", key)
         }
         for key in ["L4", "R4"] {
             ctrl := CtrlExtraXbox[key]
             val := (ctrl.Text != "") ? ctrl.Text : "NONE"
-            IniWrite(val, A_ScriptDir "\" XboxIni, "DUALSENSE-EDGE", key)
+            SmartIniWrite(val, A_ScriptDir "\" XboxIni, "DUALSENSE-EDGE", key)
         }
 
         ; --- 3 и 4: Сохраняем активный Layout, НЕ стирая уникальные кнопки другого ---
@@ -1219,30 +1241,30 @@ SaveAllConfigs(*) {
             for key in SonyMapping {
                 ctrl := CtrlSony[key]
                 val := (ctrl.Text != "") ? ctrl.Text : "NONE"
-                IniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
             }
         } else {
             for key in JoyconMapping {
                 ctrl := CtrlJoyCon[key]
                 val := (ctrl.Text != "") ? ctrl.Text : "NONE"
-                IniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
             }
         }
 		
         ; --- 5. Вкладка WHEEL ---
         valAct := (CtrlWheel["WHEEL-ACTIVATION"].ddl.Text != "") ? CtrlWheel["WHEEL-ACTIVATION"].ddl.Text : "NONE"
-        IniWrite(valAct, A_ScriptDir "\" XboxIni, "Motion", "WHEEL-ACTIVATION")
+        SmartIniWrite(valAct, A_ScriptDir "\" XboxIni, "Motion", "WHEEL-ACTIVATION")
         
 		; Сохранение нового параметра MELEE-GESTURE в зависимости от выбранного режима (Xbox или KB/M)
         if (CtrlWheel.Has("MELEE-GESTURE")) {
             obj := CtrlWheel["MELEE-GESTURE"]
             valMelee := (obj.ddl.Text != "") ? obj.ddl.Text : "NONE"
             if (obj.rKbm.Value == 1) {
-                IniWrite(valMelee, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "MELEE-GESTURE")
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "Motion", "MELEE-GESTURE")
+                SmartIniWrite(valMelee, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "MELEE-GESTURE")
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "Motion", "MELEE-GESTURE")
             } else {
-                IniWrite(valMelee, A_ScriptDir "\" XboxIni, "Motion", "MELEE-GESTURE")
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "MELEE-GESTURE")
+                SmartIniWrite(valMelee, A_ScriptDir "\" XboxIni, "Motion", "MELEE-GESTURE")
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "MELEE-GESTURE")
             }
         }
 		
@@ -1251,11 +1273,11 @@ SaveAllConfigs(*) {
             obj := CtrlWheel["AutoSprintButton"]
             valSprint := (obj.ddl.Text != "") ? obj.ddl.Text : "NONE"
             if (obj.rKbm.Value == 1) {
-                IniWrite(valSprint, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "AutoSprintButton")
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "Xbox", "AutoSprintButton")
+                SmartIniWrite(valSprint, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "AutoSprintButton")
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "Xbox", "AutoSprintButton")
             } else {
-                IniWrite(valSprint, A_ScriptDir "\" XboxIni, "Xbox", "AutoSprintButton")
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "AutoSprintButton")
+                SmartIniWrite(valSprint, A_ScriptDir "\" XboxIni, "Xbox", "AutoSprintButton")
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "AutoSprintButton")
             }
         }
 		
@@ -1263,11 +1285,11 @@ SaveAllConfigs(*) {
             obj := CtrlWheel[key]
             val := (obj.ddl.Text != "") ? obj.ddl.Text : "NONE"
             if (obj.rKbm.Value == 1) {
-                IniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "Motion", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "Motion", key)
             } else {
-                IniWrite(val, A_ScriptDir "\" XboxIni, "Motion", key)
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "Motion", key)
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
             }
         }
         
@@ -1276,11 +1298,11 @@ SaveAllConfigs(*) {
             obj := CtrlWheel[key]
             val := (obj.ddl.Text != "") ? obj.ddl.Text : "NONE"
             if (obj.rKbm.Value == 1) {
-                IniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "Xbox", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "Xbox", key)
             } else {
-                IniWrite(val, A_ScriptDir "\" XboxIni, "Xbox", key)
-                IniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
+                SmartIniWrite(val, A_ScriptDir "\" XboxIni, "Xbox", key)
+                SmartIniWrite("NONE", A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key)
             }
         }
 		
@@ -1292,11 +1314,11 @@ SaveAllConfigs(*) {
                 val := obj.valMap[obj.ctrl.Text]
             else
                 val := (obj.ctrl.Text != "") ? obj.ctrl.Text : "NONE"
-            IniWrite(val, A_ScriptDir "\" obj.file, obj.sec, key)
+            SmartIniWrite(val, A_ScriptDir "\" obj.file, obj.sec, key)
         }
         
-        IniWrite(Layout, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Layout")
-        IniWrite(ActiveProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
+        SmartIniWrite(Layout, A_ScriptDir "\" ConfigIni, "ConfigGUI", "Layout")
+        SmartIniWrite(ActiveProfile, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
 		
         Global IsUnsavedChanges := false
         ;MsgBox(T("Settings successfully saved!"), T("Success"))
