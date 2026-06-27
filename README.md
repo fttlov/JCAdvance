@@ -239,8 +239,8 @@ Wait for the success signal - double rumble.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed.
 
 #### Indication
-During automatic calibration, the first successful calibration is always accompanied by a double short vibration signal. Subsequent automatic calibrations are indicated by the LEDs only when the option `LedCalibrationDebug=1` is enabled..<br>
-During manual calibration, the vibration signal is triggered after each successful calibration.
+During automatic calibration, the first successful calibration is always accompanied by a double short vibration and beep signal. Subsequent automatic calibrations are indicated by the LEDs only when the option `LedCalibrationDebug=1` is enabled..<br>
+During manual calibration, the vibration and beep signal is triggered after each successful calibration.
 
 #### Config.ini Settings (Under [Motion])
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
