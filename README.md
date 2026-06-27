@@ -229,14 +229,7 @@ How it works: Launch the game, use the in-game settings to configure the control
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
 
 #### Automatic Calibration (Recommended)
-By default, the emulator constantly recalibrates your controller in the background by two methods: <br>
-1. **Active: Stillness (The "Desk" Method):** 
-   Whenever you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point.  <br>
-2. **Passive: Sensor Fusion (The "In-Air" Method):** 
-   You don't always have to put the controller down! The emulator constantly compares the gyro rotation against the gravity sensor (accelerometer). Because normal gameplay (mostly horizontal panning) isn't enough for the sensors to calculate 3D space, you can actively force a recalibration: simply draw a wide, fast, complex movement like **"Infinity sign** in the air with your controller about 2-3 seconds. This complex 3D motion exposes all axes to gravity, allowing the algorithm to calculate and subtract the drift error on the fly.
-   
-However, these methods do not offer a 100% guarantee. During a long gaming session, if none of the conditions are met, auto-calibration simply won't work.
-If you notice a slight drift, simply set up one of the auto-calibration conditions described above. Or use manual calibration.
+By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point. <br>
 
 #### Manual Calibration (Hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
