@@ -80,10 +80,10 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Manual Gyro recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
-- **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
-- **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
-- **OSD info**: about current values from sticks, triggers and gyroscope with customizable hotkey (on/off)
+- **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes (mainly for Joy-Con) 
+- **Right Stick as buttons mode:** using the stick directions as virtual buttons
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
+- **OSD info**: about current values from sticks, triggers and gyroscope with customizable hotkey (on/off)
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
