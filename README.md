@@ -82,7 +82,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
-- **OSD info**: about current values on sticks/triggers with customizable hotkey (on/off)
+- **OSD info**: about current values from sticks, triggers and gyroscope with customizable hotkey (on/off)
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
 - **EMA Filter:** Smooths out jittery movements
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
