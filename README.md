@@ -84,7 +84,6 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
 - **OSD info**: about current values from sticks, triggers and gyroscope with customizable hotkey (on/off)
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
-- **EMA Filter:** Smooths out jittery movements
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
