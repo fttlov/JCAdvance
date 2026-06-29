@@ -221,6 +221,17 @@ __________
 
 **Profiles:** The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session.
 
+  ### OSD
+
+The OSD now displays real-time sticks, triggers and gyroscope telemetry. This helps you understand how the JoyShockLibrary auto-calibration handles your Joy-Con's hardware drift.
+**For Triggers**: raw data from 0 to 255. <br>
+**For Sticks**: raw data fromm -32768 to 32768 <br>
+**Calib (0-100%)**: Algorithm confidence. Usually stays at 100%, meaning the baseline noise is known. It drops to 0% only during a manual reset (ALT+C) or the 10-minute seamless reset. <br>
+**Steady (YES / NO)**: Physical stillness detector. When it says YES, the controller is perfectly still, and the background auto-calibration is actively collecting data.<br>
+**BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Joy-Con sensors naturally drift as the battery heats up. These numbers show the raw error the emulator is currently suppressing to keep your crosshair perfectly still.<br>
+
+Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
+  
   ### New Smart Gyro Sensitivity Adjustment
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
