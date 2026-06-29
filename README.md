@@ -76,8 +76,8 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
 - **Smart Sensitivity Adjustment:** Change the sensitivity by hotkeys in game and view the latest values in the console
-- **Сalibration indicator** a vibrating signal (also led for Joy-Con) to indicate successful calibration
-- **Gyro manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
+- **Сalibration indicator** a beep to indicate successful auto-calibration
+- **Manual Gyro recalibrating:** Place device on a flat surface, press customizable hotkey and wait the beep
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
