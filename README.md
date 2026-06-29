@@ -71,7 +71,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
 - **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
-- **Motion control options:** (clutch/ratcheting) to start/stop motion tracking by pressing a mapped button
+- **Flexible Gyro Ratchet button:** Hold to Mute (classic mode + delay option) or Hold to Activate
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
@@ -82,6 +82,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Polling Rate Option:** Increase the polling rate for smoother motion response
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes for Joy-cons
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons for Joy-cons
+- **OSD info**: about current values on sticks/triggers with customizable hotkey (on/off)
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
 - **EMA Filter:** Smooths out jittery movements
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
@@ -216,7 +217,7 @@ __________
 
   </details>
 
-**Settings**: aAll settings relating to dead zones, inversion, default gyroscope mode, steering and other profile-specific options have now been moved to the \XboxProfile\*.ini file, within the [Settings] section, instead of config.ini and applied without restarting the emulator.
+**Settings**: All settings relating to dead zones, inversion, default gyroscope mode, steering and other profile-specific options have now been moved to the \XboxProfile\*.ini file, within the [Settings] section, instead of config.ini and applied without restarting the emulator.
 
 **Profiles:** The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session.
 
@@ -230,6 +231,7 @@ To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", 
 
 #### Automatic Calibration (Recommended)
 By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point. <br>
+There's also passive calibration using an accelerometer, but I'm not exactly sure how it works. Sometimes the calibration triggers during smooth movements (infinity gesture) at a constant speed or something like that.
 
 #### Manual Calibration (Hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
@@ -367,6 +369,11 @@ Reading this description might make it seem like playing this way is impossible 
 
   ### Split Mode & Joy-Con Mapping
   Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2
+
+  ### Ratchet Delay
+
+  With classic ratcheting (hold to mute gyro motion button), the camera jerks suddenly when you release the button due to the residual movement of your hand. Default setting: 150 ms. 
+  In hold to move mode, the delay does not apply
 
   ### Gyro Melee Gesture
   A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The only practical use for an accelerometer. You can also adjust the impact force (G-force).
