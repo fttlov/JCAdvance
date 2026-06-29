@@ -181,7 +181,7 @@ static void EncodeRumble(unsigned char* data, float freq, float amp) {
 }
 
 // https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp
-void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
+/*void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
 {
 	unsigned char outputReport[64] = { 0 };
 
@@ -211,6 +211,30 @@ void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorVa
 	}
 
 	hid_write(jcHandle, outputReport, sizeof(outputReport));
+}*/
+
+void JoyConSimpleRumble(hid_device* jcHandle, bool IsLeft, unsigned char MotorValue)
+{
+	unsigned char outputReport[64] = { 0 };
+
+	outputReport[0] = 0x10;
+	outputReport[1] = (IsLeft ? PrimaryGamepad.PacketCounter++ : PrimaryGamepad.PacketCounter2++) & 0x0f;	//@019 RumbleFix
+
+	// ЖЕСТКО устанавливаем нейтральную вибрацию для ОБЕИХ сторон по умолчанию (защита от щелчков/игнора)
+	outputReport[2] = 0x00; outputReport[3] = 0x01; outputReport[4] = 0x40; outputReport[5] = 0x40;
+	outputReport[6] = 0x00; outputReport[7] = 0x01; outputReport[8] = 0x40; outputReport[9] = 0x40;
+
+	// Если сигнал есть, перезаписываем только активную сторону
+	if (MotorValue > 0) {
+		if (IsLeft) {
+			EncodeRumble(&outputReport[2], MotorFreqFromStrength(MotorValue), (MotorValue * PrimaryGamepad.RumbleStrength * 0.9f) / 25500.0f);
+		}
+		else { // Is right
+			EncodeRumble(&outputReport[6], MotorFreqFromStrength(MotorValue), (MotorValue * PrimaryGamepad.RumbleStrength * 0.9f) / 25500.0f);
+		}
+	}
+
+	hid_write(jcHandle, outputReport, 64);
 }
 
 void GamepadSetState(AdvancedGamepad &Gamepad)
@@ -551,46 +575,6 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 	else if (Gamepad.ControllerType == NINTENDO_JOYCONS && !Gamepad.USBConnection) {
 		
 		if (Gamepad.RumbleStrength != 0) {
-			// Left JoyCon
-			/*unsigned char outputReportLeft[64] = { 0 };
-			outputReportLeft[0] = 0x10;
-			outputReportLeft[1] = Gamepad.PacketCounter++ & 0x0f;
-			outputReportLeft[6] = 0x00;
-			outputReportLeft[7] = 0x01;
-			outputReportLeft[8] = 0x40;
-			outputReportLeft[9] = 0x40;
-
-			if (OutState.LargeMotor == 0) {
-				outputReportLeft[2] = 0x00;
-				outputReportLeft[3] = 0x01;
-				outputReportLeft[4] = 0x40;
-				outputReportLeft[5] = 0x40;
-			} else
-				EncodeRumble(&outputReportLeft[2], MotorFreqFromStrength(Gamepad.OutState.LargeMotor), (Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
-			hid_write(Gamepad.HidHandle, outputReportLeft, sizeof(outputReportLeft));
-
-			// Right JoyCon
-			if (Gamepad.HidHandle2) {
-				unsigned char outputReportRight[64] = { 0 };
-				outputReportRight[0] = 0x10;
-				outputReportRight[1] = Gamepad.PacketCounter++ & 0x0f;
-
-				outputReportRight[6] = 0x00;
-				outputReportRight[7] = 0x01;
-				outputReportRight[8] = 0x40;
-				outputReportRight[9] = 0x40;
-
-				if (OutState.SmallMotor == 0) {
-					outputReportRight[6] = 0x00;
-					outputReportRight[7] = 0x01;
-					outputReportRight[8] = 0x40;
-					outputReportRight[9] = 0x40;
-				}
-				else
-					EncodeRumble(&outputReportRight[6], MotorFreqFromStrength(Gamepad.OutState.SmallMotor), (Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength * 0.9f) / 25500.0f);
-
-				hid_write(Gamepad.HidHandle2, outputReportRight, sizeof(outputReportRight));
-			}*/
 			if (Gamepad.HidHandle != NULL)	//@019 RubleFix выбирать самый сильный сигнал, а не делить пополам
 				//JoyConSimpleRumble(Gamepad.HidHandle, true, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor + Gamepad.OutState.SmallMotor) / 2);			
 				JoyConSimpleRumble(Gamepad.HidHandle, true, AppStatus.JoyconRumbleMerge == false ? Gamepad.OutState.LargeMotor : (Gamepad.OutState.LargeMotor > Gamepad.OutState.SmallMotor ? Gamepad.OutState.LargeMotor : Gamepad.OutState.SmallMotor));
@@ -613,13 +597,7 @@ void GamepadSetState(AdvancedGamepad &Gamepad)
 					hid_write(Gamepad.HidHandle, outputReport, 64);
 			}
 		}
-	} //else {
-		//if (JslGetControllerType(0) == JS_TYPE_DS || JslGetControllerType(0) == JS_TYPE_DS4)
-			//JslSetLightColour(0, (std::clamp(Gamepad.OutState.LEDRed - Gamepad.OutState.LEDBrightness, 0, 255) << 16) + (std::clamp(Gamepad.OutState.LEDGreen - Gamepad.OutState.LEDBrightness, 0, 255) << 8) + std::clamp(Gamepad.OutState.LEDBlue - Gamepad.OutState.LEDBrightness, 0, 255)); // https://github.com/CyberPlaton/_Nautilus_/blob/master/Engine/PSGamepad.cpp
-		//JslSetRumble(0, (unsigned int)Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength / 100, (unsigned int)Gamepad.OutState.SmallMotor * Gamepad.RumbleStrength / 100); // Not working with DualSense USB connection
-	//}
-	//else // Unknown controllers - Pro controller, Joy-cons
-		//JslSetRumble(0, (unsigned int)Gamepad.OutState.LargeMotor * Gamepad.RumbleStrength / 100, (unsigned int)Gamepad.OutState.SmallMotor * Gamepad.RumbleStrength / 100);
+	}
 }
 
 void UpdateBatteryInfo(AdvancedGamepad &Gamepad) {
@@ -1036,12 +1014,28 @@ void KMStickMode(AdvancedGamepad &Gamepad, bool DontResetInputState, bool StickI
 	}
 }
 
-void LoadConfig() {	//@056 Читаем конфиг во время работы (по дате файла) и применяем изменения (в main)
+void SeamlessGyroReset(int deviceIndex) {
+	if (deviceIndex == -1) return;
+
+	float offsetX, offsetY, offsetZ;
+
+	// 1. Запоминаем текущую поправку на дрифт
+	JslGetCalibrationOffset(deviceIndex, offsetX, offsetY, offsetZ);
+
+	// 2. Стираем память алгоритма (сбрасываем ловушку идеального нуля)
+	JslResetContinuousCalibration(deviceIndex);
+
+	// 3. Возвращаем поправку обратно! (Игрок ничего не заметит)
+	JslSetCalibrationOffset(deviceIndex, offsetX, offsetY, offsetZ);
+}
+
+void LoadConfig() {	//@057 Читаем конфиг во время работы (по дате файла) и применяем изменения (в main)
 	CIniReader IniFile("Config.ini");
 	AppStatus.GyroSpace = IniFile.ReadInteger("Motion", "GyroSpace", 1);
 	PrimaryGamepad.Motion.Tightening = IniFile.ReadFloat("Motion", "Tightening", 2.0f);
 	PrimaryGamepad.Motion.MouseSmooth = ClampFloat(IniFile.ReadFloat("Motion", "MouseSmooth", 0), 0, 99) * 0.01f;
 	PrimaryGamepad.Motion.JoySmooth = ClampFloat(IniFile.ReadFloat("Motion", "JoySmooth", 0), 0, 99) * 0.01f;
+	PrimaryGamepad.Motion.RatchetDelayTime = IniFile.ReadFloat("Motion", "RatchetDelayTime", 150.0f);	//@058 Clutch Smoothing 
 	PrimaryGamepad.Motion.MotionWheelButtonsDeadZone = IniFile.ReadFloat("Motion", "MotionWheelButtonsDeadZone", 12.0f);
 	AppStatus.MeleeGForce = IniFile.ReadFloat("Motion", "MeleeGForce", 3.0f); // У тебя в коде дефолт 3.0, но читает из конфига
 	AppStatus.GyroFromLeft = IniFile.ReadBoolean("Motion", "GyroFromLeft", false);
@@ -1059,6 +1053,7 @@ void LoadConfig() {	//@056 Читаем конфиг во время работ�
 	AppStatus.StickAsTriggerToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.StickAsTriggerToggleButtonName);
 	AppStatus.HotKeys.ResetKeyName = IniFile.ReadString("Gamepad", "ResetKey", "NONE");
 	AppStatus.HotKeys.ResetKey = KeyNameToKeyCode(AppStatus.HotKeys.ResetKeyName);
+	AppStatus.HotKeys.OSDKey = KeyNameToKeyCode(IniFile.ReadString("Gamepad", "OSDKey", "NONE"));
 	AppStatus.HotKeys.CalibrateKeyName = IniFile.ReadString("Gamepad", "CalibrateKey", "NONE");
 	AppStatus.HotKeys.CalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.CalibrateKeyName);
 	PrimaryGamepad.RumbleStrength = IniFile.ReadInteger("Gamepad", "RumbleStrength", 100);
@@ -1376,7 +1371,7 @@ void DefaultMainText() {
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
 		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the rumble or press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the rumble\n").c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the beep\n").c_str());
 		u8printf(T("Layer1_Sense", "\n Press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
@@ -1415,7 +1410,7 @@ void DefaultMainText() {
 	u8printf(T("Layer3_AImMode", "  Gyro Behavior:   Press \"ALT + F\" to switching Control button behavior (start/stop motion).\n").c_str());
 	u8printf(T("Layer3_Lstick", "  L-Stick Mode:    Press \"PS/HOME + L3\" or \"ALT + S\" to toggle Left Stick mode (AutoSprintButton).\n").c_str());
 	u8printf(T("Layer3_Rumble", "  Rumble Power:    Press \"Capture + Plus\" or \"PS + Options\" or \"ALT + </>\" to adjust rumble.\n").c_str());
-	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manually.\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
 	u8printf(T("Layer3_Backlight", "  Backlight:       Press \"PS + L1\" or \"ALT + B\" to toggle controller backlight (Sony only).\n").c_str());
 	u8printf(T("Layer3_Deadzones", "  Diagnostics:     Press \"ALT + F9\" to view stick and trigger dead zones.\n").c_str());
 
@@ -1451,17 +1446,6 @@ void SwapGamepads()
 	GamepadSetState(SecondaryGamepad);
 	MainTextUpdate();
 }
-
-/*void SyncGamepadsWithJSL()
-{
-	struct JSL_SETTINGS JSLSecondaryGamepadInfo = JslGetControllerInfoAndSettings(PrimaryGamepad.DeviceIndex);
-	//printf_s("1. %s\n2. %s \n", JSLSecondaryGamepadInfo.controllerPath.c_str(), PrimaryGamepad.DevicePath);
-	if (!PrimaryGamepad.DevicePath.empty() && PrimaryGamepad.DevicePath != JSLSecondaryGamepadInfo.controllerPath.c_str()) {
-		//printf("swaped\n");
-		std::swap(PrimaryGamepad.DeviceIndex, SecondaryGamepad.DeviceIndex);
-		std::swap(PrimaryGamepad.DeviceIndex2, SecondaryGamepad.DeviceIndex2);
-	}
-}*/
 
 void OpenGamepadByJSL(AdvancedGamepad &Gamepad) {	//@021 RumbleFix3 -возможное устранение "вибрации не на том Joycon"
 	if (Gamepad.DeviceIndex == -1) return;			//брать точный системный путь устройства из библиотеки JoyShockLibrary
@@ -1689,7 +1673,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 3.0");
+	SetConsoleTitle("JCAdvance 3.1");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -1724,10 +1708,10 @@ int main(int argc, char **argv)
 	PrimaryGamepad.Sticks.InvertRightXY = IniFile.ReadBoolean("Gamepad", "InvertRightStickXY", false);
 	AppStatus.HotKeys.ResetKeyName = IniFile.ReadString("Gamepad", "ResetKey", "NONE");
 	AppStatus.HotKeys.ResetKey = KeyNameToKeyCode(AppStatus.HotKeys.ResetKeyName);
+	AppStatus.HotKeys.OSDKey = KeyNameToKeyCode(IniFile.ReadString("Gamepad", "OSDKey", "NONE"));		//@060
 	AppStatus.AutoCalibrationEnabled = IniFile.ReadBoolean("Motion", "AutoCalibrationEnabled", true);	//@050
 	AppStatus.HotKeys.CalibrateKeyName = IniFile.ReadString("Gamepad", "CalibrateKey", "NONE");
 	AppStatus.HotKeys.CalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.CalibrateKeyName);
-	AppStatus.LedCalibrationDebug = IniFile.ReadBoolean("Motion", "LedCalibrationDebug", false);
 	AppStatus.ShowBatteryStatusOnLightBar = IniFile.ReadBoolean("Gamepad", "ShowBatteryStatusOnLightBar", true);
 	AppStatus.SleepTimeOut = IniFile.ReadInteger("Gamepad", "SleepTimeOut", 15);
 	timeBeginPeriod(1);
@@ -2003,7 +1987,7 @@ int main(int argc, char **argv)
 	//auto previous_time = std::chrono::high_resolution_clock::now();
 	//static DWORD lastTime = GetTickCount();
 
-	uint64_t LastConfigTime = GetFileModifiedTime("Config.ini");	//@056 Запоминаем время изменения конфигов при старте
+	uint64_t LastConfigTime = GetFileModifiedTime("Config.ini");	//@057 Запоминаем время изменения конфигов при старте
 	std::string CurrentProfilePath = "XboxProfiles\\" + XboxProfiles[XboxProfileIndex];
 	uint64_t LastProfileTime = GetFileModifiedTime(CurrentProfilePath);
 	int HotReloadTimer = 10000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	// Таймер, чтобы не дергать Windows слишком часто (10 сек.)
@@ -2030,7 +2014,31 @@ int main(int argc, char **argv)
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
 
-		//@056 чтение из ini во время работы применение изменений
+		//@059 ФОНОВЫЙ БЕСШОВНЫЙ СБРОС MinDeltaGyro (Каждые 10 минут) - фикс отказа автокалибровки при длинных сессиях
+		if (AppStatus.SeamlessResetTimer > 0) {
+			AppStatus.SeamlessResetTimer--;
+		}
+		else {
+			// Перезаводим таймер на 10 минут (600 000 мс)
+			AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+
+			SeamlessGyroReset(PrimaryGamepad.DeviceIndex);
+			if (PrimaryGamepad.DeviceIndex2 != -1) {
+				SeamlessGyroReset(PrimaryGamepad.DeviceIndex2);
+			}
+
+			// Если включен второй геймпад, сбрасываем и его
+			if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
+				SeamlessGyroReset(SecondaryGamepad.DeviceIndex);
+				if (SecondaryGamepad.DeviceIndex2 != -1) SeamlessGyroReset(SecondaryGamepad.DeviceIndex2);
+			}
+
+			// временный Debug
+			 //Beep(800, 50); 
+			//PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
+		}
+
+		//@057 HotRead ini and apply
 		if (HotReloadTimer > 0) {
 			HotReloadTimer--;
 		}
@@ -2067,7 +2075,6 @@ int main(int argc, char **argv)
 					MainTextUpdate();
 				}
 
-				// Печатаем лог (он появится либо под новой шапкой, либо просто добавится вниз)
 				u8printf("\n[HOT RELOAD] %s updated!", XboxProfiles[XboxProfileIndex].c_str());
 				Beep(1500, 100);
 			}
@@ -2147,27 +2154,6 @@ int main(int argc, char **argv)
 			PrimaryGamepad.InputState.buttons |= tempState.buttons;
 		}
 
-		//@050 (Calibrate and freeze only the active aiming controller)
-		/*if (!AppStatus.AutoCalibrationEnabled && !AppStatus.StartupCalibrationFrozen) {
-			// Автоматически определяем хэндл прицельного контроллера
-			int aimingHandle = PrimaryGamepad.DeviceIndex; // Дефолтный левый геймпад или одиночный Pro/DualSense
-			if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
-				aimingHandle = PrimaryGamepad.DeviceIndex2; // Правый Joy-Con при стандартном прицеливании
-			}
-
-			if (aimingHandle != -1) {
-				JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle); // Считываем статус только прицельного геймпада
-
-				if (autoCal.isSteady && autoCal.confidence >= 1.0f) {
-					JslSetAutomaticCalibration(aimingHandle, false); // Замораживаем автокалибровку только для него
-					AppStatus.StartupCalibrationFrozen = true;
-					Beep(1500, 100);
-					Sleep(50);
-					Beep(1500, 100);
-				}
-			}
-		}*/
-
 		//@043 ДЕТЕКТОР Melee Gesture (PUNCH, HOOK, DOWNSTRIKE)
 		if (AppStatus.ControllerCount >= 1 && PrimaryGamepad.DeviceIndex != -1) {
 			// Уменьшаем кулдаун (таймаут повтора) и таймер удержания кнопки
@@ -2242,46 +2228,40 @@ int main(int argc, char **argv)
 			}
 		}
 
-		//@050 Калибровка автоматическая, ручная + систмеа индикации удачной/неудачной калибровки
-		if (AppStatus.AutoCalibrationEnabled && AppStatus.LedCalibrationDebug) {
+		//@050 Калибровка автоматическая с отключением и фиксом MinDeltaGyro
+		int aimingHandle = PrimaryGamepad.DeviceIndex;
+		if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
+			aimingHandle = PrimaryGamepad.DeviceIndex2;
+		}
+
+		if (aimingHandle != -1) {
 			static bool wasSteadyAndConfident = false;
+			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
+			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
 
-			int aimingHandle = PrimaryGamepad.DeviceIndex;
-			if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
-				aimingHandle = PrimaryGamepad.DeviceIndex2;
-			}
+			if (isSteadyAndConfident && !wasSteadyAndConfident) {
 
-			if (aimingHandle != -1) {
-				JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-				bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
-
-				// Поймали момент: только что замерли и успешно откалибровались
-				if (isSteadyAndConfident && !wasSteadyAndConfident) {
-					// Включаем все 4 светодиода (битовая маска 15)
-					JslSetPlayerNumber(aimingHandle, 15);
-
-					// Заводим таймер на 200 мс (независимо от SleepTimeOut)
-					AppStatus.LedDebugTimer = 200 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+				// 1. Обработка ПЕРВОЙ (стартовой) калибровки при AutoCalibrationEnabled 0 и 1
+				if (!AppStatus.StartupCalibrationFrozen) {
+					// Если в конфиге калибровка выключена - жестко замораживаем её
+					if (!AppStatus.AutoCalibrationEnabled) {
+						JslSetAutomaticCalibration(aimingHandle, false);
+					}
+					AppStatus.StartupCalibrationFrozen = true; // Стартовый этап пройден
+					PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
 				}
-				wasSteadyAndConfident = isSteadyAndConfident;
+
+				// 2. Обработка ФОНОВЫХ калибровок
+				else if (AppStatus.AutoCalibrationEnabled) {
+					// Просто отодвигаем СБРОС MinDeltaGyro на 10 минут
+					AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+					//PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);	//debug фоновой калибровки
+				}
 			}
+			wasSteadyAndConfident = isSteadyAndConfident;
 		}
 
-		if (AppStatus.LedDebugTimer > 0) {
-			AppStatus.LedDebugTimer--;
-
-			if (AppStatus.LedDebugTimer == 0) {
-				int aimingHandle = PrimaryGamepad.DeviceIndex;
-				if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
-					aimingHandle = PrimaryGamepad.DeviceIndex2;
-				}
-				if (aimingHandle != -1) {
-					// Возвращаем дефолтный 1-й светодиод (битовая маска 1)
-					JslSetPlayerNumber(aimingHandle, 1);
-				}
-			}
-		}
-
+		//Ручная калибровка по hokey c индикацией успеха и ошибки
 		if (AppStatus.SkipPollCount == 0 && (
 			(AppStatus.HotKeys.CalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.CalibrateKey))
 			|| (IsKeyPressed(VK_MENU) && IsKeyPressed('C')) // Дублирующий хардкод хоткея ALT + C
@@ -2308,35 +2288,6 @@ int main(int argc, char **argv)
 			}
 
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-		}
-
-		if (!AppStatus.StartupCalibrationFrozen) {
-			int aimingHandle = PrimaryGamepad.DeviceIndex;
-			if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
-				aimingHandle = PrimaryGamepad.DeviceIndex2;
-			}
-
-			if (aimingHandle != -1) {
-				JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-
-				if (autoCal.isSteady && autoCal.confidence >= 1.0f) {
-
-					// Замораживаем только если в конфиге стоит AutoCalibrationEnabled = 0
-					if (!AppStatus.AutoCalibrationEnabled) {
-						JslSetAutomaticCalibration(aimingHandle, false);
-					}
-
-					AppStatus.StartupCalibrationFrozen = true; // Отмечаем, что первая калибровка пройдена
-
-					// Звуковой сигнал (можешь оставить или убрать)
-					//Beep(1500, 100);
-					//Sleep(50);
-					//Beep(1500, 100);
-
-					// Запускаем таймер двойной вибрации на 40 тиков (кадров)
-					AppStatus.CalibRumbleTimer = 200 / AppStatus.SleepTimeOut;
-				}
-			}
 		}
 
 		if (AppStatus.IsManualCalibrating) {
@@ -2367,8 +2318,9 @@ int main(int argc, char **argv)
 
 				if (isSuccess) {
 					// Сигнал УСПЕХА (двойной высокий писк). Теперь он совпадет со светодиодами!
-					//Beep(1500, 100); Sleep(50); Beep(1500, 100);
-					AppStatus.CalibRumbleTimer = 200 / AppStatus.SleepTimeOut;
+					Beep(1500, 50); Sleep(50); Beep(1200, 100);
+					AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	//сброс таймера
+					//AppStatus.CalibRumbleTimer = 200 / AppStatus.SleepTimeOut; //будет двойной вибро, но вибро для калибровки такое себе
 				}
 				else {
 					// Сигнал ПРОВАЛА (низкий гудок). Геймпад трясли в руках все 5 секунд.
@@ -2377,7 +2329,8 @@ int main(int argc, char **argv)
 			}
 		}
 
-		if (AppStatus.CalibRumbleTimer > 0) {
+		//Вибро-помощник
+		/*if (AppStatus.CalibRumbleTimer > 0) {
 			AppStatus.CalibRumbleTimer--;
 
 			// Вычисляем, сколько реальных миллисекунд осталось до конца таймера
@@ -2408,7 +2361,7 @@ int main(int argc, char **argv)
 				PrimaryGamepad.OutState.LargeMotor = 0;
 			}
 			GamepadSetState(PrimaryGamepad);
-		}
+		}*/
 
 		// Stick dead zones
 		if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && IsKeyPressed(VK_F9) != 0)
@@ -2467,6 +2420,18 @@ int main(int argc, char **argv)
 			MainTextUpdate();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
+		
+		//@060 Запуск и остановка OSD.exe по хоткею
+		if (AppStatus.SkipPollCount == 0 && AppStatus.HotKeys.OSDKey != 0 && IsKeyPressed(AppStatus.HotKeys.OSDKey)) {
+			AppStatus.IsOsdActive = !AppStatus.IsOsdActive;
+			if (AppStatus.IsOsdActive) {
+				ShellExecuteA(NULL, "open", "OSD.exe", NULL, NULL, SW_SHOWNORMAL);
+			}
+			else {
+				system("taskkill /IM OSD.exe /F > nul 2>&1");
+			}
+			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+		}
 
 		// Switch screenshot mode
 		if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && IsKeyPressed('X'))
@@ -2493,7 +2458,7 @@ int main(int argc, char **argv)
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
 
-		// Switch keyboard and mouse profile
+		// Switch profile
 		if (AppStatus.SkipPollCount == 0 && (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled))
 			if ((PrimaryGamepad.InputState.buttons & JSMASK_PS && (PrimaryGamepad.InputState.buttons & JSMASK_UP || PrimaryGamepad.InputState.buttons & JSMASK_DOWN)) ||
 				((IsKeyPressed(VK_MENU) && (IsKeyPressed(VK_UP) || IsKeyPressed(VK_DOWN))) && GetConsoleWindow() == GetForegroundWindow()))
@@ -2524,14 +2489,6 @@ int main(int argc, char **argv)
 				AppStatus.ExternalPedalsMode = ExPedalsDependentMode;
 			else
 				AppStatus.ExternalPedalsMode = ExPedalsAlwaysRacing;
-			MainTextUpdate();
-			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-		}
-
-		// Enable/Disable motion aiming & driving
-		if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && (IsKeyPressed('5') || IsKeyPressed('6'))) {
-			if (IsKeyPressed('5')) AppStatus.DisableAiming = !AppStatus.DisableAiming;
-			if (IsKeyPressed('6')) AppStatus.DisableDriving = !AppStatus.DisableDriving;
 			MainTextUpdate();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
@@ -3194,7 +3151,7 @@ int main(int argc, char **argv)
 			report.wButtons = (WORD)XboxButtons;
 		}
 		// Nintendo controllers buttons: Capture & Home - changing working mode + another controllers (with additional buttons with keyboard emulation)
-		//if ((IsKeyPressed(VK_MENU) && IsKeyPressed('1')) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')) ||		//@038 -Hotkey for all gamepads
+		//if ((IsKeyPressed(VK_MENU) && IsKeyPressed('1')) || (IsKeyPressed(VK_MENU) && IsKeyPressed('2')) ||		//@038 -Hotkeys for all gamepads
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER ||
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT ||
 			//JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
@@ -3354,7 +3311,7 @@ int main(int argc, char **argv)
 			PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
 
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-			Beep(1200, 150);
+			Beep(1200, 100);
 			u8printf("\n[Sens Change] Mouse X: %.0f, Y: %.0f | Joy X: %.0f, Y: %.0f",
 				PrimaryGamepad.Motion.SensX / 0.005f, PrimaryGamepad.Motion.SensY / 0.005f,
 				PrimaryGamepad.Motion.JoySensX / 0.0025f, PrimaryGamepad.Motion.JoySensY / 0.0025f);
@@ -3376,7 +3333,7 @@ int main(int argc, char **argv)
 			PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
 
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-			Beep(800, 150);
+			Beep(800, 100);
 			u8printf("\n[Sens Change] Mouse X: %.0f, Y: %.0f | Joy X: %.0f, Y: %.0f",
 				PrimaryGamepad.Motion.SensX / 0.005f, PrimaryGamepad.Motion.SensY / 0.005f,
 				PrimaryGamepad.Motion.JoySensX / 0.0025f, PrimaryGamepad.Motion.JoySensY / 0.0025f);
@@ -3406,6 +3363,15 @@ int main(int argc, char **argv)
 			(AppStatus.AimingButton == JSMASK_ZR && DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) > 0) ||
 			(PrimaryGamepad.InputState.buttons & AppStatus.AimingButton)
 		);
+
+		//@058 Ratchet delay - a gyro motion delay after release Control button in ms 
+		bool isGyroAimingActive = (PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) ||
+			(PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed);
+
+		// СБРОС АМОРТИЗАТОРА: Если прицел сейчас выключен - сбрасываем флаг
+		if (!isGyroAimingActive) {
+			PrimaryGamepad.Motion.WasGyroActive = false;
+		}
 
 		// Motion racing  [O--]
 		if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
@@ -3442,8 +3408,7 @@ int main(int argc, char **argv)
 				) ) {*/
 		
 		//@039 Always меняем на button not pressed
-		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) ||
-			(PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {
+		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) || (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {
 
 				//DWORD currentTime = GetTickCount();
 				//float FrameTime = (currentTime - lastTime) / 1000.f; // Some problems with this method, we remain on a static value
@@ -3465,13 +3430,48 @@ int main(int argc, char **argv)
 					report.sThumbRX = std::clamp((int)(ClampFloat(-(velocityY * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX * PrimaryGamepad.Motion.CustomMulSens), -1, 1) * 32767 + report.sThumbRX), -32767, 32767);
 					report.sThumbRY = std::clamp((int)(ClampFloat(velocityX * TightenedSensitivity * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensY * PrimaryGamepad.Motion.CustomMulSens, -1, 1) * 32767 + report.sThumbRY), -32767, 32767);
 				}*/
-				
-			//@028 + @054 Немного переписываем сниппет, Tightened в config + add EMA Filter 
-			float effGyroX = velocityX;//1. Считываем кумулятивные данные один раз для обоих режимов
+
+			//@028 + @054 + @058 Tightened в config + EMA Filter + 	Ratchetdelay 
+			if (!PrimaryGamepad.Motion.WasGyroActive) {	//start Ratchetdelay 
+				PrimaryGamepad.Motion.WasGyroActive = true;
+
+				//@058 Включаем Ratchetdelay для MotionAimingMode
+				if (PrimaryGamepad.GamepadActionMode == MotionAimingMode) {
+					PrimaryGamepad.Motion.RatchetDelayMaxTimer = PrimaryGamepad.Motion.RatchetDelayTime / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+				}
+				else {
+					PrimaryGamepad.Motion.RatchetDelayMaxTimer = 0;	//В режиме OnlyPressed отклик должен быть мгновенным!
+				}
+				PrimaryGamepad.Motion.RatchetDelayTimer = PrimaryGamepad.Motion.RatchetDelayMaxTimer;
+
+				// ЖЕСТКО сбрасываем EMA-фильтр, чтобы убить "старую" инерцию
+				PrimaryGamepad.Motion.EmaGyroX = velocityX;
+				PrimaryGamepad.Motion.EmaGyroY = velocityY;
+				PrimaryGamepad.Motion.EmaGyroZ = velocityZ;
+			}
+
+			float effGyroX = velocityX;//Считываем кумулятивные данные один раз для режимов
 			float effGyroY = velocityY;
 			float effGyroZ = velocityZ;
 
-			float smoothAlpha = (AppStatus.AimMode == AimMouseMode) ? PrimaryGamepad.Motion.MouseSmooth : PrimaryGamepad.Motion.JoySmooth; //@029 2.EMA
+			// Если таймер амортизатора еще тикает и функция не отключена в конфиге
+			if (PrimaryGamepad.Motion.RatchetDelayTimer > 0 && PrimaryGamepad.Motion.RatchetDelayMaxTimer > 0) {
+				PrimaryGamepad.Motion.RatchetDelayTimer--;
+
+				// Вычисляем прогресс от 0.0 до 1.0
+				float progress = 1.0f - ((float)PrimaryGamepad.Motion.RatchetDelayTimer / (float)PrimaryGamepad.Motion.RatchetDelayMaxTimer);
+
+				// Квадратичная кривая (progress * progress) для мягкого старта
+				float easeInFactor = progress * progress;
+
+				// Глушим текущую скорость
+				effGyroX *= easeInFactor;
+				effGyroY *= easeInFactor;
+				effGyroZ *= easeInFactor;
+			}
+
+			//@029 2.EMA
+			float smoothAlpha = (AppStatus.AimMode == AimMouseMode) ? PrimaryGamepad.Motion.MouseSmooth : PrimaryGamepad.Motion.JoySmooth; 
 
 			if (smoothAlpha > 0.0f) {
 				// Делаем EMA независимым от герцовки. Эталон - 15 мс (0.015f). 
@@ -3493,28 +3493,28 @@ int main(int argc, char **argv)
 				PrimaryGamepad.Motion.EmaGyroZ = effGyroZ;
 			}	//end of EMA
 
-			// 3. Это уже град/сек!
+			//Это уже град/сек!
 			const float InputSize = sqrtf(effGyroX * effGyroX + effGyroY * effGyroY + effGyroZ * effGyroZ);
 			float tighteningFactor = 1.0f;
 
-			// 4. Вычисляем Tightening по JibbSmart
+			//Вычисляем Tightening по JibbSmart
 			if (PrimaryGamepad.Motion.Tightening > 0.0f && InputSize < PrimaryGamepad.Motion.Tightening) {
 				tighteningFactor = InputSize / PrimaryGamepad.Motion.Tightening;
 			}
 
-			// 5. Применяем tightening НАПРЯМУЮ к осям гироскопа
+			//Применяем tightening НАПРЯМУЮ к осям гироскопа
 			effGyroX *= tighteningFactor;
 			effGyroY *= tighteningFactor;
 
-			// 6. базовые множители
+			//базовые множители
 			float baseMultMouse = 50.0f * AppStatus.FrameTime;
 			float baseMultJoy = 16.66f * AppStatus.FrameTime; // Уменьшен в ~3 раза, чтобы шкала конфига снова стала комфортной в районе 120
 
-			if (AppStatus.AimMode == AimMouseMode) { // 5. Mouse
+			if (AppStatus.AimMode == AimMouseMode) { //Mouse
 				MouseMove(-effGyroY * baseMultMouse * PrimaryGamepad.Motion.SensX,
 					-effGyroX * baseMultMouse * PrimaryGamepad.Motion.SensY);
 			}
-			else { // 7. Joystick
+			else { //Joystick
 				// Используем baseMultJoy для стиков
 				float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
 				float gyroRY = ClampFloat(effGyroX * baseMultJoy * PrimaryGamepad.Motion.JoySensY, -1.0f, 1.0f);

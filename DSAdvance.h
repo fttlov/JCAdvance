@@ -436,6 +436,10 @@ struct AdvancedGamepad {
 		float EmaGyroY = 0.0f;
 		float EmaGyroZ = 0.0f;
 		float Tightening = 2.0f; //@112 now in config.ini
+		bool WasGyroActive = false; //@128 Gyro Activation Delay for MotionAimingMode only
+		float RatchetDelayTime = 150.0f;
+		int RatchetDelayTimer = 0;
+		int RatchetDelayMaxTimer = 0;
 
 		float MotionWheelButtonsDeadZone = 0;
 		int WheelCounter = 0;
@@ -599,13 +603,14 @@ struct _AppStatus {
 	int ManualCalibrationTimer = 0;
 	bool StartupCalibrationFrozen = false;
 	int CalibRumbleTimer = 0;
-	int LedDebugTimer = 0;
-	bool LedCalibrationDebug;
+	int SeamlessResetTimer = 0;	//@129
+	bool IsOsdActive = false;	//@130
 
 	struct _HotKeys
 	{
 		std::string ResetKeyName;
 		int ResetKey = 0;
+		int OSDKey = 0;	//@130
 		std::string CalibrateKeyName = "NONE";
 		int CalibrateKey = 0;
 	};
