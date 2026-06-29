@@ -1992,6 +1992,11 @@ int main(int argc, char **argv)
 	uint64_t LastProfileTime = GetFileModifiedTime(CurrentProfilePath);
 	int HotReloadTimer = 10000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	// Таймер, чтобы не дергать Windows слишком часто (10 сек.)
 
+	//@060 Shared Memory для передачи телеметрии гироскопа в OSD (AHK)
+	HANDLE hMapFile = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 256, "JCAdvanceTelemetry");
+	float* pTelemetry = nullptr;
+	if (hMapFile) pTelemetry = (float*)MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, 256);
+
 	while (!(GetAsyncKeyState(VK_LMENU) & 0x8000 && GetAsyncKeyState(VK_ESCAPE) & 0x8000))
 	{
 		if (PeekMessage(&WindowMsgs, NULL, 0, 0, PM_REMOVE)) {
@@ -2238,6 +2243,16 @@ int main(int argc, char **argv)
 			static bool wasSteadyAndConfident = false;
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
 			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
+
+			//@060 Пишем данные в Shared Memory для OSD
+			if (pTelemetry) {
+				float bx, by, bz;
+				JslGetCalibrationOffset(aimingHandle, bx, by, bz);
+				pTelemetry[0] = autoCal.confidence;
+				pTelemetry[1] = autoCal.isSteady ? 1.0f : 0.0f;
+				pTelemetry[2] = bx;
+				pTelemetry[3] = by;
+			}
 
 			if (isSteadyAndConfident && !wasSteadyAndConfident) {
 
@@ -4042,6 +4057,10 @@ int main(int argc, char **argv)
 
 	timeEndPeriod(1);
 
+	if (AppStatus.IsOsdActive) {
+		system("taskkill /IM OSD.exe /F > nul 2>&1");
+	}
+
 	// Reset keyboard motion driving
 	if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse && PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
 		KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADLeft, true);
@@ -4082,5 +4101,7 @@ int main(int argc, char **argv)
 
 		vigem_disconnect(client2);
 		vigem_free(client2);
+		if (pTelemetry) UnmapViewOfFile(pTelemetry); //060
+		if (hMapFile) CloseHandle(hMapFile);
 	}
 }
