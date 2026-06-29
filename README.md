@@ -71,7 +71,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Auto-Bind:** Quickly bind buttons using the "Bind" or select them manually from a drop-down list
 - **Profile Manager:** Create and manage profiles within a dedicated tab in the configurator
 - **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
-- **Flexible Gyro Ratchet button:** Hold to Mute (classic mode + delay option) or Hold to Activate
+- **Gyro Ratchet button:** hold down to pause (classic mode + delay option in ms), or hold down to enable gyro movement
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
 - **Smart Sensitivity Adjustment:** Аdjust the sensitivity by hotkeys in game and view the latest values in the console
