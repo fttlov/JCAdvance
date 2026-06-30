@@ -269,7 +269,7 @@ During automatic calibration, the first successful calibration is always accompa
 
 #### Config.ini Settings (Under [Motion])
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
-AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkeys
+AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkey
    
   ### Polling Rate & Performance
 
