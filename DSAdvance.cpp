@@ -1370,8 +1370,8 @@ void DefaultMainText() {
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the rumble or press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the beep\n").c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the beep, or press \"\033[1m%s\033[0m\" to do it manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the beep\n").c_str());
 		u8printf(T("Layer1_Sense", "\n Press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
@@ -1389,9 +1389,9 @@ void DefaultMainText() {
 		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:").c_str());
 		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\", press \"\033[1mPS/Home + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to change\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
 		u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" - Right Stick as Analog Triggers mode (on/off)\n").c_str(), AppStatus.StickAsTriggerToggleButtonName.c_str());
-		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status, \"\033[1mALT + Z\033[0m\" to see other hotkeys").c_str());
+		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status, \"\033[1mALT + Z\033[0m\" to see other hotkeys, \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
 		//u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
-		//u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
+		u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
 
 		return;
 	}
@@ -1645,7 +1645,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (!PrimaryGamepad.USBConnection || !SecondaryGamepad.USBConnection) {
 				AppStatus.BTReset = true; // Bug with Bluetooth controllers, in which in Input Bluetooth controllers random values (JoyShockLibarary?). Resetting again helps.
 			}*/
-			AppStatus.DeviceChangeDebounce = 120;	//@022 ConnectFix таймер (120 тиков x Sleeptimeout) на обновление
+			AppStatus.DeviceChangeDebounce = 180;	//@022 ConnectFix таймер (120 тиков x Sleeptimeout) на обновление
 		}
 		break;
 		/*case WM_CLOSE:
@@ -2025,7 +2025,7 @@ int main(int argc, char **argv)
 		}
 		else {
 			// Перезаводим таймер на 10 минут (600 000 мс)
-			AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+			AppStatus.SeamlessResetTimer = 300000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
 
 			SeamlessGyroReset(PrimaryGamepad.DeviceIndex);
 			if (PrimaryGamepad.DeviceIndex2 != -1) {
@@ -2244,16 +2244,6 @@ int main(int argc, char **argv)
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
 			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
 
-			//@060 Пишем данные в Shared Memory для OSD
-			if (pTelemetry) {
-				float bx, by, bz;
-				JslGetCalibrationOffset(aimingHandle, bx, by, bz);
-				pTelemetry[0] = autoCal.confidence;
-				pTelemetry[1] = autoCal.isSteady ? 1.0f : 0.0f;
-				pTelemetry[2] = bx;
-				pTelemetry[3] = by;
-			}
-
 			if (isSteadyAndConfident && !wasSteadyAndConfident) {
 
 				// 1. Обработка ПЕРВОЙ (стартовой) калибровки при AutoCalibrationEnabled 0 и 1
@@ -2269,7 +2259,7 @@ int main(int argc, char **argv)
 				// 2. Обработка ФОНОВЫХ калибровок
 				else if (AppStatus.AutoCalibrationEnabled) {
 					// Просто отодвигаем СБРОС MinDeltaGyro на 10 минут
-					AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+					//AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
 					//PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);	//debug фоновой калибровки
 				}
 			}
@@ -3071,7 +3061,8 @@ int main(int argc, char **argv)
 		}
 
 		unsigned int mappedButtons = PrimaryGamepad.InputState.buttons;		//@051 Новый код модификаторов PS и Capture через mappedButtons
-		if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE) {
+		//if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE) {
+		if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE || mappedButtons & JSMASK_HOME) {
 			unsigned int hotkeyMask = JSMASK_UP | JSMASK_DOWN | JSMASK_LEFT | JSMASK_RIGHT | JSMASK_N | JSMASK_S | JSMASK_W | JSMASK_E | JSMASK_L | JSMASK_R | JSMASK_LCLICK | JSMASK_RCLICK | JSMASK_SHARE;
 			mappedButtons &= ~hotkeyMask; // Стираем кнопки хоткеев из маски для игры
 		}
@@ -4052,6 +4043,30 @@ int main(int argc, char **argv)
 			PrimaryGamepad.RumbleSkipCounter--;
 
 		if (AppStatus.SkipPollCount > 0) AppStatus.SkipPollCount--;
+
+		//@060 ТЕЛЕМЕТРИЯ в OSD
+		if (pTelemetry && PrimaryGamepad.DeviceIndex != -1) {
+			int aimingHandle = PrimaryGamepad.DeviceIndex;
+			if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
+				aimingHandle = PrimaryGamepad.DeviceIndex2;
+			}
+
+			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
+			float bx, by, bz;
+			JslGetCalibrationOffset(aimingHandle, bx, by, bz);
+
+			pTelemetry[0] = autoCal.confidence;
+			pTelemetry[1] = autoCal.isSteady ? 1.0f : 0.0f;
+			pTelemetry[2] = bx;
+			pTelemetry[3] = by;
+			pTelemetry[4] = JslGetPollRate(PrimaryGamepad.DeviceIndex);
+			pTelemetry[5] = PrimaryGamepad.DeviceIndex2 != -1 ? JslGetPollRate(PrimaryGamepad.DeviceIndex2) : 0.0f;
+			pTelemetry[6] = JslGetBattery(PrimaryGamepad.DeviceIndex);
+			pTelemetry[7] = PrimaryGamepad.DeviceIndex2 != -1 ? JslGetBattery(PrimaryGamepad.DeviceIndex2) : -1.0f;
+			pTelemetry[8] = (float)JslGetControllerType(PrimaryGamepad.DeviceIndex);
+			pTelemetry[9] = PrimaryGamepad.DeviceIndex2 != -1 ? (float)JslGetControllerType(PrimaryGamepad.DeviceIndex2) : 0.0f;
+		}
+
 		Sleep(AppStatus.SleepTimeOut);
 	}
 

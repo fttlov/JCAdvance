@@ -689,7 +689,7 @@ MainGui.SetFont("cDefault Norm s10")
 
 AddHotkey(ConfigIni, "Gamepad", "ResetKey", T("Reset/Research Gamepad"), KbmKeys, BindKbm, "xs+15 ys+40")
 ;yPos += 30
-AddHotkey(ConfigIni, "Gamepad", "OSDKey", T("OSD stick/trigger (on/off)"), KbmKeys, BindKbm, "xs+15 ys+67")
+AddHotkey(ConfigIni, "Gamepad", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+15 ys+67")
 AddHotkey(ConfigIni, "Gamepad", "CalibrateKey", T("Gyroscope Recalibration *"), KbmKeys, BindKbm, "xs+15 ys+94")
 
 MainGui.Add("Text", "x25 y+145 w820 cRed", T("* Gyroscope Recalibration"))
