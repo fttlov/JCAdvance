@@ -221,6 +221,7 @@ extern "C" JOY_SHOCK_API float JslGetStickStep(int deviceId);
 extern "C" JOY_SHOCK_API float JslGetTriggerStep(int deviceId);
 extern "C" JOY_SHOCK_API float JslGetPollRate(int deviceId);
 extern "C" JOY_SHOCK_API float JslGetTimeSinceLastUpdate(int deviceId);
+JOY_SHOCK_API float JslGetBattery(int deviceId); //@501
 
 // calibration
 extern "C" JOY_SHOCK_API void JslResetContinuousCalibration(int deviceId);
