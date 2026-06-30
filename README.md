@@ -289,7 +289,7 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 
 #### Why 250 Hz (SleepTimeOut = 4) is Beneficial for Combined Joy-Cons
 
-One Joy-Con is polled by the system via Bluetooth at a frequency of 125 Hz (with a communication interval of 8 ms, as specified by Windows). When a second Joy-Con is connected, the frequency doubles. You can test this yourself by using [library](https://github.com/fttlov/JCAdvance_test/raw/refs/heads/main/Icon/JoyShockLibrary_debug.dll)  with debug output to the console (rename it to JoyShockLibrary.dll and replace the current one).
+For example, the Mobapad M6S (a Joy-Con equivalent) is polled by the system via Bluetooth at a frequency of **125 Hz** (with a communication interval of 8 ms, as specified by Windows). You can check your device's polling frequency in the OSD.
 
 #### Asynchronous Bluetooth Polling
 
