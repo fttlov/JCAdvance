@@ -218,7 +218,7 @@ __________
 
 **Settings**: All settings relating to dead zones, inversion, default gyroscope mode, steering and other profile-specific options have now been moved to the \XboxProfile\*.ini file, within the [Settings] section, instead of config.ini and applied without restarting the emulator.
 
-**Profiles:** The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session.
+**Profiles:** The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session
 
   ### OSD
 
@@ -231,7 +231,7 @@ The OSD now displays real-time sticks, triggers and gyroscope telemetry. This he
 
 Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
 
-Also added current battery status and device poling rate info.
+Also added current battery status and device poling rate info
   
   ### New Smart Gyro Sensitivity Adjustment
 
@@ -239,20 +239,20 @@ How it works: Launch the game, use the in-game settings to configure the control
 
   ### 🎯 Gyro Calibration & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
-To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart).
+To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart)
 
 #### Automatic Calibration
-By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point. <br>
+By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point <br>
 
 #### Manual Calibration (Hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
 Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
 Wait for the success signal - double rumble.<br>
-Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed.
+Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
 **Recommendations**:
-Although both modes include an initial (first) automatic calibration, it's recommended that you perform a manual calibration at the start of each gaming session.
+Although both modes include an initial (first) automatic calibration, it's recommended that you perform a manual calibration at the start of each gaming session
 
   <details>
   <summary>Observations</summary>
@@ -260,32 +260,29 @@ Although both modes include an initial (first) automatic calibration, it's recom
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
 - The first automatic calibration sometimes fails to work correctly; after a couple of minutes, noticeable drift appears, so manual calibration is more reliable.
-- In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration, then press Ctrl + R; if that doesn’t help, restart the emulator.
+- In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration, then press Ctrl + R; if that doesn’t help, restart the emulator
 
   </details>
 
 #### Indication
-During automatic calibration, the first successful calibration is always accompanied by a double short vibration and beep signal. Subsequent automatic calibrations are indicated by the LEDs only when the option `LedCalibrationDebug=1` is enabled..<br>
-During manual calibration, the vibration and beep signal is triggered after each successful calibration.
+During automatic calibration, the first successful calibration is always accompanied by a short beep signal. During manual calibration, the  beep signal is triggered after each successful calibration
 
 #### Config.ini Settings (Under [Motion])
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
-AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkeys.<br>
-LedCalibrationDebug=1 — enable visual debugging. Suitable for testing and understanding the auto-calibration process. It works with the Joy-Con, and possibly with the Switch Pro and DualSense.
-Note: Only Stillness (The "Desk" Method) have rumble/led indication <br>
+AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkeys
   
   ### Tightening (Dynamic Smoothing)
 
 **How it works:**
 Tightening is a zero-latency, velocity-based threshold filter that attenuates micro-movements to eliminate hand tremors and pulse twitches and natural hardware sensor noise.<br>
 Unlike a traditional "deadzone" that blocks small inputs entirely, Tightening smoothly dampens the sensitivity only when the controller is moving very slowly or being held still. 
-When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input.
+When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input
 
 **Recommended Values:**
 * **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands. Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
 * ** `1.0 - 2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
 * **`2.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
-* **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold.
+* **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold
    
   ### Polling Rate & Performance
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
@@ -327,7 +324,7 @@ Because Nintendo Switch Pro and Joy-Con controllers feature digital ZL and ZR bu
 
 To ensure a comfortable experience, the right stick's X-axis is completely disabled globally when this mode is active. This eliminates accidental horizontal camera twitching when pushing the stick up or down.
 
-This feature can be compared to the concept of a flick stick by Jibb Smart, but in a slightly different way and only for separated Joy-cons.
+This feature can be compared to the concept of a flick stick by Jibb Smart, but in a slightly different way and only for separated Joy-cons
 
 #### Practical Use Cases:
 1. **Red Dead Redemption 2 (Duels & Weapon Cocking):**<br>
@@ -335,7 +332,7 @@ This feature can be compared to the concept of a flick stick by Jibb Smart, but 
 2. **GTA V (On-Foot & Driving):**<br>
    You can hold physical ZL to instantly lock-on/aim with your left hand, and use the right stick UP to smoothly manage progressive trigger actions. When entering a vehicle, the right stick Y-axis automatically acts as a high-precision analog gas (Y+) and brake (Y-) pedal, allowing you to manage vehicle traction without wheel spin.
    
-In other words, full analogue control is now available to most users, and features such as driving mode and external pedals further expand the vehicle’s control options, but more on that below.
+In other words, full analogue control is now available to most users, and features such as driving mode and external pedals further expand the vehicle’s control options, but more on that below
    
 4. **Other Action Games:**
    Works for games with zoom thresholds (like *Metal Gear Solid V*) or focus-aiming mechanics (like *Hitman*), where a half-press on the trigger alters the aim perspective or stabilizes the sniper scope
