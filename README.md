@@ -260,6 +260,8 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 - The first automatic calibration sometimes fails to work correctly; after a couple of minutes, noticeable drift appears, so manual calibration is more reliable.
 - In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration, then press Ctrl + R; if that doesn’t help, restart the emulator.
 
+  </details>
+
 #### Indication
 During automatic calibration, the first successful calibration is always accompanied by a double short vibration and beep signal. Subsequent automatic calibrations are indicated by the LEDs only when the option `LedCalibrationDebug=1` is enabled..<br>
 During manual calibration, the vibration and beep signal is triggered after each successful calibration.
