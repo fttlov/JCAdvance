@@ -230,6 +230,8 @@ The OSD now displays real-time sticks, triggers and gyroscope telemetry. This he
 **BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Joy-Con sensors naturally drift as the battery heats up. These numbers show the raw error the emulator is currently suppressing to keep your crosshair perfectly still.<br>
 
 Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
+
+Also added current battery status and device poling rate info.
   
   ### New Smart Gyro Sensitivity Adjustment
 
