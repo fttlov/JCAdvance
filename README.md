@@ -261,8 +261,8 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 
 #### Config.ini Settings
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON <br>
-AutoCalibrationEnabled=0 -  calibration is possible only in manual mode by hotkey <br>
-BackgroundCalibSound=0 - debug beep for each successful auto-calibration
+AutoCalibrationEnabled=0 — calibration is possible only in manual mode by hotkey <br>
+BackgroundCalibSound=0 — debug beep for each successful auto-calibration
 
   ### New Smart Gyro Sensitivity Adjustment
 
