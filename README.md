@@ -255,7 +255,7 @@ Note: If you move the controller too much during this process, you will hear a l
     
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
-- Manual calibration is more reliable (at least for the Joy-Con)
+- (Subjectively) Manual calibration is more reliable
 - In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration, then press Ctrl + R; if that doesn’t help, restart the emulator
 
   </details>
