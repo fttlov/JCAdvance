@@ -238,11 +238,12 @@ Also added current battery status and device poling rate info
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
   ### 🎯 Gyro Calibration & Drift Prevention
-  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. <br>
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. Once the temperature has stabilized (heating the crystal, the battery, or the palms), the drift generally stops increasing. <br>
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart)
 
 #### Automatic Calibration
-By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 2 second, the algorithm detects the silence and instantly recalculates the absolute zero point <br>
+By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point <br> 
+The first calibration have the beep indication. Subsequent calibrations can be monitored using the Steady setting in the OSD or the BackgroundCalibSound (=1) setting in config.ini
 
 #### Manual Calibration (Hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
@@ -251,15 +252,12 @@ Place the controller on a flat surface immediately. Your aiming axes will be tem
 Wait for the success signal - double rumble.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
-**Recommendations**:
-Although both modes include an initial (first) automatic calibration, it's recommended that you perform a manual calibration at the start of each gaming session
-
   <details>
   <summary>Observations</summary>
     
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
-- The first automatic calibration sometimes fails to work correctly; after a couple of minutes, noticeable drift appears, so manual calibration is more reliable.
+- Manual calibration is more reliable (at least for the Joy-Con)
 - In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration, then press Ctrl + R; if that doesn’t help, restart the emulator
 
   </details>
