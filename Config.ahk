@@ -662,7 +662,6 @@ MainGui.SetFont("Norm s10")
 AddHotkey(ConfigIni, "Motion", "AimingToggleButton", T("Gyro Motion (On/Off)"), LayoutKeys, BindGamepad)
 AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Motion Control button"), LayoutKeys, BindGamepad)
 AddHotkey(ConfigIni, "Motion", "AimingModeToggleButton", T("Mode switching (Mouse/Stick)"), LayoutKeys, BindGamepad)
-;AddHotkey(ConfigIni, "Motion", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
 
 ; тонкая горизонтальная линия-разделитель
 MainGui.Add("Text", "xs+15 y+20 w450 h2 0x10")
@@ -680,7 +679,7 @@ MainGui.Add("Text", "xs+15 y+20 w450 h2 0x10")
 MainGui.SetFont("Bold")
 MainGui.Add("Text", "xs+15 y+18 w450", T("Misc"))
 MainGui.SetFont("Norm s10")
-AddHotkey(ConfigIni, "Motion", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
+AddHotkey(ConfigIni, "Gamepad", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
 
 ; --- БОЛЬШАЯ ГРУППА 2: Keyboard Hotkeys ---
 MainGui.SetFont("cBlue Bold")
