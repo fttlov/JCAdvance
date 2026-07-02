@@ -738,10 +738,10 @@ MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 and 90 degr
 MainGui.Add("Text", "x20 y+10 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T("** Tightening:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors nand pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
+MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors, pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
 
 MainGui.Add("Text", "x20 y+10 w820 cRed", T(" *** EMA Filter:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% speed (value - Rise Time): 25   ~2.7ms;  50   ~8ms;  75   ~24ms"))
+MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% speed (value - rise time): 25   ~2.7ms;  50   ~8ms;  75   ~24ms"))
 
 ; =========================================
 ; TAB 6:Analog (config.ini)
@@ -872,7 +872,7 @@ MainGui.Add("Text", "x25 y+5 w820", T("Use pedals as analog triggers. Note: This
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))
 
-MainGui.Add("Text", "x25 y+5 w820 cRed", T("* Emulated Controller: DS4 Mode for Nintendo controllers only"))
+MainGui.Add("Text", "x25 y+5 w820 cRed", T("* Emulated Controller: DS4 Mode for Nintendo gamepads only"))
 MainGui.Add("Text", "x25 y+5 w820", T("For DirectInput games, like Half-Life 2, F.E.A.R., NFS classic series, you can change the controller type to DS4. When you launch JCAdvacne, ‘Wireless Controller’ will appear instead of ‘Xbox 360 Controller’"))
 
 ; =========================================
