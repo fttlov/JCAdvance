@@ -222,12 +222,13 @@ __________
 
   ### OSD
 
-The OSD now displays real-time sticks, triggers and gyroscope telemetry. This helps you understand how the JoyShockLibrary auto-calibration handles your Joy-Con's hardware drift.
+The OSD now displays real-time sticks, triggers and gyroscope telemetry.<br>
 **For Triggers**: raw data from 0 to 255. <br>
 **For Sticks**: raw data fromm -32768 to 32768 <br>
+Gyro telemetryThis helps you understand how the JoyShockLibrary auto-calibration handles hardware drift:
 **Calib (0-100%)**: Algorithm confidence. Usually stays at 100%, meaning the baseline noise is known. It drops to 0% only during a manual reset (ALT+C)<br>
 **Steady (YES / NO)**: Physical stillness detector. When it says YES, the controller is perfectly still, and the background auto-calibration is actively collecting data.<br>
-**BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Joy-Con sensors naturally drift as the battery heats up. These numbers show the raw error the emulator is currently suppressing to keep your crosshair perfectly still.<br>
+**BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Sensors naturally drift. These numbers show the raw error the emulator is currently suppressing to keep your crosshair perfectly still.<br>
 
 Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
 
