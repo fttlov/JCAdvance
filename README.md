@@ -233,10 +233,6 @@ Gyro telemetryThis helps you understand how the JoyShockLibrary auto-calibration
 Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
 
 Also added current battery status and device poling rate info
-  
-  ### New Smart Gyro Sensitivity Adjustment
-
-How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
   ### 🎯 Gyro Calibration & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. Once the temperature has stabilized (heating the crystal, the battery, or the palms), the drift generally stops increasing. <br>
@@ -244,13 +240,13 @@ To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", 
 
 #### Automatic Calibration
 By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point <br> 
-The first calibration have the beep indication. Subsequent calibrations can be monitored using the Steady setting in the OSD or the BackgroundCalibSound (=1) setting in config.ini
+The first calibration have the beep indication. Subsequent calibrations can be monitored using the "Steady" setting in the OSD or the BackgroundCalibSound (=1) setting in config.ini
 
 #### Manual Calibration (Hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
 Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
-Wait for the success signal - double rumble.<br>
+Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
   <details>
@@ -263,12 +259,14 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 
   </details>
 
-#### Indication
-During automatic calibration, the first successful calibration is always accompanied by a short beep signal. During manual calibration, the  beep signal is triggered after each successful calibration
-
-#### Config.ini Settings (Under [Motion])
+#### Config.ini Settings
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON. Highly recommended.<br>
-AutoCalibrationEnabled=0; automatic calibration occurs only once at startup (indicated by a double rumble). After that, calibration is possible only in manual mode by hotkey
+AutoCalibrationEnabled=0 -  calibration is possible only in manual mode by hotkey
+BackgroundCalibSound=0 - debug beep for each successful auto-calibration
+
+  ### New Smart Gyro Sensitivity Adjustment
+
+How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
    
   ### Polling Rate & Performance
 
