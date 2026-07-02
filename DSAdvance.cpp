@@ -2304,7 +2304,13 @@ int main(int argc, char **argv)
 
 				if (isSuccess) {
 					// Сигнал УСПЕХА (двойной высокий писк). Теперь он совпадет со светодиодами!
-					Beep(1500, 50); Sleep(50); Beep(1200, 100);
+					//Beep(1500, 50); Sleep(50); Beep(1200, 100);
+					// Асинхронный сигнал УСПЕХА (без блокировки главного потока ViGEm)
+					std::thread([]() {
+						Beep(1500, 50);
+						Sleep(50);
+						Beep(1200, 100);
+					}).detach();
 					//AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	// Потодвигаем СБРОС MinDeltaGyro на 10 минут
 					//AppStatus.CalibRumbleTimer = 200 / AppStatus.SleepTimeOut; //будет двойной вибро, но вибро для калибровки такое себе
 				}
