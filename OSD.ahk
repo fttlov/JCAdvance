@@ -42,8 +42,12 @@ GetDevName(devID) {
 }
 
 WatchXInput() {
+    static NotFoundTime := 0 ; Переменная для таймера самоуничтожения
+
     XINPUT_STATE := Buffer(16, 0)
     if DllCall("XInput1_4\XInputGetState", "UInt", 0, "Ptr", XINPUT_STATE) = 0 {
+        NotFoundTime := 0 ; Сбрасываем таймер, если геймпад найден
+
         LT := NumGet(XINPUT_STATE, 6, "UChar")
         RT := NumGet(XINPUT_STATE, 7, "UChar")
         LS_X := NumGet(XINPUT_STATE, 8, "Short")
@@ -65,8 +69,14 @@ WatchXInput() {
         TxtTriggers.Value := "Gamepad not found"
         TxtLS.Value := ""
         TxtRS.Value := ""
+        
+        ; Логика самоуничтожения (5 секунд без связи)
+        if (NotFoundTime == 0) {
+            NotFoundTime := A_TickCount
+        } else if (A_TickCount - NotFoundTime > 3000) {
+            ExitApp
+        }
     }
-
     if (pBuf) {
         conf   := NumGet(pBuf, 0, "Float") * 100
         steady := NumGet(pBuf, 4, "Float") ? "YES" : "NO "

@@ -660,7 +660,7 @@ MainGui.SetFont("Norm s10")
 
 ; Хоткеи подгруппы Aiming (позиционируются автоматически друг под другом)
 AddHotkey(ConfigIni, "Motion", "AimingToggleButton", T("Gyro Motion (On/Off)"), LayoutKeys, BindGamepad)
-AddHotkey(ConfigIni, "Motion", "AimingButton", T("Motion Control button"), LayoutKeys, BindGamepad)
+AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Motion Control button"), LayoutKeys, BindGamepad)
 AddHotkey(ConfigIni, "Motion", "AimingModeToggleButton", T("Mode switching (Mouse/Stick)"), LayoutKeys, BindGamepad)
 ;AddHotkey(ConfigIni, "Motion", "StickAsTriggerToggleButton", T("Right stick as triggers (On/Off)"), LayoutKeys, BindGamepad)
 
@@ -687,10 +687,10 @@ MainGui.SetFont("cBlue Bold")
 MainGui.Add("GroupBox", "x195 y+55 w480 h135 Center Section", T("Keyboard Hotkeys"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddHotkey(ConfigIni, "Gamepad", "ResetKey", T("Reset/Research Gamepad"), KbmKeys, BindKbm, "xs+15 ys+40")
+AddHotkey(ConfigIni, "SETTINGS", "ResetKey", T("Reset/Research Gamepad"), KbmKeys, BindKbm, "xs+15 ys+40")
 ;yPos += 30
-AddHotkey(ConfigIni, "Gamepad", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+15 ys+67")
-AddHotkey(ConfigIni, "Gamepad", "CalibrateKey", T("Gyroscope Recalibration *"), KbmKeys, BindKbm, "xs+15 ys+94")
+AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+15 ys+67")
+AddHotkey(ConfigIni, "SETTINGS", "CalibrateKey", T("Gyroscope Recalibration *"), KbmKeys, BindKbm, "xs+15 ys+94")
 
 MainGui.Add("Text", "x25 y+145 w820 cRed", T("* Gyroscope Recalibration"))
 MainGui.Add("Text", "x25 y+5 w820", T("Place the device on a flat surface, press the button, and wait for the beep"))
@@ -710,7 +710,7 @@ MainGui.SetFont("cDefault Norm s10")
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingMode", T("Gyro mode by default"), [T("Right Stick"), T("Mouse")], Map(T("Right Stick"), "0", T("Mouse"), "1"), "xs+15 ys+25")
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Press Control button to"), [T("stop motion tracking"), T("start motion tracking")], Map(T("stop motion tracking"), "0", T("start motion tracking"), "1"))
 AddMappedDropdown(ConfigIni, "Motion", "GyroFromLeft", T("Gyro data in combined mode from"), [T("Right Joy-Con"), T("Left Joy-Con")], Map(T("Right Joy-Con"), "0", T("Left Joy-Con"), "1"))
-AddMappedDropdown(ConfigIni, "Gamepad", "SleepTimeOut", T("Polling rate (33.3 Hz for example)"), ["33.3 Hz", "66.7 Hz", "125 Hz", "250 Hz"], Map("33.3 Hz", "30", "66.7 Hz", "15", "125 Hz", "8", "250 Hz", "4"))
+AddMappedDropdown(ConfigIni, "SETTINGS", "SleepTimeOut", T("Polling rate (33.3 Hz for example)"), ["33.3 Hz", "66.7 Hz", "125 Hz", "250 Hz"], Map("33.3 Hz", "30", "66.7 Hz", "15", "125 Hz", "8", "250 Hz", "4"))
 AddMappedDropdown(ConfigIni, "Motion", "GyroSpace", T("Gyro Motion Space *"), ["0", "1", "2"], Map("0", "0", "1", "1", "2", "2"))
 
 ; --- Группа 2: Чувствительность и фильтрация ---

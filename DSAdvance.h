@@ -603,6 +603,7 @@ struct _AppStatus {
 	int ManualCalibrationTimer = 0;
 	bool StartupCalibrationFrozen = false;
 	int CalibRumbleTimer = 0;
+	bool BackgroundCalibSound = false;
 	int SeamlessResetTimer = 0;	//@129
 	bool IsOsdActive = false;	//@130
 
