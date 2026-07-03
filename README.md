@@ -402,7 +402,7 @@ In many games, running or sprinting is assigned to a separate button. JCAdvance 
 The EMA (Exponential Moving Average) filter does not add traditional input lag. When you move the controller, the in-game camera starts moving instantly (0ms delay). Instead, EMA acts like a rubber band or inertia. <br>
 Example (EMA = 50 / ~8ms): When you make a quick swipe, the crosshair moves immediately, but it takes about 8 milliseconds to "catch up" and reach the full speed of your hand. This completely irons out micro-tremors from your hands, but makes the crosshair feel slightly "heavier" or smoother. The higher the value, the stronger the rubber band effect. Set it to 0 for raw, unfiltered input.
 
-Smoothing Time (time to reach 100% speed, where 100% - no filter) : 
+Smoothing Time (time to reach 100% speed, where 100% like without filter) : 
 - Value 25 (~2.7ms to reach full speed)
 - Value 50 (~8.0ms to reach full speed)
 - Value 75 (~24.0ms to reach full speed)
