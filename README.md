@@ -250,6 +250,11 @@ Place the controller on a flat surface immediately. Your aiming axes will be tem
 Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
+#### Config.ini Settings
+AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON <br>
+AutoCalibrationEnabled=0 — calibration is possible only in manual mode by hotkey <br>
+BackgroundCalibSound=1 — debug beep for each successful auto-calibration
+
   <details>
   <summary>Observations</summary>
     
@@ -271,11 +276,6 @@ StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over
 Joy-Cons calibrate well only on flat surfaces, so feel free to use low values <br>
 
   </details>
-
-#### Config.ini Settings
-AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON <br>
-AutoCalibrationEnabled=0 — calibration is possible only in manual mode by hotkey <br>
-BackgroundCalibSound=1 — debug beep for each successful auto-calibration
 
   ### New Smart Gyro Sensitivity Adjustment
 
