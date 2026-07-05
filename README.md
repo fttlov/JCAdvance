@@ -249,14 +249,21 @@ Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
 Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
-
+https://github.com/fttlov/JoyShockLibrary/blob/main/README.md
   <details>
   <summary>Observations</summary>
     
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
 - (Subjectively) Manual calibration is more reliable
-- In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration by hotkey; if that doesn’t help, press Ctrl + R; if that doesn’t help again, restart the emulator
+- ~~In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration by hotkey; if that doesn’t help, press Ctrl + R; if that doesn’t help again, restart the emulator~~ <br>
+Fixed by added adaptive threshold relaxation mechanism in GamepadMotion.hpp. Tested on Joy-Con (Mobapad) during extended gaming session. <br>
+Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md)* <br>
+- Added auto-calibration settings (Nintendo only) from Joyshocklibrary for fine-tuning:<br>
+MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted.<br>
+MinStillnessCollectionTime (Default: 0.5) — The initial time window (in seconds) used to measure the controller's baseline noise floor. Warning: It is highly recommended not to lower this below 0.5s, as the algorithm needs enough samples to determine a correct noise baseline. <br>
+MinStillnessCorrectionTime (Default: 2.0) — The duration (in seconds) the controller must remain perfectly still on a surface before the new calibration offset is accepted and applied. Lowering this (e.g., to 1.0) allows the controller to calibrate much faster when placed on a desk.<br>
+StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller.
 
   </details>
 
