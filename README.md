@@ -260,10 +260,11 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 Fixed by added adaptive threshold relaxation mechanism in GamepadMotion.hpp. Tested on Joy-Con (Mobapad) during extended gaming session. 
 Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md)* <br>
 - Added auto-calibration settings (Nintendo only) from Joyshocklibrary for fine-tuning:<br>
-MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted.<br>
+MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted. Values greater than 4 will allow you to calibrate the Joy-Con while holding it in your hand, but this may cause drift <br>
 MinStillnessCollectionTime (Default: 0.5) — The initial time window (in seconds) used to measure the controller's baseline noise floor. Warning: It is highly recommended not to lower this below 0.5s, as the algorithm needs enough samples to determine a correct noise baseline. <br>
 MinStillnessCorrectionTime (Default: 2.0) — The duration (in seconds) the controller must remain perfectly still on a surface before the new calibration offset is accepted and applied. Lowering this (e.g., to 1.0) allows the controller to calibrate much faster when placed on a desk.<br>
 StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller.
+Joy-Cons calibrate well only on flat surfaces, so feel free to use low values <br>
 
   </details>
 
