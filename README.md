@@ -249,7 +249,7 @@ Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
 Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
-https://github.com/fttlov/JoyShockLibrary/blob/main/README.md
+
   <details>
   <summary>Observations</summary>
     
