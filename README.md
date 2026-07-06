@@ -280,7 +280,7 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
   
 - ~~In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration by hotkey; if that doesn’t help, press Ctrl + R; if that doesn’t help again, restart the emulator~~ <br>
-Fixed by added adaptive threshold relaxation mechanism in GamepadMotion.hpp. Tested on Joy-Con (Mobapad) during extended gaming session. Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md) 
+The issue has been resolved by adding "Adaptive Noise Threshold" in the GamepadMotion.hpp. Tested on a Joy-Con (Mobapad) during an extended gaming session. Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md) 
   </details>
 
   ### New Smart Gyro Sensitivity Adjustment
