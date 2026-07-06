@@ -25,7 +25,7 @@
  
 ## Key Differences in JCAdvance:
 - **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
-- **Gyro Calibration:** Adjusted Joy-Con gyroscope calibration settings to compensate for thermal IMU drift
+- **Gyro Calibration:** Adjusted Joy-Con gyroscope calibration settings to compensate for thermal IMU drift (see [Technical Details](#tech-info)
 - **Digital Trigger Bypass for Joy-Cons:** utilize all 6 virtual Xbox analog axes (4 mapped to sticks + 2 to gyro)
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
@@ -74,7 +74,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
 - **Gyro Ratchet button:** hold down to pause (classic mode + delay option) or hold down to enable gyro movement
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
-- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#technical-details-and-bug-fixes) for more information)
+- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#tech-info)) for more information)
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
 - **Smart Sensitivity Adjustment:** Change the sensitivity by hotkeys in game and view the latest values in the console
 - **Сalibration indicator:** successful first auto-calibration by the beep
@@ -138,7 +138,7 @@ __________
 
 <details>
  
-<summary><h2>Technical details, instructions and bug fixes</h2> (Click to open)</summary>
+<summary><h2 id="tech-info">Technical details, instructions and bug fixes</h2> (Click to open)</summary>
   
   ### Interface, Settings and Profiles
 
