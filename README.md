@@ -74,7 +74,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Custom Hotkeys:** Activate modes with customizable key combinations (e.g., `R + HOME`)
 - **Gyro Ratchet button:** hold down to pause (classic mode + delay option) or hold down to enable gyro movement
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
-- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#tech-info)) for more information)
+- **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#tech-info)) for more information
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
 - **Smart Sensitivity Adjustment:** Change the sensitivity by hotkeys in game and view the latest values in the console
 - **Сalibration indicator:** successful first auto-calibration by the beep
@@ -84,7 +84,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Right Stick as triggers mode:** utilize all 6 virtual controller analog axes (mainly for Joy-Con) 
 - **Right Stick as buttons mode:** using the stick directions as virtual buttons
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
-- **EMA Smoothing Filter:** Exponential Moving Average (see [Technical Details](#technical-details-and-bug-fixes) for more information)
+- **EMA Smoothing Filter:** Exponential Moving Average (see [Technical Details](#technical-details-and-bug-fixes) for more information
 - **OSD info**: current values from sticks, triggers and gyroscope; current battery status and device polling rate
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
