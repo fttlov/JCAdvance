@@ -260,7 +260,7 @@ BackgroundCalibSound=1 — debug beep for each successful auto-calibration
 
   By default, Joyshocklibrary uses "universal" calibration settings for Sony and Joy-Con controllers.
 The code is written so that Sony controllers are automatically calibrated in the background. It’s a heavy, 250-gram two-handed controller with high-quality gyroscope and accelerometer sensors, which is held with both hands (resulting in less shaking) and, for example, during cutscenes, is placed on the player’s lap—at which point automatic calibration occurs seamlessly and is applied smoothly. <br>
-The Joy-Con is a lightweight, one-handed controller with significantly lower-quality sensors; it’s practically impossible to calibrate it correctly even when held in what appears to be a steady hand. Therefore, the only option is to calibrate it “on a table.” <br>
+The Joy-Con is a lightweight controller for one-handed use, with sensors of significantly lower quality. It is impossible to calibrate it properly whilst holding it in your hand. Therefore, the only option is to calibrate it “on a table.” <br>
 In JCadvance the settings for Joy-Con calibration have been adjusted to allow for faster and more reliable calibration in 2–3 seconds.
 
 Example of use in real-world conditions (MobaPad M6S): <br>
