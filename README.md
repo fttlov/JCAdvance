@@ -217,7 +217,7 @@ __________
 
   </details>
 
-**Settings**: All settings relating to dead zones, inversion, default gyroscope mode, steering and other profile-specific options have now been moved to the \XboxProfile\*.ini file, within the [Settings] section, instead of config.ini and applied without restarting the emulator.
+**Settings**: All settings relating to dead zones, inversion, default gyroscope mode, steering and other profile-specific options have now been moved to the \XboxProfile\\*.ini file, within the [Settings] section, instead of config.ini and applied without restarting the emulator.
 
 **Profiles:** The original code strictly separated Xbox profiles (`.ini` files in the `XboxProfile` folder) and Keyboard/Mouse profiles (`KMProfile`). This prevented users from emulating both Xbox and keyboard actions in one profile. JCAdvance resolves this: the main `XboxProfile` folder now supports mixed emulation, and profiles are easily managed via `Config.exe`. However, you can still switch between profiles using hotkeys within the XboxProfile folder. Note that the profile change only applies to the current session
 
