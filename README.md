@@ -240,7 +240,7 @@ Also added current battery status and device poling rate info
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart)
 
 #### Automatic Calibration
-By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point <br> 
+By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point. <br> 
 The first calibration have the beep indication. Subsequent calibrations can be monitored using the "Steady" setting in the OSD or the BackgroundCalibSound (=1) setting in config.ini
 
 #### Manual Calibration (Hotkey)
