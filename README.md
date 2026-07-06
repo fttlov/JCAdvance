@@ -264,10 +264,10 @@ The Joy-Con is a lightweight controller for one-handed use, with sensors of sign
 In JCadvance the settings for Joy-Con calibration have been adjusted to allow for faster and more reliable calibration in 2–3 seconds.
 
 Example of use in real-world conditions (MobaPad M6S): <br>
-Launch the emulator, connect the device, place it on a surface, wait for the first successful calibration (beep), and start playing. The temperature gradually rises, and drift increases. After a few minutes, place the device on the surface for a couple of seconds and continue playing. As a rule, a couple of recalibrations are enough to then play (for an hour or more) without ever letting go of the controller and without any drift—the temperature has stabilized.
+Launch the emulator, connect the device, place it on a surface, wait for the first successful calibration (beep), and start playing. The temperature gradually rises, and drift increases. After a few minutes, place the device on the surface for a 2-3 sec. and continue playing. As a rule, a couple of recalibrations are enough to then play (for an hour or more) without ever letting go of the controller and without any drift—the temperature has stabilized.
 
 
-Added auto-calibration settings (Nintendo only) from Joyshocklibrary for fine-tuning:<br>
+Added auto-calibration settings  rom Joyshocklibrary to config.ini for fine-tuning (Nintendo only) :<br>
 
 1. MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted. Values greater than 4 will allow you to calibrate the Joy-Con while holding it in your hand, but this may cause drift <br>
 2. MinStillnessCollectionTime (Default: 0.5) — The initial time window (in seconds) used to measure the controller's baseline noise floor. Warning: It is highly recommended not to lower this below 0.5s, as the algorithm needs enough samples to determine a correct noise baseline. <br>
