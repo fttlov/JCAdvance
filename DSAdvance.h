@@ -604,7 +604,6 @@ struct _AppStatus {
 	bool StartupCalibrationFrozen = false;
 	int CalibRumbleTimer = 0;
 	bool BackgroundCalibSound = false;
-	int SeamlessResetTimer = 0;	//@129
 	bool IsOsdActive = false;	//@130
 
 	struct _HotKeys

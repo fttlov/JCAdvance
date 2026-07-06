@@ -1014,20 +1014,10 @@ void KMStickMode(AdvancedGamepad &Gamepad, bool DontResetInputState, bool StickI
 	}
 }
 
-void SeamlessGyroReset(int deviceIndex) {	//@059
-	if (deviceIndex == -1) return;
-
-	float offsetX, offsetY, offsetZ;
-
-	// 1. Запоминаем текущую поправку на дрифт
-	JslGetCalibrationOffset(deviceIndex, offsetX, offsetY, offsetZ);
-
-	// 2. Стираем память алгоритма (сбрасываем ловушку идеального нуля)
-	JslResetContinuousCalibration(deviceIndex);
-
-	// 3. Возвращаем поправку обратно! (Игрок ничего не заметит)
-	JslSetCalibrationOffset(deviceIndex, offsetX, offsetY, offsetZ);
-}
+static float g_MaxStillnessError = 2.0f;	//@062 
+static float g_MinStillnessCollectionTime = 0.5f;
+static float g_MinStillnessCorrectionTime = 2.0f;
+static float g_StillnessCalibrationEaseInTime = 3.0f;
 
 void LoadConfig() {	//@057 Читаем конфиг во время работы (по дате файла) и применяем изменения (в main)
 	CIniReader IniFile("Config.ini");
@@ -1039,7 +1029,6 @@ void LoadConfig() {	//@057 Читаем конфиг во время работ�
 	AppStatus.BackgroundCalibSound = IniFile.ReadBoolean("SETTINGS", "BackgroundCalibSound", false);
 	AppStatus.HotKeys.OSDKey = KeyNameToKeyCode(IniFile.ReadString("SETTINGS", "OSDKey", "NONE"));		//@060
 
-	
 	//@005 Двухкнопочный Binding для переключения режимов + чтение из Config, юзается новый парсинг в .h + условия активации toggle-функций в main (buttons & mask) == mask. )
 	AppStatus.AimingByPressingMode = IniFile.ReadBoolean("Motion", "AimingByPressingMode", true);
 	//AppStatus.AimingButtonName = IniFile.ReadString("Motion", "AimingButton", "NONE");	//в профиле
@@ -1698,6 +1687,11 @@ void RefreshDevices() {
 	//AppStatus.StartupCalibrationFrozen = false;	//@050
 	AppStatus.StartupCalibrationFrozen = !AppStatus.AutoCalibrationEnabled;	//@050 -  нет сартовой автокалибровки при "0"
 	AppStatus.BTReset = false;
+	//@062
+	if (PrimaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (SecondaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	MainTextUpdate();
 }
 
@@ -1739,7 +1733,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 3.3");
+	SetConsoleTitle("JCAdvance 3.4");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -1776,6 +1770,16 @@ int main(int argc, char **argv)
 	//AppStatus.AutoCalibrationEnabled = IniFile.ReadBoolean("Motion", "AutoCalibrationEnabled", true);	//@050
 	//AppStatus.HotKeys.CalibrateKeyName = IniFile.ReadString("Gamepad", "CalibrateKey", "NONE");
 	//AppStatus.HotKeys.CalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.CalibrateKeyName);
+
+	g_MaxStillnessError = IniFile.ReadFloat("JOYCONS", "MaxStillnessError", 2.0f);	//@062
+	g_MinStillnessCollectionTime = IniFile.ReadFloat("JOYCONS", "MinStillnessCollectionTime", 0.5f);
+	g_MinStillnessCorrectionTime = IniFile.ReadFloat("JOYCONS", "MinStillnessCorrectionTime", 2.0f);
+	g_StillnessCalibrationEaseInTime = IniFile.ReadFloat("JOYCONS", "StillnessCalibrationEaseInTime", 3.0f);
+	if (PrimaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (SecondaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+
 	AppStatus.ShowBatteryStatusOnLightBar = IniFile.ReadBoolean("Gamepad", "ShowBatteryStatusOnLightBar", true);
 	AppStatus.SleepTimeOut = IniFile.ReadInteger("SETTINGS", "SleepTimeOut", 15);
 	timeBeginPeriod(1);
@@ -1992,35 +1996,11 @@ int main(int argc, char **argv)
 		}
 
 		// Reset
-		if ((AppStatus.SkipPollCount == 0 && (IsKeyPressed(VK_CONTROL) && IsKeyPressed('R')) || IsKeyPressed(AppStatus.HotKeys.ResetKey)) || AppStatus.BTReset) 
+		//if ((AppStatus.SkipPollCount == 0 && (IsKeyPressed(VK_CONTROL) && IsKeyPressed('R')) || IsKeyPressed(AppStatus.HotKeys.ResetKey)) || AppStatus.BTReset) //@061 fix critical bug when Resetkey=NONE
+		if (AppStatus.BTReset || (AppStatus.SkipPollCount == 0 && ((IsKeyPressed(VK_CONTROL) && IsKeyPressed('R')) || (AppStatus.HotKeys.ResetKey != 0 && IsKeyPressed(AppStatus.HotKeys.ResetKey)))))
   		{
 			RefreshDevices();
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-		}
-
-		//@059 ФОНОВЫЙ БЕСШОВНЫЙ СБРОС MinDeltaGyro (Каждые 10 минут) - возможный фикс отказа автокалибровки при длинных сессиях
-		if (AppStatus.SeamlessResetTimer > 0) {
-			AppStatus.SeamlessResetTimer--;
-		}
-		else {
-			// Перезаводим таймер на 10 минут (600 000 мс)
-			AppStatus.SeamlessResetTimer = 300000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
-
-			// Делаем сброс ТОЛЬКО если включена фоновая калибровка
-			if (AppStatus.AutoCalibrationEnabled) {
-				SeamlessGyroReset(PrimaryGamepad.DeviceIndex);
-				if (PrimaryGamepad.DeviceIndex2 != -1) {
-					SeamlessGyroReset(PrimaryGamepad.DeviceIndex2);
-				}
-
-				if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
-					SeamlessGyroReset(SecondaryGamepad.DeviceIndex);
-					if (SecondaryGamepad.DeviceIndex2 != -1) SeamlessGyroReset(SecondaryGamepad.DeviceIndex2);
-				}
-			}
-			//Debug
-			//Beep(800, 50); 
-			//PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
 		}
 
 		//@057 HotRead ini and apply
@@ -2223,7 +2203,7 @@ int main(int argc, char **argv)
 		if (aimingHandle != -1) {
 			static bool wasSteadyAndConfident = false;
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
+			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence > 0.99f);
 
 			if (isSteadyAndConfident && !wasSteadyAndConfident) {
 
@@ -2240,7 +2220,7 @@ int main(int argc, char **argv)
 				// 2. Обработка ФОНОВЫХ калибровок
 				else if (AppStatus.AutoCalibrationEnabled) {
 					// Просто отодвигаем СБРОС MinDeltaGyro на 10 минут
-					AppStatus.SeamlessResetTimer = 300000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+					//AppStatus.SeamlessResetTimer = 3000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
 					if (AppStatus.BackgroundCalibSound) PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
 				}
 			}
@@ -2311,6 +2291,7 @@ int main(int argc, char **argv)
 						Sleep(50);
 						Beep(1200, 100);
 					}).detach();
+					
 					//AppStatus.SeamlessResetTimer = 600000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);	// Потодвигаем СБРОС MinDeltaGyro на 10 минут
 					//AppStatus.CalibRumbleTimer = 200 / AppStatus.SleepTimeOut; //будет двойной вибро, но вибро для калибровки такое себе
 				}
