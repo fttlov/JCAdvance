@@ -226,7 +226,7 @@ __________
 The OSD now displays real-time sticks, triggers and gyroscope telemetry.<br>
 **For Triggers**: raw data from 0 to 255. <br>
 **For Sticks**: raw data fromm -32768 to 32768 <br>
-Gyro telemetryThis helps you understand how the JoyShockLibrary auto-calibration handles hardware drift:
+Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibration handles hardware drift
 **Calib (0-100%)**: Algorithm confidence. Usually stays at 100%, meaning the baseline noise is known. It drops to 0% only during a manual reset (ALT+C)<br>
 **Steady (YES / NO)**: Physical stillness detector. When it says YES, the controller is perfectly still, and the background auto-calibration is actively collecting data.<br>
 **BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Sensors naturally drift. These numbers show the raw error the emulator is currently suppressing to keep  crosshair perfectly still.<br>
