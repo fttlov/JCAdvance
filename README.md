@@ -256,7 +256,7 @@ AutoCalibrationEnabled=0 — calibration is possible only in manual mode by hotk
 BackgroundCalibSound=1 — debug beep for each successful auto-calibration
 
   <details>
-  <summary>Observations</summary>
+  <summary>Under the hood</summary>
 
   By default, Joyshocklibrary uses "universal" calibration settings for Sony and Joy-Con controllers.
 The code is written so that Sony controllers are automatically calibrated in the background. It’s a heavy, 250-gram two-handed controller with high-quality gyroscope and accelerometer sensors, which is held with both hands (resulting in less shaking) and, for example, during cutscenes, is placed on the player’s lap—at which point automatic calibration occurs seamlessly and is applied smoothly. <br>
