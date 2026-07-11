@@ -246,12 +246,13 @@ How it works: Launch the game, use the in-game settings to configure the control
 For motion controls to work flawlessly, your controller must be properly calibrated at the hardware level. <br>
 The Gyroscope measures rotation. To calibrate it, the controller only needs absolute stillness. <br>
 The Accelerometer measures Earth's gravity. To calibrate it, the controller must be placed on a perfectly flat and level surface. <br>
-⚠️ Important: When calibrating separated Joy-Cons, attach them to the Switch console or a Joy-Con Grip! If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone bubble-level app to verify your desk or floor is actually flat. <br>
 
 Hardware Calibration Methods: <br>
 - Sony (DualShock 4 / DualSense): Calibrated automatically at the factory. They usually do not require manual accelerometer calibration <br>
 - Original Nintendo (Joy-Con / Pro Controller): Calibrate them by connecting to a Nintendo Switch console (System Settings -> Controllers and Sensors -> Calibrate Motion Controls). If you don't own a Switch, use the free PC tool Joy-Con Toolkit. JCAdvance automatically reads these precise offsets from the controller's internal memory <br>
 - Third-Party Clones (Mobapad, IINE, NYXI, etc.): These controllers usually have a built-in hardware shortcut to recalibrate sensors (e.g., holding R + X + HOME for Mobapad). Check your controller's manual
+
+⚠️ When calibrating separated Joy-Cons, attach them to the Switch console or a Joy-Con Grip! If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone bubble-level app to verify your desk or floor is actually flat <br>
 
   ### Software Calibration & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing.<br> 
