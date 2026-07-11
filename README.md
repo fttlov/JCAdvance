@@ -252,11 +252,13 @@ Hardware Calibration Methods: <br>
 - Original Nintendo (Joy-Con / Pro Controller): Calibrate them by connecting to a Nintendo Switch console (System Settings -> Controllers and Sensors -> Calibrate Motion Controls). If you don't own a Switch, use the free PC tool Joy-Con Toolkit. JCAdvance automatically reads these precise offsets from the controller's internal memory <br>
 - Third-Party Clones (Mobapad, IINE, NYXI, etc.): These controllers usually have a built-in hardware shortcut to recalibrate sensors (e.g., holding R + X + HOME for Mobapad). Check your controller's manual
 
-⚠️ When calibrating separated Joy-Cons, attach them to the Switch console or a Joy-Con Grip! If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone bubble-level app to verify your desk or floor is actually flat <br>
+⚠️ For succsesfull calibrating **Accelerometer sensor** on separated Joy-Cons, attach them to the Switch console or use a Joy-Con Grip! If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone bubble-level app (like Phyphox) to verify your desk or floor is actually flat <br>
+
+Practical tip for Mobapad: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on top, and put something under the gamepad to achieve values close to "0" for the Accelerometer X and Y parameters, then complete the calibration. For perfectionists only :)
 
   ### Software Calibration & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this the emulator features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
-To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", 
+To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift". 
 ⚠️ Software calibration works only with the gyroscope sensor
 
 #### Automatic Calibration
