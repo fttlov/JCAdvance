@@ -1399,7 +1399,7 @@ void DefaultMainText() {
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
 		
 		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the beep, or press \"\033[1m%s\033[0m\" to do it manually\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the beep, or press \"\033[1m%s\033[0m\" to do it manually\n").c_str(), AppStatus.HotKeys.GyroCalibrateKeyName.c_str());
 		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the beep\n").c_str());
 		u8printf(T("Layer1_Sense", "\n Press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to change aiming sensitivity, \"PS/Capture + RS\" to reset\n").c_str());
 		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
@@ -1439,7 +1439,8 @@ void DefaultMainText() {
 	u8printf(T("Layer3_AImMode", "  Gyro Behavior:   Press \"ALT + F\" to switching Control button behavior (start/stop motion).\n").c_str());
 	u8printf(T("Layer3_Lstick", "  L-Stick Mode:    Press \"PS/HOME + L3\" or \"ALT + S\" to toggle Left Stick mode (AutoSprintButton).\n").c_str());
 	u8printf(T("Layer3_Rumble", "  Rumble Power:    Press \"Capture + Plus\" or \"PS + Options\" or \"ALT + </>\" to adjust rumble.\n").c_str());
-	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manually.\n").c_str(), AppStatus.HotKeys.CalibrateKeyName.c_str());
+	u8printf(T("Layer3_Calibrate", "  Calibrate:	   Press \"ALT + C\" or \"%s\" to calibrate gyroscope manually.\n").c_str(), AppStatus.HotKeys.GyroCalibrateKeyName.c_str());
+	u8printf(T("Layer3_AccelCalibrate", "  Calibrate:	   Press \"ALT + G\" or \"%s\" to calibrate accelerometer manually.\n").c_str(), AppStatus.HotKeys.AccelCalibrateKeyName.c_str());
 	u8printf(T("Layer3_Backlight", "  Backlight:       Press \"PS + L1\" or \"ALT + B\" to toggle controller backlight (Sony only).\n").c_str());
 	u8printf(T("Layer3_Deadzones", "  Diagnostics:     Press \"ALT + F9\" to view stick and trigger dead zones.\n").c_str());
 
@@ -1745,8 +1746,10 @@ int main(int argc, char **argv)
 	AppStatus.HotKeys.ResetKeyName = IniFile.ReadString("SETTINGS", "ResetKey", "PAUSE");
 	AppStatus.HotKeys.ResetKey = KeyNameToKeyCode(AppStatus.HotKeys.ResetKeyName);
 	AppStatus.HotKeys.OSDKey = KeyNameToKeyCode(IniFile.ReadString("SETTINGS", "OSDKey", "NONE"));		//@060
-	AppStatus.HotKeys.CalibrateKeyName = IniFile.ReadString("SETTINGS", "CalibrateKey", "NONE");
-	AppStatus.HotKeys.CalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.CalibrateKeyName);
+	AppStatus.HotKeys.GyroCalibrateKeyName = IniFile.ReadString("SETTINGS", "GyroCalibrateKey", "NONE");	//@050
+	AppStatus.HotKeys.GyroCalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.GyroCalibrateKeyName);
+	AppStatus.HotKeys.AccelCalibrateKeyName = IniFile.ReadString("SETTINGS", "AccelCalibrateKey", "NONE");	//@063
+	AppStatus.HotKeys.AccelCalibrateKey = KeyNameToKeyCode(AppStatus.HotKeys.AccelCalibrateKeyName);
 
 	AppStatus.AutoCalibrationEnabled = IniFile.ReadBoolean("SETTINGS", "AutoCalibrationEnabled", true);	//@050
 	AppStatus.BackgroundCalibSound = IniFile.ReadBoolean("SETTINGS", "BackgroundCalibSound", false);
@@ -2212,7 +2215,7 @@ int main(int argc, char **argv)
 
 		//Manual calibration by hokey + indication (success/fail)
 		if (AppStatus.SkipPollCount == 0 && (
-			(AppStatus.HotKeys.CalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.CalibrateKey)) || (IsKeyPressed(VK_MENU) && IsKeyPressed('C')) // Дублирующий хардкод хоткея ALT + C
+			(AppStatus.HotKeys.GyroCalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.GyroCalibrateKey)) || (IsKeyPressed(VK_MENU) && IsKeyPressed('C')) // Дублирующий хардкод хоткея ALT + C
 			) && !AppStatus.IsManualCalibrating) {
 
 			AppStatus.IsManualCalibrating = true;
@@ -2234,6 +2237,28 @@ int main(int argc, char **argv)
 				JslSetAutomaticCalibration(PrimaryGamepad.DeviceIndex, true);
 				if (PrimaryGamepad.DeviceIndex2 != -1) JslSetAutomaticCalibration(PrimaryGamepad.DeviceIndex2, true);
 			}
+
+			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+		}
+
+		//@063 Software Accelerometer Calibration (ALT + G)
+		if (AppStatus.SkipPollCount == 0 && (
+			(AppStatus.HotKeys.AccelCalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.AccelCalibrateKey)) || (IsKeyPressed(VK_MENU) && IsKeyPressed('G')))) {
+			if (PrimaryGamepad.DeviceIndex != -1) {
+				JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex);
+				if (PrimaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex2);
+			}
+			if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
+				JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex);
+				if (SecondaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex2);
+			}
+
+			// Асинхронный звуковой сигнал успеха (двойной короткий писк)
+			std::thread([]() {
+				Beep(1200, 50);
+				Sleep(50);
+				Beep(1500, 100);
+			}).detach();
 
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}

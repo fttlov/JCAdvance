@@ -611,8 +611,10 @@ struct _AppStatus {
 		std::string ResetKeyName;
 		int ResetKey = 0;
 		int OSDKey = 0;	//@130
-		std::string CalibrateKeyName = "NONE";
-		int CalibrateKey = 0;
+		std::string GyroCalibrateKeyName = "NONE"; // @124
+		int GyroCalibrateKey = 0;
+		std::string AccelCalibrateKeyName = "NONE";		//@131
+		int AccelCalibrateKey = 0;
 	};
 	_HotKeys HotKeys;
 	bool DeadZoneMode = false;

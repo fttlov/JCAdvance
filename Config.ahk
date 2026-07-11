@@ -706,19 +706,21 @@ AddHotkey(ConfigIni, "Gamepad", "StickAsTriggerToggleButton", T("Right stick as 
 
 ; --- БОЛЬШАЯ ГРУППА 2: Keyboard Hotkeys ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x185 y+55 w500 h135 Center Section", T("Keyboard Hotkeys"))
+MainGui.Add("GroupBox", "x185 y+55 w500 h162 Center Section", T("Keyboard Hotkeys"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddHotkey(ConfigIni, "SETTINGS", "ResetKey", T("Reset/Research Gamepad"), KbmKeys, BindKbm, "xs+30 ys+40")
 ;yPos += 30
-AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+30 ys+67")
-AddHotkey(ConfigIni, "SETTINGS", "CalibrateKey", T("Gyroscope Recalibration *"), KbmKeys, BindKbm, "xs+30 ys+94")
+AddHotkey(ConfigIni, "SETTINGS", "GyroCalibrateKey", T("Gyroscope Recalibration*"), KbmKeys, BindKbm, "xs+30 ys+67")
+AddHotkey(ConfigIni, "SETTINGS", "AccelCalibrateKey", T("Accelerometer Recalibration*"), KbmKeys, BindKbm, "xs+30 ys+94")
+AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+30 ys+121")
 
-MainGui.Add("Text", "x25 y+145 w820 cRed", T("* Gyroscope Recalibration"))
-MainGui.Add("Text", "x25 y+5 w820", T("Place the device on a flat surface, press the button, and wait for the beep"))
-
-MainGui.Add("Text", "x25 y+7 w820 cRed", T("** Note:"))
+MainGui.Add("Text", "x25 y+117 w820 cRed", T("Note:"))
 MainGui.Add("Text", "x25 y+3 w820", T("To assign a two-button combination (like R+HOME), you can manually type it into the field above and click Save All"))
+
+MainGui.Add("Text", "x25 y+7 w820 cRed", T("*Software Gamepad Recalibration"))
+MainGui.Add("Text", "x25 y+5 w820", T("Place the device on a flat surface, press the button, and wait for the beep. Calibrate Joy-Cons in a grip to lay flat!"))
+
 ; =========================================
 ; TAB 5: GYRO (config.ini)
 ; =========================================
