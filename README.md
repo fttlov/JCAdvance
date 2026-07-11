@@ -258,7 +258,6 @@ Practical tip for Mobapad: Launch Phyphox, select Acceleration with g > Simple >
 
   ### Software Calibration & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this the emulator features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
-To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift".   <br>
 
 ⚠️ Software calibration works only with the gyroscope sensor
 
