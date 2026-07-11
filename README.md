@@ -166,9 +166,9 @@ __________
     *   `ALT + W` — Toggle Sony Touchpad click mode-switching behavior.
     *   `ALT + Up / Down` — Switch active profile.
     *   `ALT + < / >` — Adjust rumble strength.
-    *   `ALT + C` *(or Gamepad Hotkey)* — Calibrate gyro manually (keep controller flat on a table) **`[Configurable]`**.
-    *   `ALT + G` *(or Gamepad Hotkey)* — Calibrate accel manually (keep controller flat on a table) **`[Configurable]`**.
-    *   `CTRL + R` *(or Gamepad Hotkey)* — Reset and re-search connected controllers **`[Configurable]`**.
+    *   `ALT + C` *(or keyboard Hotkey)* — Calibrate gyro manually (keep controller flat on a table) **`[Configurable]`**.
+    *   `ALT + G` *(or keyboard Hotkey)* — Calibrate accel manually (keep controller flat on a table) **`[Configurable]`**.
+    *   `CTRL + R` *(or keyboard Hotkey)* — Reset and re-search connected controllers **`[Configurable]`**.
     
     ---
     
@@ -312,7 +312,8 @@ This option controls how the gyroscope interprets hand movements into mouse/stic
 * **1 (World Space):** Relies heavily on a perfectly calibrated accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
 * **2 (Player Space):** uses ccelerometer too
 
-⚠️ For modes 1 or 2: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only
+⚠️ For modes 1 or 2: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
+Software calibration of the device only works when the emulator is running.
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
