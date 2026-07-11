@@ -257,21 +257,24 @@ Hardware Calibration Methods: <br>
 
 Practical tip for Mobapad: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on top, and put something under the gamepad to achieve values close to "0" for the Accelerometer X and Y parameters, then complete the calibration. For perfectionists only :)
 
-  ### Software Calibration & Drift Prevention
+  ### Software Calibration (correction) & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this the emulator features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
 
-⚠️ Software calibration works only with the gyroscope sensor
+⚠️ Temperature affects only the gyroscope sensor
 
-#### Automatic Calibration
-By default, the emulator recalibrates your controller automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point. <br> 
+#### Automatic Gyro Calibration
+By default, the emulator recalibrates your gyro sensor automaticaly when you place the controller on a flat surface for about 3-5 second. The algorithm detects the silence and instantly recalculates the absolute zero point. <br> 
 The first calibration have the beep indication. Subsequent calibrations can be monitored using the "Steady" setting in the OSD or the BackgroundCalibSound (=1) setting in config.ini
 
-#### Manual Calibration (Hotkey)
+#### Manual Gyro Calibration (by hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
 Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
 Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
 Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
+
+#### Manual Accelerometer Calibration
+This is only necessary in rare cases when you want to use World Gyro Space mode (more on this below) but are unable to perform a hardware calibration of the accelerometer
 
 #### Config.ini Settings
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON <br>
