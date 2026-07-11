@@ -315,7 +315,7 @@ This option controls how the gyroscope interprets hand movements into mouse/stic
 
 * **0 (Local Space):** Relies entirely on the gyroscope. Movement is calculated relative to the controller's plastic body, ignoring gravity <br>
 * **1 (World Space):** Relies heavily on a perfectly calibrated accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
-* **2 (Player Space):** uses ccelerometer too
+* **2 (Player Space):** uses accelerometer too
 
 ⚠️ For modes 1 or 2: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
 
