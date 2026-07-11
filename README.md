@@ -309,8 +309,9 @@ This option controls how the gyroscope interprets hand movements into mouse/stic
 
 * **0 (Local Space):** Relies entirely on the gyroscope. Movement is calculated relative to the controller's plastic body, ignoring gravity <br>
 * **1 (World Space):** Relies heavily on a perfectly calibrated accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
-⚠️ Important for Joy-Con: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration) or use Local Space if you cannot fix it <br>
 * **2 (Player Space):** uses ccelerometer too
+
+⚠️ For modes 1 or 2: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration) or use Local Space if you cannot fix it <br>
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
 
