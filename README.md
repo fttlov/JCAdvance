@@ -100,7 +100,6 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 </table>
 
 
-
 ## Requirements
 - [ViGEm Bus Driver](https://github.com/nefarius/ViGEmBus) — Virtual Gamepad Emulation Framework by nefarius
 - [Microsoft Visual C++ Redistributable 2017 (x86/x64)](https://learn.microsoft.com/en-us/answers/questions/4137965/download-link-for-microsoft-visual-c-2017-redistri) or newer
@@ -243,6 +242,8 @@ How it works: Launch the game, use the in-game settings to configure the control
 
   ## Calibration
 
+⚠️ Hardware calibration is described to help you understand how the sensors work and is only necessary if the factory calibration has been compromised (e.g., the device was dropped, a failed firmware update, etc.). If there are no specific issues, you don’t need to do anything. "If it works, don’t touch it." Joy-Con owners will most likely have to deal with software calibration
+
   ### Hardware Calibration
 For motion controls to work flawlessly, your controller must be properly calibrated at the hardware level. <br>
 The Gyroscope measures rotation. To calibrate it, the controller only needs absolute stillness. <br>
@@ -259,7 +260,7 @@ You can use a smartphone simple bubble-level app (or pro free app like Phyphox) 
 Practical tip for Mobapad M6: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on top, and put something under the gamepad to achieve values close to "0" for the Accelerometer X and Y parameters, then complete the calibration. For perfectionists only :)
 
   ### Software Calibration (correction) & Drift Prevention
-  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this the emulator features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this JCAdvacne features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
 
 ⚠️ Temperature affects only the gyroscope sensor
 
