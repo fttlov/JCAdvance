@@ -252,6 +252,8 @@ extern "C" JOY_SHOCK_API int JslGetControllerSplitType(int deviceId);
 extern "C" JOY_SHOCK_API int JslGetControllerColour(int deviceId);
 // set controller light colour (not all controllers have a light whose colour can be set, but that just means nothing will be done when this is called -- no harm)
 extern "C" JOY_SHOCK_API void JslSetLightColour(int deviceId, int colour);
+//
+extern "C" JOY_SHOCK_API void JslResetAccelerometerCalibration(int deviceId);
 // set controller rumble
 extern "C" JOY_SHOCK_API void JslSetRumble(int deviceId, int smallRumble, int bigRumble);
 // set controller player number indicator (not all controllers have a number indicator which can be set, but that just means nothing will be done when this is called -- no harm)
