@@ -228,12 +228,12 @@ __________
 The OSD now displays real-time sticks, triggers and gyroscope telemetry.<br>
 **For Triggers**: raw data from 0 to 255. <br>
 **For Sticks**: raw data fromm -32768 to 32768 <br>
-Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibration handles hardware drift<br>
+Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibration handles thermal gyro drift (see more in "Calibration") <br>
 **Calib (0-100%)**: Algorithm confidence. Usually stays at 100%, meaning the baseline noise is known. It drops to 0% only during a manual reset (ALT+C)<br>
 **Steady (YES / NO)**: Physical stillness detector. When it says YES, the controller is perfectly still, and the background auto-calibration is actively collecting data.<br>
 **BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Sensors naturally drift. These numbers show the raw error the emulator is suppressing during calibration to keep crosshair perfectly still.<br>
 
-Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 7.09 to 7.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
+Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 1.09 to 1.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
 
 Also added current battery status and device poling rate info
 
@@ -249,13 +249,14 @@ The Gyroscope measures rotation. To calibrate it, the controller only needs abso
 The Accelerometer measures Earth's gravity. To calibrate it, the controller must be placed on a perfectly flat and level surface. <br>
 
 Hardware Calibration Methods: <br>
-- Sony (DualShock 4 / DualSense): Calibrated automatically at the factory. They usually do not require manual accelerometer calibration <br>
+- Sony (DualShock 4 / DualSense): Calibrated automatically at the factory. They usually do not require manual calibration <br>
 - Original Nintendo (Joy-Con / Pro Controller): Calibrate them by connecting to a Nintendo Switch console (System Settings -> Controllers and Sensors -> Calibrate Motion Controls). If you don't own a Switch, use the free PC tool Joy-Con Toolkit. JCAdvance automatically reads these precise offsets from the controller's internal memory <br>
-- Third-Party Clones (Mobapad, IINE, NYXI, etc.): These controllers usually have a built-in hardware shortcut to recalibrate sensors (e.g., holding R + X + HOME for Mobapad). Check your controller's manual
+- Third-Party Clones (Mobapad, IINE, NYXI, etc.): These controllers usually have a built-in hardware shortcut to recalibrate sensors (e.g., holding R + X + HOME for right [Mobapad M6](https://www.youtube.com/watch?v=DRcDEmGya6M&t=2s)). Check your controller's manual
 
-⚠️ For succsesfull calibrating **Accelerometer sensor** on separated Joy-Cons, attach them to the Switch console or use a Joy-Con Grip. If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone simple bubble-level app (or pro free app like Phyphox) to verify your desk or floor is actually flat <br>
+⚠️ For succsesfull calibrating **Accelerometer sensor** on separated Joy-Cons, attach them to the Switch console or use the charging Grip. If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. <br>
+You can use a smartphone simple bubble-level app (or pro free app like Phyphox) to verify your desk or floor is actually flat <br>
 
-Practical tip for Mobapad: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on top, and put something under the gamepad to achieve values close to "0" for the Accelerometer X and Y parameters, then complete the calibration. For perfectionists only :)
+Practical tip for Mobapad M6: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on top, and put something under the gamepad to achieve values close to "0" for the Accelerometer X and Y parameters, then complete the calibration. For perfectionists only :)
 
   ### Software Calibration (correction) & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this the emulator features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
