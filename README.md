@@ -236,8 +236,25 @@ Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, y
 
 Also added current battery status and device poling rate info
 
-  ### 🎯 Gyro Calibration & Drift Prevention
-  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative gyroscope drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing.<br> 
+  ### New Smart Gyro Sensitivity Adjustment
+
+How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
+
+  ## Calibration
+
+  ### Hardware Calibration
+For motion controls to work flawlessly, your controller must be properly calibrated at the hardware level. <br>
+The Gyroscope measures rotation. To calibrate it, the controller only needs absolute stillness. <br>
+The Accelerometer measures Earth's gravity. To calibrate it, the controller must be placed on a perfectly flat and level surface. <br>
+⚠️ Important: When calibrating separated Joy-Cons, attach them to the Switch console or a Joy-Con Grip! If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. You can use a smartphone bubble-level app to verify your desk or floor is actually flat. <br>
+
+Hardware Calibration Methods: <br>
+- Sony (DualShock 4 / DualSense): Calibrated automatically at the factory. They usually do not require manual accelerometer calibration <br>
+- Original Nintendo (Joy-Con / Pro Controller): Calibrate them by connecting to a Nintendo Switch console (System Settings -> Controllers and Sensors -> Calibrate Motion Controls). If you don't own a Switch, use the free PC tool Joy-Con Toolkit. JCAdvance automatically reads these precise offsets from the controller's internal memory <br>
+- Third-Party Clones (Mobapad, IINE, NYXI, etc.): These controllers usually have a built-in hardware shortcut to recalibrate sensors (e.g., holding R + X + HOME for Mobapad). Check your controller's manual
+
+  ### Software Calibration & Drift Prevention
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing.<br> 
 To keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift", the emulator features a smart calibration system (by JibbSmart)
 
 #### Automatic Calibration
@@ -265,8 +282,7 @@ The Joy-Con is a lightweight controller for one-handed use, with sensors of sign
 In JCadvance the settings for Joy-Con calibration have been adjusted to allow for faster and more reliable calibration in 2–3 seconds.
 
 Example of use in real-world conditions (MobaPad M6S): <br>
-Launch the emulator, connect the device, place it on a surface, wait for the first successful calibration (beep), and start playing. The temperature gradually rises, and drift increases. After a few minutes, place the device on the surface for a 2-3 sec. and continue playing. As a rule, a couple of recalibrations are enough to then play (for an hour or more) without ever letting go of the controller and without any drift—the temperature has stabilized.
-
+Launch the emulator, connect the device, place it on a surface, wait for the first successful calibration (beep), and start playing. The temperature gradually rises, and drift increases. After a few minutes, place the device on the surface for a 2-3 sec. and continue playing. As a rule, a couple of recalibrations are enough to then play for an hour or more without ever letting go of the controller and without any drift (temperature has stabilized)
 
 Added auto-calibration settings from Joyshocklibrary to config.ini for fine-tuning (Nintendo only) :<br>
 
@@ -283,10 +299,42 @@ Since the JoyshockLibrary code is quite complex, it is not yet possible to fully
 The issue has been resolved by adding "Adaptive Noise Threshold" in the GamepadMotion.hpp. Tested on a Joy-Con (Mobapad) during an extended gaming session. Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md) 
   </details>
 
-  ### New Smart Gyro Sensitivity Adjustment
+  ### Gyro Motion Space
 
-How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
-   
+This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: <br>
+
+* **0 (Local Space):** Relies entirely on the gyroscope. Movement is calculated relative to the controller's plastic body, ignoring gravity <br>
+* **1 (World Space):** Relies heavily on a perfectly calibrated accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
+⚠️ Important for Joy-Con: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Use Local Space if your accelerometer is miscalibrated and you cannot fix it <br>
+* **2 (Player Space):** uses ccelerometer too
+
+In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
+
+It is hard to explain, but I will try. <br>
+**For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
+0 — "steering wheel" movement to the left <br>
+2 — tilt the right side of the gamepad (R1) away from you while bringing the left side (L1) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
+
+**For Joy-Cons** the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
+0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
+1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
+With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+
+Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
+
+  ### Tightening (Dynamic Smoothing)
+
+**How it works:**
+Tightening is a zero-latency, velocity-based threshold filter that attenuates micro-movements to eliminate hand tremors and pulse twitches and natural hardware sensor noise.<br>
+Unlike a traditional "deadzone" that blocks small inputs entirely, Tightening smoothly dampens the sensitivity only when the controller is moving very slowly or being held still. 
+When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input
+
+**Recommended Values:**
+* **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands. Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
+* ** `1.0 - 2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
+* **`2.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
+* **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold
+
   ### Polling Rate & Performance
 
   Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
@@ -317,37 +365,6 @@ By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
 3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
 
 *Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted
-  
-  ### Tightening (Dynamic Smoothing)
-
-**How it works:**
-Tightening is a zero-latency, velocity-based threshold filter that attenuates micro-movements to eliminate hand tremors and pulse twitches and natural hardware sensor noise.<br>
-Unlike a traditional "deadzone" that blocks small inputs entirely, Tightening smoothly dampens the sensitivity only when the controller is moving very slowly or being held still. 
-When you move the controller quickly (fast flicks), the filter automatically disengages, giving you 1:1 raw and responsive input
-
-**Recommended Values:**
-* **`0.0` (Disabled):** Best for hardcore competitive players with perfectly steady hands. Provides the absolute rawest input, but you might notice micro-jitters from your own pulse.
-* ** `1.0 - 2.0` (Default):** Ideal for most players with high-quality controllers (like **DualSense** or **DualShock 4**). It completely removes stationary crosshair jitter while keeping micro-adjustments (like sniper aiming) incredibly smooth and responsive.
-* **`2.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
-* **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold
-
-  ### Gyro Motion Space
-
-This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: 0, 1, 2. <br>
-
-In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
-
-It is hard to explain, but I will try. <br>
-**For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
-0 — "steering wheel" movement to the left <br>
-2 — tilt the right side of the gamepad (R1) away from you while bringing the left side (L1) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
-
-**For Joy-Cons** the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling), and b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
-0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
-1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
-With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
-
-Reading this description might make it seem like playing this way is impossible because every mode has its downsides. But that is not the case — your brain and muscle memory adapt quickly, and all modes are highly playable (except for Joy-Con on mode 2). Test them out, find what works best for you, and you're good to go!<br>
 
   ### 🎮 Right Stick as Analog Triggers
 
