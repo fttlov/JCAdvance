@@ -420,8 +420,8 @@ Note: <br>
 In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).<br>
 Stick as triggers mode takes priority when activated via a hotkey.
 
-    <details>
-    <summary>Axis Isolation & Diagonal Filtering/summary>
+
+#### Axis Isolation & Diagonal Filtering
 
 To ensure a highly responsive, error-free experience in both Mode 1 and Mode 2, `JCAdvance` utilizes real-time mathematical filtering. 
 
@@ -432,8 +432,6 @@ $$\text{Horizontal Dominates} \implies |rx| > |ry|$$
 
 * **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
 * **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
-
-    </details>
 
   ### 🎮 Left stick: "Auto-Sprint" Mode
 
