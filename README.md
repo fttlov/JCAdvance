@@ -386,11 +386,11 @@ For example, the Mobapad M6S (a Joy-Con equivalent) is polled by the system via 
   2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`
   3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
 
-*Note: For single controllers (Switch Pro Controller or DualSense), it's simple: just set the polling rate shown in the OSD
-
   </details>
 
-  ### 🎮 Right Stick as Analog Triggers
+*Note: For single controllers (Switch Pro Controller or DualSense), it's simple: just set the polling rate shown in the OSD
+
+### 🎮 Right Stick as Analog Triggers
 
 Because Nintendo Switch Pro and Joy-Con controllers feature digital ZL and ZR buttons, playing games that rely on analog trigger sensitivity (such as progressive throttle in driving, target lock-on thresholds, or weapon cocking mechanics) is traditionally difficult. However, since the Pro Controller is a classic two-handed controller, it doesn't offer the same flexibility for gyro motion, so we're not considering it.
 
