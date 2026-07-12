@@ -232,7 +232,7 @@ Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibrati
 **Steady (YES / NO)**: Physical stillness detector. When it says YES, the controller is perfectly still, and the background auto-calibration is actively collecting data.<br>
 **BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Sensors naturally drift. These numbers show the raw error the emulator is suppressing during calibration to keep crosshair perfectly still.<br>
 
-Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 1.09 to 1.02). This is normal! It proves the background calibration is actively recalculating the thermal drift.
+Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 1.09 to 1.02). This is normal! It proves the software calibration is actively recalculating the thermal drift.
 
 Also added current battery status and device poling rate info
 
@@ -242,7 +242,8 @@ How it works: Launch the game, use the in-game settings to configure the control
 
   ## Calibration
 
-⚠️ Hardware calibration is described to help you understand how the sensors work and is only necessary if the factory calibration has been compromised (e.g., the device was dropped, a failed firmware update, etc.). If there are no specific issues, you don’t need to do anything. "If it works, don’t touch it." Joy-Con owners will most likely have to deal with software calibration
+⚠️ Hardware calibration is described to help you understand how the sensors work and is only necessary if the factory calibration has been compromised (e.g., the device was dropped, a failed firmware update, etc.). If there are no specific issues, you don’t need to do anything. "If it works, don’t touch it."  <br>
+You'll most likely have to deal with software calibration
 
   ### Hardware Calibration
 For motion controls to work flawlessly, your controller must be properly calibrated at the hardware level. <br>
@@ -270,9 +271,7 @@ The first calibration have the beep indication. Subsequent calibrations can be m
 
 #### Manual Gyro Calibration (by hotkey)
 If you prefer to control when calibration happens, you can disable autocalibration in config.ini and force it manually at any time:
-Press Alt + C (or your mapped CalibrateKey). You will hear a low beep.<br>
-Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted.
-Wait for the success signal - double beep.<br>
+Press Alt + C (or your mapped Key). You will hear a low beep. Place the controller on a flat surface immediately. Your aiming axes will be temporarily muted. Wait for the success signal - double beep.<br>
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
 #### Manual Accelerometer Calibration
@@ -286,7 +285,10 @@ BackgroundCalibSound=1 — debug beep for each successful auto-calibration
   <details>
   <summary>Under the hood</summary>
 
-  By default, Joyshocklibrary uses "universal" calibration settings for Sony and Joy-Con controllers.
+IMU heating Issues: <br>
+The gyroscope measures velocity (degrees per second). To determine the camera’s rotation angle in the game, the software continuously adds this velocity (integrates it). If the gyroscope starts to give off inaccurate readings by just 0.1 degrees/sec due to heating, then after 10 seconds the crosshairs will drift 1 degree off course, and after a minute—6 degrees. The error snowballs!
+
+  By default, Joyshocklibrary uses "universal" software calibration settings for Sony and Nintendo controllers.
 The code is written in such a way that Sony controllers can be automatically calibrated, as it were, in the background. It’s a heavy, 250-gram two-handed controller with high-quality gyroscope and accelerometer sensors, which is held with both hands (resulting in less shaking) and, for example, during cutscenes, is placed on the player’s lap—at which point automatic calibration occurs seamlessly and is applied smoothly. <br>
 The Joy-Con is a lightweight controller for one-handed use, with sensors of significantly lower quality. It is impossible to calibrate it properly whilst holding it in your hand. Therefore, the only option is to calibrate it “on a table.” <br>
 In JCadvance the settings for Joy-Con calibration have been adjusted to allow for faster and more reliable calibration in 2–3 seconds.
@@ -297,9 +299,10 @@ Launch the emulator, connect the device, place it on a surface, wait for the fir
 Added auto-calibration settings from Joyshocklibrary to config.ini for fine-tuning (Nintendo only) :<br>
 
 1. MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted. Values greater than 4 will allow you to calibrate the Joy-Con while holding it in your hand, but this may cause drift right after calibration <br>
-2. MinStillnessCollectionTime (Default: 0.5) — The initial time window (in seconds) used to measure gamepad baseline noise floor before collect data for calibration. If noise is too big, (touched the gamepad), the test starts again. Recomended default value <br>
-3. MinStillnessCorrectionTime (Default: 2.0) — Duration (in sec.) of data collection, for calculating drift and compensating for it during calibration. Lowering this (e.g., to 1.0) allows the controller to calibrate faster when placed on a desk.<br>
-4. StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller. Joy-Cons calibrate well only on flat surfaces, so feel free to use low values
+2. MinStillnessCollectionTime (Default: 0.5) — The initial time the controller must remain still to collect baseline noise data. Once reached, the algorithm evaluates this data to confirm if the controller is truly at rest. Recomended default value <br>
+3. MinStillnessCorrectionTime (Default: 2.0) — The total continuous stillness time required to actually apply the new calibration to the gyroscope. The timer doesn't reset; it seamlessly continues from the collection phase.<br>
+4. StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller.
+Joy-Cons calibrate well only on flat surfaces, so feel free to use low values <br>
     
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 
