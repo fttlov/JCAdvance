@@ -360,6 +360,9 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
   *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
   
+  <details>
+  <summary>Under the hood</summary>
+  
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
 
 #### Why exactly 250 Hz</summary>
@@ -384,6 +387,8 @@ For example, the Mobapad M6S (a Joy-Con equivalent) is polled by the system via 
   3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
 
 *Note: For single controllers (Switch Pro Controller or DualSense), it's simple: just set the polling rate shown in the OSD
+
+  </details>
 
   ### 🎮 Right Stick as Analog Triggers
 
