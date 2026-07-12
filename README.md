@@ -470,20 +470,20 @@ Smoothing Time (time to reach 100% speed, where 100% like without filter) :
 - Value 50 (~8.0ms to reach full speed)
 - Value 75 (~24.0ms to reach full speed)
 
-  #### DualShock Emulation
+#### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., F.E.A.R., Half-Life, classic *Need for Speed* titles)
 
-  #### Improved Driving Mode
+#### Improved Driving Mode
   The `CalcMotionStick` logic was rewritten to prevent the virtual wheel from snapping in the opposite direction when reaching maximum steering angles. Added manual calibration: if the wheel gets off-center, hold your controller in a comfortable position and press the calibration hotkey to reset the center
 
-  #### External Pedals Support
+#### External Pedals Support
   Originally designed for custom Arduino-based pedals (and a few others), this feature has been expanded to support standard DirectInput wheels/pedals.
   
   *Setup:* Connect your device, enable **"Dinput Search"** in the Steering tab of `Config.exe`, and launch `JCAdvance.exe`. If you see your dedice name `[Pedals Search] ID 0: Found device 'Your Device Name' -> APPROVED!` in the console, it is configured correctly. If inputs do not register, adjust the `PedalAxis` options in the Configurator. If automatic detection fails, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the exact name of your steering wheel/pedals from joy.cpl.  <br>
 
 I tested this feature using an old "Logitech Wingman" wheel and it f@cking works! 
 
-  ### Fixes & Adjustments
+### Fixes & Adjustments
   - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
   - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.)
   - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con
@@ -491,7 +491,7 @@ I tested this feature using an old "Logitech Wingman" wheel and it f@cking works
   - **Reconnection Fix:** Fixed an issue where disconnecting Joy-Con (1) and connecting Joy-Con (2) resulted in no input registration
   - **Battery Info:** Fixed battery tracking (`Alt+I`) for the second Joy-Con
 
-  ### Testing & Debugging Limitations
+### Testing & Debugging Limitations
   - **Sony Controllers:** The developer currently lacks access to physical DualShock/DualSense controllers. While the original emulation code remains intact, some untested issues may occur.
   - **Haptic Rumble:** Tested on Mobapad M6S controllers. Due to simplified motors, full HD Rumble compatibility could not be verified.
   - **Pedals:** Tested only on a legacy Logitech steering wheel. Broad compatibility with all modern pedals cannot be guaranteed.
