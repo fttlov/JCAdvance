@@ -354,13 +354,13 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 * **`2.0` - `5.0` (For Joy-Cons & Shaky Hands):** Nintendo **Joy-Cons** have inherently "noisier" and cheaper MEMS sensors compared to Sony controllers. Values in this range perfectly anchor the crosshair and hide the hardware noise, making Joy-Cons feel incredibly stable.
 * **`10.0+`:** Setting this value too high will make the gyro feel "muddy" or cause stuttering when tracking moving targets, as the speed constantly dips below the dampening threshold
 
-  ### Polling Rate & Performance
+### Polling Rate & Performance
 
-  Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
+Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
-  *Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
+*Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
     
-  Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
+ Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
   
 <details>
 <summary><b>Why exactly 250 Hz</b></summary>
