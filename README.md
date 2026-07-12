@@ -448,18 +448,20 @@ In many games, running or sprinting is assigned to a separate button. JCAdvance 
 - 1: The button activates if the stick > AutoPressStickValue only in the front half (45 degrees)
 - 2: The button activates if the stick > AutoPressStickValue in any direction (for old games)
 
-  ### Split Mode & Joy-Con Mapping
+### Other Features and Capabilities
+
+  #### Split Mode & Joy-Con Mapping
   Added Split Mode for Joy-Cons and XY-axis swapping for horizontal grip. Joy-Con buttons (`SL`, `SR`, `HOME`, `CAPTURE`) can be mapped to a secondary virtual controller. When `SplitJoycons = 1` in `config.ini`, the Left Joy-Con acts as Player 1, and the Right acts as Player 2
 
-  ### Ratchet Delay
+  #### Ratchet Delay
 
   With classic ratcheting (hold to mute gyro motion button), the camera jerks suddenly when you release the button due to the residual movement of your hand. Default setting: 150 ms. 
   In hold to move mode, the delay does not apply
 
-  ### Gyro Melee Gesture
+  #### Gyro Melee Gesture
   A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The practical use for an accelerometer. You can also adjust the impact force (G-force).
 
-  ### EMA Smoothing Filter
+  #### EMA Smoothing Filter
 The EMA (Exponential Moving Average) filter does not add traditional input lag. When you move the controller, the in-game camera starts moving instantly (0ms delay). Instead, EMA acts like a rubber band or inertia. <br>
 Example (EMA = 50 / ~8ms): When you make a quick swipe, the crosshair moves immediately, but it takes about 8 milliseconds to "catch up" and reach the full speed of your hand. This completely irons out micro-tremors from your hands, but makes the crosshair feel slightly "heavier" or smoother. The higher the value, the stronger the rubber band effect. Set it to 0 for raw, unfiltered input.
 
@@ -468,13 +470,13 @@ Smoothing Time (time to reach 100% speed, where 100% like without filter) :
 - Value 50 (~8.0ms to reach full speed)
 - Value 75 (~24.0ms to reach full speed)
 
-  ### DualShock Emulation
+  #### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., F.E.A.R., Half-Life, classic *Need for Speed* titles)
 
-  ### Improved Driving Mode
+  #### Improved Driving Mode
   The `CalcMotionStick` logic was rewritten to prevent the virtual wheel from snapping in the opposite direction when reaching maximum steering angles. Added manual calibration: if the wheel gets off-center, hold your controller in a comfortable position and press the calibration hotkey to reset the center
 
-  ### External Pedals Support
+  #### External Pedals Support
   Originally designed for custom Arduino-based pedals (and a few others), this feature has been expanded to support standard DirectInput wheels/pedals.
   
   *Setup:* Connect your device, enable **"Dinput Search"** in the Steering tab of `Config.exe`, and launch `JCAdvance.exe`. If you see your dedice name `[Pedals Search] ID 0: Found device 'Your Device Name' -> APPROVED!` in the console, it is configured correctly. If inputs do not register, adjust the `PedalAxis` options in the Configurator. If automatic detection fails, try entering the name manually: launch joy.cpl via Run or cmd and replace ‘AUTO’ with the exact name of your steering wheel/pedals from joy.cpl.  <br>
