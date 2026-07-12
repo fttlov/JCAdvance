@@ -381,7 +381,7 @@ By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
 2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`
 3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
 
-*Note: For single controllers (like the Switch Pro Controller or DualSense), keeping the rate at 125 Hz (`SleepTimeOut = 8`) is optimal, as polling faster than their 8 ms interval will only result in duplicate empty frames. This won't make things any worse; it's just that some of the work will be wasted
+*Note: For single controllers (Switch Pro Controller or DualSense), it's simple: just set the polling rate shown in the OSD
 
   ### 🎮 Right Stick as Analog Triggers
 
