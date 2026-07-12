@@ -363,7 +363,7 @@ What limitations? The Wheel function did not work properly when SleepTimeout < 1
   Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
   
 <details>
-<summary><b>Why exactly 250 Hz (Click to expand)</b></summary>
+<summary><b>Why exactly 250 Hz</b></summary>
 
 For example, the Mobapad M6S (a Joy-Con equivalent) is polled by the system via Bluetooth at a frequency of **125 Hz** (with a communication interval of 8 ms, as specified by Windows). You can check your device's polling frequency in the OSD.
 
@@ -426,8 +426,8 @@ Note: <br>
 In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (stick left-right directions).<br>
 Stick as triggers mode takes priority when activated via a hotkey.
 
-
-#### Axis Isolation & Diagonal Filtering
+<details>
+<summary><b>Axis Isolation & Diagonal Filtering</b></summary>
 
 To ensure a highly responsive, error-free experience in both Mode 1 and Mode 2, `JCAdvance` utilizes real-time mathematical filtering. 
 
@@ -436,8 +436,10 @@ When you push a sensitive analog stick, your thumb rarely moves in a perfectly s
 $$\text{Vertical Dominates} \implies |ry| \ge |rx|$$
 $$\text{Horizontal Dominates} \implies |rx| > |ry|$$
 
-* **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
-* **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
+- **In Mode 2 (as buttons):** The engine dynamically isolates the dominant axis. If the vertical axis dominates, the horizontal buttons are temporarily ignored (and vice versa). The stick behaves like a crisp, tactile mechanical D-pad.
+- **In Mode 1 (as triggers):** If the vertical axis dominates, the stick smoothly controls `RT` or `LT`, completely ignoring horizontal buttons. If the horizontal axis dominates, the engine disables trigger inputs and lets you trigger `RS-LEFT` or `RS-RIGHT` buttons cleanly, completely separating trigger control from digital button presses.
+
+</details>
 
   ### 🎮 Left stick: "Auto-Sprint" Mode
 
