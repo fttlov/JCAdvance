@@ -446,7 +446,7 @@ In many games, running or sprinting is assigned to a separate button. JCAdvance 
   In hold to move mode, the delay does not apply
 
   ### Gyro Melee Gesture
-  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The only practical use for an accelerometer. You can also adjust the impact force (G-force).
+  A gesture-recognition feature designed primarily for Joy-Cons. Swings (straight punch, hook, or hammer motion) can emulate any keyboard key or controller button. This lets you perform melee actions in-game without occupying a physical button. The practical use for an accelerometer. You can also adjust the impact force (G-force).
 
   ### EMA Smoothing Filter
 The EMA (Exponential Moving Average) filter does not add traditional input lag. When you move the controller, the in-game camera starts moving instantly (0ms delay). Instead, EMA acts like a rubber band or inertia. <br>
