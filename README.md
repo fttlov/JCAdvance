@@ -297,20 +297,28 @@ In JCadvance the settings for Joy-Con calibration have been adjusted to allow fo
 Example of use in real-world conditions (MobaPad M6S): <br>
 Launch the emulator, connect the device, place it on a surface, wait for the first successful calibration (beep), and start playing. The temperature gradually rises, and drift increases. After a few minutes, place the device on the surface for a 2-3 sec. and continue playing. As a rule, a couple of recalibrations are enough to then play for an hour or more without ever letting go of the controller and without any drift (temperature has stabilized)
 
-Added auto-calibration settings from Joyshocklibrary to config.ini for fine-tuning (Nintendo only) :<br>
-
-1. MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted. Values greater than 4 will allow you to calibrate the Joy-Con while holding it in your hand, but this may cause drift right after calibration <br>
-2. MinStillnessCollectionTime (Default: 0.5) — The initial time the controller must remain still to collect baseline noise data. Once reached, the algorithm evaluates this data to confirm if the controller is truly at rest. Recomended default value <br>
-3. MinStillnessCorrectionTime (Default: 2.0) — The total continuous stillness time required to actually apply the new calibration to the gyroscope. The timer doesn't reset; it seamlessly continues from the collection phase.<br>
-4. StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller.
-Joy-Cons calibrate well only on flat surfaces, so feel free to use low values <br>
-    
 Since the JoyshockLibrary code is quite complex, it is not yet possible to fully understand the calibration logic. Among the unclear points:
 
 - There is clearly a calibration process using the accelerometer, but it is not yet clear exactly how it works. Sometimes the values reset (drift decreases) during complex, smooth movements at a constant speed (for example, when drawing an infinity symbol with a wrist rotation).
   
 - ~~In rare cases, auto-calibration fails and stops working even when the gamepad is completely stationary (Steady is always set to “No” in the OSD). The cause of this issue is not yet clear: it could be either a software bug in the library or a hardware issue with Bluetooth. If the drift increases and does not reset, first try manual calibration by hotkey; if that doesn’t help, press Ctrl + R; if that doesn’t help again, restart the emulator~~ <br>
 The issue has been resolved by adding "Adaptive Noise Threshold" in the GamepadMotion.hpp. Tested on a Joy-Con (Mobapad) during an extended gaming session. Read more here [8. Auto-calibration fix ](https://github.com/fttlov/JoyShockLibrary/blob/main/README.md)
+
+#### config.ini:
+
+Gyro auto-calibration fine-tuning settings from Joyshocklibrary to config.ini (Nintendo only) :<br>
+
+1. MaxStillnessError (Default: 2.0) — The absolute maximum noise/error limit the algorithm will tolerate. If the noise exceeds this value, calibration is immediately aborted. Values greater than 4 will allow you to calibrate the Joy-Con while holding it in your hand, but this may cause drift right after calibration <br>
+2. MinStillnessCollectionTime (Default: 0.5) — defines the initial phase of the algorithm’s noise profiling. Once the controller stops experiencing drastic movement, the system opens a sliding window for this exact duration to accumulate raw sensor samples. The primary goal is to measure the natural variance—or "noise floor"—of the IMU sensors (calculating the max and min deltas). Once this time elapses, the algorithm locks in these values to establish a baseline definition of what "perfect stillness" looks like for this specific hardware <br>
+3. MinStillnessCorrectionTime (Default: 2.0) — serves as the algorithmic validation phase. After the initial noise threshold is established, the system uses this timer to verify that the controller is genuinely resting on a solid surface (like a table) rather than being held very steadily in a player's hands. The algorithm continuously monitors incoming data; if the sensor readings remain strictly within the previously established noise thresholds for this entire duration, the system confirms the "stillness" state and triggers the gyro auto-calibration. Any spike in movement immediately resets both timers <br>
+4. StillnessCalibrationEaseInTime (Default: 3.0) — The duration (in seconds) over which the newly calculated gyro bias is blended in. Lowering this (e.g., to 0.1 - 1.0) makes the drift stop abruptly and noticeably, while higher values smooth the transition to prevent sudden camera jerks if you are holding the controller.<br>
+Joy-Cons calibrate well only on flat surfaces, so feel free to use low values 
+
+Accelerometer fine-tuning settings from Joyshocklibrary (Nintendo only) :<br>
+1. GravityShakinessMin - The minimum threshold of controller shaking to be considered "at rest". Raising this slightly (e.g., 0.03-0.05) prevents natural hand pulse from triggering rapid gravity updates. (def. 0.01)
+2. GravityShakinessMax - The threshold of heavy shaking where gravity correction is heavily smoothed to ignore centrifugal forces (like fast swipes). The default (0.4) is usually optimal.
+3. GravityStillSpeed - How aggressively the gravity vector updates when the controller is considered "at rest". Lowering this from 1.0 (e.g., to 0.5-0.7) dampens the phantom drift caused by noisy accelerometers. (def. 1.0)
+4. GravityShakySpeed - How fast the gravity vector updates during active movement. A low value (0.1) ensures the virtual horizon stays stable and ignores centrifugal forces during fast aiming. (def. 0.1)
   
   </details>
 
@@ -319,12 +327,16 @@ The issue has been resolved by adding "Adaptive Noise Threshold" in the GamepadM
 This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (face buttons pointing toward you or horizontally). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: <br>
 
 * **0 (Local Space):** Relies entirely on the gyroscope. Movement is calculated relative to the controller's plastic body, ignoring gravity <br>
-* **1 (World Space):** Relies heavily on a perfectly calibrated accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
-* **2 (Player Space):** uses accelerometer too
+* **1 (World Space):** Relies on the gyroscope and accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
+* **2 (Player Space):** Relies on the gyroscope and accelerometer. For two-handed controllers
 
-⚠️ For modes 1 or 2: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
+(!) New setting: <br>
+* **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle. A limit has been added for extreme angles; otherwise, the direction of motion reverses. Also a limit has been added for extreme angles; otherwise, the direction of motion reverses. <br>
+Designed specifically for the Joy-Con
 
-In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 0.
+⚠️ For modes 1 2 3: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
+
+In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 3.
 
 **For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
 0 — "steering wheel" movement to the left <br>
@@ -337,9 +349,11 @@ b) controller orientation - horizontal, with R and ZR pointing at the screen, or
 Differences between modes: <br>
 0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
 1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
-With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector - best way to use gyro aiming on the Joy-Cons. The downside of this mode is that with a vertical grip (R and ZR pointing at the ceiling), twisting your wrist will start controlling the cursor X-axis <br>
+With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector, but the greater the vertical angle of the gamepad (with the R and ZR buttons pointing closer to the ceiling), the more the ‘screwdriver’ gesture will affect the movement of the cursor/joystick along the X-axis.  <br>
+3 — Wrist rotation does not matter (within 180 degrees) and no more the screwdriver effect in any grip! <br>
+Designed specifically for the Joy-Con
 
-Conclusion: Mode "1" and the horizontal "grip" provide the best accuracy and predictability for Joy-Con gyro motion, provided the accelerometer is calibrated correctly
+Conclusion: Mode "3" provide the best accuracy and predictability for Joy-Con gyro motion aiming, provided the accelerometer is calibrated correctly
 
   ### Tightening (Dynamic Smoothing)
 
