@@ -1154,6 +1154,8 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.Motion.JoySensX = IniFile.ReadFloat("SETTINGS", "JoySensX", 100) * 0.0025f;
 	PrimaryGamepad.Motion.JoySensY = IniFile.ReadFloat("SETTINGS", "JoySensY", 90) * 0.0025f;
 	PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
+	PrimaryGamepad.Motion.GyroApplyLinearity = IniFile.ReadBoolean("SETTINGS", "GyroApplyLinearity", true);	//@065
+	PrimaryGamepad.Motion.GyroApplyAntiDeadZone = IniFile.ReadBoolean("SETTINGS", "GyroApplyAntiDeadZone", false);
 
 	PrimaryGamepad.Triggers.DeadZoneLeft = IniFile.ReadFloat("SETTINGS", "DeadZoneLeftTrigger", 0) * 0.01f;
 	PrimaryGamepad.Triggers.DeadZoneRight = IniFile.ReadFloat("SETTINGS", "DeadZoneRightTrigger", 0) * 0.01f;
@@ -1161,6 +1163,10 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.Sticks.DeadZoneLeftY = IniFile.ReadFloat("SETTINGS", "DeadZoneLeftStickY", 0) * 0.01f;
 	PrimaryGamepad.Sticks.DeadZoneRightX = IniFile.ReadFloat("SETTINGS", "DeadZoneRightStickX", 0) * 0.01f;
 	PrimaryGamepad.Sticks.DeadZoneRightY = IniFile.ReadFloat("SETTINGS", "DeadZoneRightStickY", 0) * 0.01f;
+	PrimaryGamepad.Sticks.AntiDeadZoneLeftX = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneLeftX", 0), 0, 99) * 0.01f;	//@065
+	PrimaryGamepad.Sticks.AntiDeadZoneLeftY = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneLeftY", 0), 0, 99) * 0.01f;
+	PrimaryGamepad.Sticks.AntiDeadZoneRightX = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneRightX", 0), 0, 99) * 0.01f;
+	PrimaryGamepad.Sticks.AntiDeadZoneRightY = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneRightY", 0), 0, 99) * 0.01f;
 	PrimaryGamepad.Sticks.LinearityLeftX = IniFile.ReadFloat("SETTINGS", "LinearityLeftStickX", 50.0f);	//@035
 	PrimaryGamepad.Sticks.LinearityLeftY = IniFile.ReadFloat("SETTINGS", "LinearityLeftStickY", 50.0f);
 	PrimaryGamepad.Sticks.LinearityRightX = IniFile.ReadFloat("SETTINGS", "LinearityRightStickX", 50.0f);
@@ -2765,7 +2771,19 @@ int main(int argc, char **argv)
 		report.sThumbRX = PrimaryGamepad.Sticks.InvertRightX == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX) * 32767;
 		report.sThumbRY = PrimaryGamepad.Sticks.InvertRightY == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY) * 32767;*/
 
-		//@035 Linearity Stick (keep in mid
+		//@035 Linearity Stick (keep in mid)
+		/*float lx = DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX);
+		float ly = DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY);
+		float rx = DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX);
+		float ry = DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY);
+
+		// Применяем искривление линейности (Response Curve)
+		lx = ApplyLinearity(lx, PrimaryGamepad.Sticks.LinearityLeftX);
+		ly = ApplyLinearity(ly, PrimaryGamepad.Sticks.LinearityLeftY);
+		rx = ApplyLinearity(rx, PrimaryGamepad.Sticks.LinearityRightX);
+		ry = ApplyLinearity(ry, PrimaryGamepad.Sticks.LinearityRightY);*/
+
+		//@065
 		float lx = DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX);
 		float ly = DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY);
 		float rx = DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX);
@@ -2776,6 +2794,39 @@ int main(int argc, char **argv)
 		ly = ApplyLinearity(ly, PrimaryGamepad.Sticks.LinearityLeftY);
 		rx = ApplyLinearity(rx, PrimaryGamepad.Sticks.LinearityRightX);
 		ry = ApplyLinearity(ry, PrimaryGamepad.Sticks.LinearityRightY);
+
+		// Left Stick: Сложная (радиальная/эллиптическая) Anti-Deadzone
+		if (PrimaryGamepad.Sticks.AntiDeadZoneLeftX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneLeftY > 0.0f) {
+			float mag = sqrtf(lx * lx + ly * ly);
+			if (mag > 0.0001f) {
+				float dirX = lx / mag;
+				float dirY = ly / mag;
+				lx = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneLeftX) + lx * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneLeftX);
+				ly = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneLeftY) + ly * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneLeftY);
+			}
+		}
+
+		// Локально проверяем, активен ли гироскоп прямо сейчас
+		bool isAimActiveCheck = (AppStatus.AimingButton != 0) && (
+			(AppStatus.AimingButton == JSMASK_ZL && DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) > 0) ||
+			(AppStatus.AimingButton == JSMASK_ZR && DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) > 0) ||
+			(PrimaryGamepad.InputState.buttons & AppStatus.AimingButton)
+			);
+		bool isGyroActiveCheck = (PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimActiveCheck) ||
+			(PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimActiveCheck);
+
+		// Right Stick: Сложная (радиальная/эллиптическая) Anti-Deadzone
+		// Применяется здесь ТОЛЬКО если гироскоп ВЫКЛЮЧЕН или тумблер ADZ гироскопа = false
+		if (!(isGyroActiveCheck && PrimaryGamepad.Motion.GyroApplyAntiDeadZone) &&
+			(PrimaryGamepad.Sticks.AntiDeadZoneRightX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneRightY > 0.0f)) {
+			float mag = sqrtf(rx * rx + ry * ry);
+			if (mag > 0.0001f) {
+				float dirX = rx / mag;
+				float dirY = ry / mag;
+				rx = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + rx * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
+				ry = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + ry * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
+			}
+		}
 
 		//@041 Смена осей (транспонирование XY)
 		if (PrimaryGamepad.Sticks.InvertLeftXY) {
@@ -3518,7 +3569,7 @@ int main(int argc, char **argv)
 			}
 			else { //Joystick
 				// Используем baseMultJoy для стиков
-				float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
+				/*float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
 				float gyroRY = ClampFloat(effGyroX * baseMultJoy * PrimaryGamepad.Motion.JoySensY, -1.0f, 1.0f);
 
 				// 8. Применяем кривую линейности (Response Curve) от правого стика
@@ -3527,7 +3578,38 @@ int main(int argc, char **argv)
 
 				// 9. Суммируем с физическим стиком и отправляем виртуальному Xbox
 				report.sThumbRX = std::clamp((int)(gyroRX * 32767 + report.sThumbRX), -32767, 32767);
-				report.sThumbRY = std::clamp((int)(gyroRY * 32767 + report.sThumbRY), -32767, 32767);
+				report.sThumbRY = std::clamp((int)(gyroRY * 32767 + report.sThumbRY), -32767, 32767);*/
+
+				//@065
+				float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
+				float gyroRY = ClampFloat(effGyroX * baseMultJoy * PrimaryGamepad.Motion.JoySensY, -1.0f, 1.0f);
+
+				// ОПЦИОНАЛЬНО: Применяем кривую линейности для гироскопа
+				if (PrimaryGamepad.Motion.GyroApplyLinearity) {
+					gyroRX = ApplyLinearity(gyroRX, PrimaryGamepad.Sticks.LinearityRightX);
+					gyroRY = ApplyLinearity(gyroRY, PrimaryGamepad.Sticks.LinearityRightY);
+				}
+
+				// Складываем сырой гироскоп с уже подготовленным правым стиком
+				float combinedX = gyroRX + (report.sThumbRX / 32767.0f);
+				float combinedY = gyroRY + (report.sThumbRY / 32767.0f);
+
+				// ОПЦИОНАЛЬНО: Применяем сложную эллиптическую Anti-Deadzone для суммы (Гироскоп + Стик)
+				if (PrimaryGamepad.Motion.GyroApplyAntiDeadZone &&
+					(PrimaryGamepad.Sticks.AntiDeadZoneRightX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneRightY > 0.0f)) {
+					float mag = sqrtf(combinedX * combinedX + combinedY * combinedY);
+					if (mag > 0.0001f) {
+						float dirX = combinedX / mag;
+						float dirY = combinedY / mag;
+						// Растягиваем сумму наружу, обходя игровую мертвую зону с идеальным сохранением угла
+						combinedX = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + combinedX * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
+						combinedY = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + combinedY * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
+					}
+				}
+
+				// Финальная отправка виртуальному Xbox
+				report.sThumbRX = std::clamp((int)(combinedX * 32767.0f), -32767, 32767);
+				report.sThumbRY = std::clamp((int)(combinedY * 32767.0f), -32767, 32767);
 			}
 		}
 

@@ -770,7 +770,7 @@ MainGui.Add("Text", "x20 y+5", T("For two-handed"))
 MainGui.SetFont("norm")
 MainGui.Add("Text", "x+0 w820", T(" controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
 
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll, Gyroscope only mode)"))
+MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll, only Gyro is used)"))
 MainGui.Add("Text", "x20 y+2 w820", T("2 — Twist the controller like tank steering levers (Yaw, Gyro + Accel mode)"))
 
 ; --- Выделяем "For Joy-Cons" ---
@@ -781,7 +781,7 @@ MainGui.SetFont("norm")
 MainGui.Add("Text", "x+0 w820", T(" different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) and"))
 MainGui.Add("Text", "x20 y+2 w820", T("grip (horizontal or vertical) will skew cursor/stick movement relative to your arm's motion. Choose one:"))
 
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand (Gyroscope only mode)"))
+MainGui.Add("Text", "x20 y+5 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand (only Gyro is used)"))
 MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 90 degrees has no effect. In vertical grip X-axis is controlled by screwdriver gesture (+Accel)"))
 ;MainGui.Add("Text", "x20 y+7 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control for Joy-Con"))
 ;MainGui.Add("Text", "x20 y+2 w820", T("3 — Modified Mode 1: no interference with the control of the X-axis when rotating the hand (Roll) during a vertical grip"))
@@ -791,7 +791,7 @@ MainGui.Add("Text", "x20 y+7 w820 cRed", T("** Tightening:"))
 MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors, pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T(" *** EMA Filter:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% speed (value - rise time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
+MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% and decelerate to 0% speed (value - rise time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
 
 ; =========================================
 ; TAB 6:Analog (config.ini)
@@ -800,37 +800,43 @@ Tabs.UseTab("Analog")
 
 ; --- Группа 1: LEFT HAND (Левая колонка сверху) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x25 y50 w380 h230 Center Section", T("Left Hand"))
+MainGui.Add("GroupBox", "x25 y50 w380 h280 Center Section", T("Left Hand"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("DeadZone Left Trigger"), , "xs+75 ys+30", 180, 42)
-AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickX", T("DeadZone Left Stick X"), , "xs+75 y+8", 180, 42)
-AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickY", T("DeadZone Left Stick Y"), , "xs+75 y+8", 180, 42)
-AddInput(XboxIni, "SETTINGS", "LinearityLeftStickX", T("Linearity* Left Stick X"), "50", "xs+75 y+8", 180, 42)
-AddInput(XboxIni, "SETTINGS", "LinearityLeftStickY", T("Linearity* Left Stick Y"), "50", "xs+75 y+8", 180, 42)
-AddToggle(XboxIni, "SETTINGS", "InvertLeftStickX", T("Invert Left Stick X"), "xs+75 y+10")
-AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Left Stick Y"), "xs+75 y+8")
+AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("DeadZone Trigger"), , "xs+75 ys+25", 180, 42)
+AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickX", T("DeadZone Stick X"), , "xs+75 y+8", 180, 42)
+AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickY", T("DeadZone Stick Y"), , "xs+75 y+8", 180, 42)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneLeftX", T("AntiDeadZone Stick X"), , "xs+75 y+8", 180, 42)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneLeftY", T("AntiDeadZone Stick Y"), , "xs+75 y+8", 180, 42)
+AddInput(XboxIni, "SETTINGS", "LinearityLeftStickX", T("Linearity* Stick X"), "50", "xs+75 y+8", 180, 42)
+AddInput(XboxIni, "SETTINGS", "LinearityLeftStickY", T("Linearity* Stick Y"), "50", "xs+75 y+8", 180, 42)
+AddToggle(XboxIni, "SETTINGS", "InvertLeftStickX", T("Invert Stick X"), "xs+75 y+10")
+AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Stick Y"), "xs+75 y+8")
 
 ; --- Группа 2: RIGHT HAND (Правая колонка сверху) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x425 y50 w380 h230 Center Section", T("Right Hand"))
+MainGui.Add("GroupBox", "x425 y50 w380 h280 Center Section", T("Right Hand"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddInput(XboxIni, "SETTINGS", "DeadZoneRightTrigger", T("DeadZone Right Trigger"), , "xs+75 ys+30", 180, 40)
-AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickX", T("DeadZone Right Stick X"), , "xs+75 y+8", 180, 40)
-AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickY", T("DeadZone Right Stick Y"), , "xs+75 y+8", 180, 40)
-AddInput(XboxIni, "SETTINGS", "LinearityRightStickX", T("Linearity* Right Stick X"), "50", "xs+75 y+8", 180, 40)
-AddInput(XboxIni, "SETTINGS", "LinearityRightStickY", T("Linearity* Right Stick Y"), "50", "xs+75 y+8", 180, 40)
-AddToggle(XboxIni, "SETTINGS", "InvertRightStickX", T("Invert Right Stick X"), "xs+75 y+10")
-AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Right Stick Y"), "xs+75 y+8")
+AddInput(XboxIni, "SETTINGS", "DeadZoneRightTrigger", T("DeadZone Trigger"), , "xs+75 ys+25", 180, 40)
+AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickX", T("DeadZone Stick X"), , "xs+75 y+8", 180, 40)
+AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickY", T("DeadZone Stick Y"), , "xs+75 y+8", 180, 40)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneRightX", T("AntiDeadZone Stick X"), , "xs+75 y+8", 180, 40)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneRightY", T("AntiDeadZone Stick Y"), , "xs+75 y+8", 180, 40)
+AddInput(XboxIni, "SETTINGS", "LinearityRightStickX", T("Linearity* Stick X"), "50", "xs+75 y+8", 180, 40)
+AddInput(XboxIni, "SETTINGS", "LinearityRightStickY", T("Linearity* Stick Y"), "50", "xs+75 y+8", 180, 40)
+AddToggle(XboxIni, "SETTINGS", "InvertRightStickX", T("Invert Stick X"), "xs+75 y+10")
+AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Stick Y"), "xs+75 y+8")
 
 ; --- Группа 3: HARDWARE SWAPS (Центрирована, построчно) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+30 w480 h165 Center Section", T("Hardware Swaps"))
+MainGui.Add("GroupBox", "x175 y+30 w480 h180 Center Section", T("Hardware Swaps"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+145 ys+40")
+AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+145 ys+25")
 AddToggle(XboxIni, "SETTINGS", "SWAP-TRIGGERS", T("Swap Left and Right Triggers"), "xs+145 y+8")
+AddToggle(XboxIni, "SETTINGS", "GyroApplyAntiDeadZone", T("Apply AntiDeadZone to Gyro"), "xs+145 y+8")
+AddToggle(XboxIni, "SETTINGS", "GyroApplyLinearity", T("Apply Linearity to Gyro"), "xs+145 y+8")
 
 ; Настройка режима левого стика
 valLSMode := IniRead(A_ScriptDir "\" XboxIni, "SETTINGS", "LeftStickMode", "0")
@@ -868,21 +874,19 @@ ddlRSMode.Text := selectedText
 
 ; --- Группа 4: OTHERS (Под группой Swaps) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+40 w480 Center h70 Section", T("Others"))
+MainGui.Add("GroupBox", "x175 y+25 w480 Center h60 Section", T("Others"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength"), , "xs+165 ys+30", 110, 45)
+AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength"), , "xs+165 ys+25", 110, 45)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x25 y+30 w800 cRed", T("Pro Tip:"))
-MainGui.Add("Text", "x25 y+5 w800", T("In Gyro Stick mode, for maximum aiming accuracy try to disable DeadZone"))
-MainGui.Add("Text", "x25 y+5 w800 cRed", T("** Linearity"))
-MainGui.Add("Text", "x25 y+5 w820", T("Adjusts stick sensitivity curve:"))
-MainGui.Add("Text", "x25 y+5 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
-MainGui.Add("Text", "x25 y+5 w820", T("50 (Default): Perfectly linear response"))
-MainGui.Add("Text", "x25 y+5 w820", T("100: Higher sensitivity near the center for instant response (Logarithmic)"))
-MainGui.Add("Text", "x25 y+5 w800 cRed", T("*** Left Stick Mode:"))
-MainGui.Add("Text", "x25 y+5 w820", T("'AutoSprintButton' held down when stick direction in: default - none; 1 - front hemisphere (45 degrees); 2 - all directions"))
+MainGui.Add("Text", "x25 y+20 w800 cRed", T("** Linearity"))
+MainGui.Add("Text", "x25 y+1 w820", T("Adjusts stick sensitivity curve:"))
+MainGui.Add("Text", "x25 y+3 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
+MainGui.Add("Text", "x25 y+3 w820", T("50 (Default): Perfectly linear response"))
+MainGui.Add("Text", "x25 y+3 w820", T("100: Higher sensitivity near the center for instant response (Logarithmic)"))
+MainGui.Add("Text", "x25 y+7 w800 cRed", T("*** Left Stick Mode:"))
+MainGui.Add("Text", "x25 y+1 w820", T("'AutoSprintButton' held down when stick direction in: default - none; 1 - front hemisphere (45 degrees); 2 - all directions"))
 
 ; =========================================
 ; TAB 7: STEERING

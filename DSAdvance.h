@@ -384,6 +384,11 @@ struct AdvancedGamepad {
 		float LinearityRightX = 50.0f;
 		float LinearityRightY = 50.0f;
 
+		float AntiDeadZoneLeftX = 0.0f;	//@132
+		float AntiDeadZoneLeftY = 0.0f;
+		float AntiDeadZoneRightX = 0.0f;
+		float AntiDeadZoneRightY = 0.0f;
+
 		bool InvertLeftXY = false;		//@118
 		bool InvertRightXY = false;
 	};
@@ -440,6 +445,8 @@ struct AdvancedGamepad {
 		float RatchetDelayTime = 150.0f;
 		int RatchetDelayTimer = 0;
 		int RatchetDelayMaxTimer = 0;
+		bool GyroApplyLinearity = true;	//@132
+		bool GyroApplyAntiDeadZone = false;
 
 		float MotionWheelButtonsDeadZone = 0;
 		int WheelCounter = 0;
