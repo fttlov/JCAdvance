@@ -359,7 +359,7 @@ for key in ["SR", "HOME", "R4"] {
     yExtra += 32
 }
 
-MainGui.Add("Text", "x20 y700 w810 Center cRed", T("* Only digital buttons can be successfully remapped"))
+MainGui.Add("Text", "x20 y685 w810 Center cRed", T("* Only digital buttons can be successfully remapped"))
 
 ; =========================================
 ; TAB 2: JOY-CON
@@ -383,8 +383,8 @@ if (Layout == "Nintendo") {
         yPos += 30
     }
 
-    yPos += 20
-    MainGui.Add("Text", "x115 y" yPos " w830 cBlue", T("*Also you can configure Analog Sticks directions to emulate Keyboard keys and Mouse in XboxProfiles\*.ini"))
+    yPos += 2
+    MainGui.Add("Text", "x110 y" yPos " w830 cBlue", T("*Also you can configure Analog Sticks directions to emulate Keyboard keys and Mouse in XboxProfiles\*.ini"))
 }
 
 ; =========================================
@@ -393,6 +393,8 @@ if (Layout == "Nintendo") {
 if (Layout == "Sony") {
     Tabs.UseTab("Sony")
     MainGui.Add("Text", "x20 y90 w810 Center", T("Emulate keyboard/mouse keys using the Sony gamepad buttons"))
+	
+	MainGui.Add("Text", "x115 y710 w830 cBlue", T("*Also you can configure Analog Sticks directions to emulate Keyboard keys and Mouse in XboxProfiles\*.ini"))
 
     MainGui.Add("Picture", "x290 y220 w250 h-1", A_ScriptDir "\Icons\Sony.png")
 
@@ -432,6 +434,8 @@ if (Layout == "Sony") {
         yPosRight += 38
     }
 }
+
+
 
 ; =========================================
 ; TAB 3: SPECIAL (WHEEL)
@@ -513,7 +517,7 @@ CtrlSettings[keyDead] := {type: "edt", ctrl: edtDead, file: ConfigIni, sec: "Mot
 
 ; --- Группа 2: Left STICK ---
 
-yPos += 50
+yPos += 40
 
 MainGui.SetFont("cBlue Bold")
 MainGui.Add("GroupBox", "x175 y" yPos " w480 h120 Center Section", "Left Stick")
@@ -567,7 +571,7 @@ try {
 CtrlSettings["AutoPressStickValue"] := {type: "edt", ctrl: edtStick, file: XboxIni, sec: "SETTINGS"}
 
 ; --- Группа 3: Right STICK ---
-yPos += 45
+yPos += 35
 
 MainGui.SetFont("cBlue Bold")
 MainGui.Add("GroupBox", "x175 y" yPos " w480 h175 Center Section", "Right Stick")
@@ -612,7 +616,7 @@ for key in RsButtonMapping {
 }
 
 ; --- Группа 4: MELEE ---
-yPos += 25
+yPos += 15
 
 MainGui.SetFont("cBlue Bold")
 MainGui.Add("GroupBox", "x175 y" yPos " w480 h120 Center Section", "Melee")
@@ -715,11 +719,15 @@ AddHotkey(ConfigIni, "SETTINGS", "GyroCalibrateKey", T("Gyroscope Recalibration*
 AddHotkey(ConfigIni, "SETTINGS", "AccelCalibrateKey", T("Accelerometer Recalibration*"), KbmKeys, BindKbm, "xs+30 ys+94")
 AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-screen display (on/off)"), KbmKeys, BindKbm, "xs+30 ys+121")
 
-MainGui.Add("Text", "x25 y+117 w820 cRed", T("Note:"))
-MainGui.Add("Text", "x25 y+3 w820", T("To assign a two-button combination (like R+HOME), you can manually type it into the field above and click Save All"))
+MainGui.Add("Text", "x25 y+37 w820 cRed", T("Pro Tip:"))
+MainGui.Add("Text", "x25 y+3 w820", T("- To assign a two-button combination (like R+HOME), you can manually type it into the field above"))
+MainGui.Add("Text", "x25 y+5 w820", T("- If your hand tires quickly, bind Motion Control Button to non-aiming Joy-Con to prevent muscle tension"))
 
-MainGui.Add("Text", "x25 y+7 w820 cRed", T("*Software Gamepad Recalibration"))
-MainGui.Add("Text", "x25 y+5 w820", T("Place the device on a flat surface, press the button, and wait for the beep. Calibrate Joy-Cons in a grip to lay flat!"))
+
+MainGui.Add("Text", "x25 y+7 w820 cRed", T("*Manual Software Recalibration:"))
+MainGui.Add("Text", "x25 y+5 w820", T("- Gyroscope: Leave gamepad still (in any position), press the button, and wait for the beep"))
+MainGui.Add("Text", "x25 y+5 w820", T("- Accelerometer: Use only on a flat surface. For Joy-Cons use Switch or Grip to prevent tilting"))
+
 
 ; =========================================
 ; TAB 5: GYRO (config.ini)
@@ -735,38 +743,55 @@ AddMappedDropdown(XboxIni, "SETTINGS", "AimingMode", T("Gyro mode by default"), 
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Press Control (Ratchet) button to"), [T("stop motion tracking"), T("start motion tracking")], Map(T("stop motion tracking"), "0", T("start motion tracking"), "1"))
 AddMappedDropdown(ConfigIni, "Motion", "GyroFromLeft", T("Gyro data in combined mode from"), [T("Right Joy-Con"), T("Left Joy-Con")], Map(T("Right Joy-Con"), "0", T("Left Joy-Con"), "1"))
 AddMappedDropdown(ConfigIni, "SETTINGS", "SleepTimeOut", T("Polling rate (33.3 Hz for example)"), ["33.3 Hz", "66.7 Hz", "125 Hz", "250 Hz"], Map("33.3 Hz", "30", "66.7 Hz", "15", "125 Hz", "8", "250 Hz", "4"))
-AddMappedDropdown(ConfigIni, "Motion", "GyroSpace", T("Gyro Motion Space *"), ["0", "1", "2"], Map("0", "0", "1", "1", "2", "2"))
+AddMappedDropdown(ConfigIni, "Motion", "GyroSpace", T("Gyro Motion Space *"), ["0", "1", "2", "3"], Map("0", "0", "1", "1", "2", "2", "3", "3"))
 
 ; --- Группа 2: Чувствительность и фильтрация ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x270 y215 w300 h270 Center Section", T("Sensitivity and Filters"))
+MainGui.Add("GroupBox", "x210 y225 w410 h215 Center Section", T("Sensitivity and Filters"))
 MainGui.SetFont("cDefault Norm s10")
 
-AddInput(XboxIni, "SETTINGS", "MouseSensX", T("Mouse X"), "180", "xs+45 ys+25", 150, 45, true, "0-999")
-AddInput(XboxIni, "SETTINGS", "MouseSensY", T("Mouse Y"), "170", "xs+45 ys+55", 150, 45, true, "0-999")
-AddInput(XboxIni, "SETTINGS", "JoySensX", T("Stick X"), "120", "xs+45 y+10", 150, 45, true, "0-999")
-AddInput(XboxIni, "SETTINGS", "JoySensY", T("Stick Y"), "120", "xs+45 y+10", 150, 45, true, "0-999")
-AddInput(ConfigIni, "Motion", "RatchetDelayTime", T("Ratchet Delay (ms)"), "150", "xs+45 y+10", 150, 45, true, "0-999")
-AddInput(ConfigIni, "Motion", "Tightening", T("Tightening **"), "5.0", "xs+45 y+10", 150, 45)
-AddInput(ConfigIni, "Motion", "MouseSmooth", T("EMA*** for Mouse"), , "xs+45 y+10", 150, 45)
-AddInput(ConfigIni, "Motion", "JoySmooth", T("EMA*** for Stick"), , "xs+45 y+10", 150, 45)
+AddInput(XboxIni, "SETTINGS", "MouseSensX", T("Mouse X"), "180", "xs+60 ys+25", 60, 45, true, "0-999")
+AddInput(XboxIni, "SETTINGS", "MouseSensY", T("Mouse Y"), "170", "xs+60 ys+55", 60, 45, true, "0-999")
+AddInput(XboxIni, "SETTINGS", "JoySensX", T("Stick X"), "120", "xs+230 ys+25", 55, 45, true, "0-999")
+AddInput(XboxIni, "SETTINGS", "JoySensY", T("Stick Y"), "120", "xs+230 ys+55", 55, 45, true, "0-999")
+AddInput(ConfigIni, "Motion", "RatchetDelayTime", T("Ratchet Delay (ms)"), "150", "xs+100 y+15", 150, 45, true, "0-999")
+AddInput(ConfigIni, "Motion", "Tightening", T("Tightening **"), "5.0", "xs+100 y+10", 150, 45)
+AddInput(ConfigIni, "Motion", "MouseSmooth", T("EMA*** for Mouse"), , "xs+100 y+10", 150, 45)
+AddInput(ConfigIni, "Motion", "JoySmooth", T("EMA*** for Stick"), , "xs+100 y+10", 150, 45)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x20 y+15 w820 cRed", "* Gyro Space (by Jibb Smart):")
+MainGui.Add("Text", "x20 y+20 w820 cRed", "* Gyro Space (by Jibb Smart):")
 MainGui.Add("Text", "x20 y+2 w820", T("This setting controls how gyroscope data from hand movements is processed and translated into cursor or stick input."))
-MainGui.Add("Text", "x20 y+5 w820", T("For two-handed controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll)"))
-MainGui.Add("Text", "x20 y+2 w820", T("2 — Twist the controller like tank steering levers (Yaw)"))
-MainGui.Add("Text", "x20 y+7 w820", T("For Joy-Cons, different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) `nand grip (horizontal or vertical) will skew cursor/stick movement relative to your arm's motion. Choose one:"))
-MainGui.Add("Text", "x20 y+5 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand (axis offset)"))
-MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 and 90 degrees has no effect and the cursor/stick accurately follows your hand"))
-MainGui.Add("Text", "x20 y+7 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control"))
+
+; --- Выделяем "For two-handed controllers" ---
+; Старая строка: MainGui.Add("Text", "x20 y+5 w820", T("For two-handed controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
+MainGui.SetFont("bold")
+MainGui.Add("Text", "x20 y+5", T("For two-handed"))
+MainGui.SetFont("norm")
+MainGui.Add("Text", "x+0 w820", T(" controllers, the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:"))
+
+MainGui.Add("Text", "x20 y+5 w820", T("0 — Turn the controller like a car steering wheel (Roll, Gyroscope only mode)"))
+MainGui.Add("Text", "x20 y+2 w820", T("2 — Twist the controller like tank steering levers (Yaw, Gyro + Accel mode)"))
+
+; --- Выделяем "For Joy-Cons" ---
+; Старая строка: MainGui.Add("Text", "x20 y+7 w820", T("For Joy-Cons different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) `nand grip (horizontal or vertical) will skew cursor/stick movement relative to your arm's motion. Choose one:"))
+MainGui.SetFont("bold")
+MainGui.Add("Text", "x20 y+7", T("For Joy-Cons"))
+MainGui.SetFont("norm")
+MainGui.Add("Text", "x+0 w820", T(" different rules apply. This setting dictates how wrist angle (clockwise/counter-clockwise Roll) and"))
+MainGui.Add("Text", "x20 y+2 w820", T("grip (horizontal or vertical) will skew cursor/stick movement relative to your arm's motion. Choose one:"))
+
+MainGui.Add("Text", "x20 y+5 w820", T("0 — Wrist angle always affects to the cursor/stick’s movement relative to the movement of the hand (Gyroscope only mode)"))
+MainGui.Add("Text", "x20 y+2 w820", T("1 — Wrist angle between -90 90 degrees has no effect. In vertical grip X-axis is controlled by screwdriver gesture (+Accel)"))
+;MainGui.Add("Text", "x20 y+7 w820", T("Mode '1' and a horizontal grip (ZR pointing at the screen) provide the best accuracy and predictability of control for Joy-Con"))
+;MainGui.Add("Text", "x20 y+2 w820", T("3 — Modified Mode 1: no interference with the control of the X-axis when rotating the hand (Roll) during a vertical grip"))
+MainGui.Add("Text", "x20 y+2 w820", T("3 — Wrist angle has no effect. No 'screwdriver' effect in any grip! Best accuracy and predictability for gyro aiming (+Accel)"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T("** Tightening:"))
 MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors, pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T(" *** EMA Filter:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% speed (value - rise time): 25   ~2.7ms;  50   ~8ms;  75   ~24ms"))
+MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% speed (value - rise time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
 
 ; =========================================
 ; TAB 6:Analog (config.ini)
@@ -801,7 +826,7 @@ AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Right Stick Y"), "
 
 ; --- Группа 3: HARDWARE SWAPS (Центрирована, построчно) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+55 w480 h165 Center Section", T("Hardware Swaps"))
+MainGui.Add("GroupBox", "x175 y+30 w480 h165 Center Section", T("Hardware Swaps"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+145 ys+40")
@@ -843,18 +868,20 @@ ddlRSMode.Text := selectedText
 
 ; --- Группа 4: OTHERS (Под группой Swaps) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+50 w480 Center h70 Section", T("Others"))
+MainGui.Add("GroupBox", "x175 y+40 w480 Center h70 Section", T("Others"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength"), , "xs+165 ys+30", 110, 45)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x25 y+75 w800 cRed", T("* Linearity"))
+MainGui.Add("Text", "x25 y+30 w800 cRed", T("Pro Tip:"))
+MainGui.Add("Text", "x25 y+5 w800", T("In Gyro Stick mode, for maximum aiming accuracy try to disable DeadZone"))
+MainGui.Add("Text", "x25 y+5 w800 cRed", T("** Linearity"))
 MainGui.Add("Text", "x25 y+5 w820", T("Adjusts stick sensitivity curve:"))
 MainGui.Add("Text", "x25 y+5 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
 MainGui.Add("Text", "x25 y+5 w820", T("50 (Default): Perfectly linear response"))
 MainGui.Add("Text", "x25 y+5 w820", T("100: Higher sensitivity near the center for instant response (Logarithmic)"))
-MainGui.Add("Text", "x25 y+5 w800 cRed", T("** Left Stick Mode:"))
+MainGui.Add("Text", "x25 y+5 w800 cRed", T("*** Left Stick Mode:"))
 MainGui.Add("Text", "x25 y+5 w820", T("'AutoSprintButton' held down when stick direction in: default - none; 1 - front hemisphere (45 degrees); 2 - all directions"))
 
 ; =========================================
@@ -893,7 +920,7 @@ AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal2Axis", T("Pedal 2 Axis"), 
 ;AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "xs+15 y+30", 110, 340)
 AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "xs+15 y+30", 110, 340, false)
 
-MainGui.Add("Text", "x25 y+210 w820 cRed", T("External Pedals:"))
+MainGui.Add("Text", "x25 y+170 w820 cRed", T("External Pedals:"))
 MainGui.Add("Text", "x25 y+5 w820", T("Use pedals as analog triggers. Note: This is an experimental feature; proper functioning is not guaranteed."))
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))

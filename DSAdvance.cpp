@@ -160,6 +160,15 @@ static float MotorFreqFromStrength(unsigned char motorValue) { // Dynamic freque
 	return 40.0f + (motorValue / 255.0f) * (320.0f - 40.0f);
 }
 
+static float g_MaxStillnessError = 2.0f;	//@062 
+static float g_MinStillnessCollectionTime = 0.5f;
+static float g_MinStillnessCorrectionTime = 2.0f;
+static float g_StillnessCalibrationEaseInTime = 3.0f;
+static float g_GravityShakinessMin = 0.01f;
+static float g_GravityShakinessMax = 0.4f;
+static float g_GravityStillSpeed = 1.0f;
+static float g_GravityShakySpeed = 0.1f;
+
 static void EncodeRumble(unsigned char* data, float freq, float amp) {
 	if (freq < 41.0f) freq = 41.0f;
 	if (freq > 1253.0f) freq = 1253.0f;
@@ -997,11 +1006,6 @@ void KMStickMode(AdvancedGamepad &Gamepad, bool DontResetInputState, bool StickI
 	}
 }
 
-static float g_MaxStillnessError = 2.0f;	//@062 
-static float g_MinStillnessCollectionTime = 0.5f;
-static float g_MinStillnessCorrectionTime = 2.0f;
-static float g_StillnessCalibrationEaseInTime = 3.0f;
-
 void LoadConfig() {	//@057 Realtime reading config (by modified file date) and applying (in main)
 	CIniReader IniFile("config.ini");
 	//@005 Двухкнопочный Binding для переключения режимов + чтение из Config, юзается новый парсинг в .h + условия активации toggle-функций в main (buttons & mask) == mask. )
@@ -1018,7 +1022,9 @@ void LoadConfig() {	//@057 Realtime reading config (by modified file date) and a
 	AppStatus.DrivingCalibrationButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingCalibrationButtonName);
 	AppStatus.StickAsTriggerToggleButtonName = IniFile.ReadString("Gamepad", "StickAsTriggerToggleButton", "NONE");
 	AppStatus.StickAsTriggerToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.StickAsTriggerToggleButtonName);	//@047
-	
+	AppStatus.AimingPressModeToggleButtonName = IniFile.ReadString("Motion", "AimingPressModeToggleButton", "NONE");	//@053
+	AppStatus.AimingPressModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingPressModeToggleButtonName);
+
 	AppStatus.MeleeGForce = IniFile.ReadFloat("Motion", "MeleeGForce", 3.0f); //@043
 	AppStatus.GyroFromLeft = IniFile.ReadBoolean("Motion", "GyroFromLeft", false);		//@024 Gyro left hand
 
@@ -1666,11 +1672,18 @@ void RefreshDevices() {
 	//AppStatus.StartupCalibrationFrozen = false;	//@050
 	AppStatus.StartupCalibrationFrozen = !AppStatus.AutoCalibrationEnabled;	//@050 -  нет сартовой автокалибровки при "0"
 	AppStatus.BTReset = false;
+
 	//@062
 	if (PrimaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (SecondaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+
+	if (PrimaryGamepad.DeviceIndex != -1) JslSetGravitySettings(PrimaryGamepad.DeviceIndex, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetGravitySettings(PrimaryGamepad.DeviceIndex2, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (SecondaryGamepad.DeviceIndex != -1) JslSetGravitySettings(SecondaryGamepad.DeviceIndex, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetGravitySettings(SecondaryGamepad.DeviceIndex2, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+
 	MainTextUpdate();
 }
 
@@ -1712,7 +1725,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 3.5");
+	SetConsoleTitle("JCAdvance 3.6");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -1758,10 +1771,21 @@ int main(int argc, char **argv)
 	g_MinStillnessCollectionTime = IniFile.ReadFloat("JOYCONS", "MinStillnessCollectionTime", 0.5f);
 	g_MinStillnessCorrectionTime = IniFile.ReadFloat("JOYCONS", "MinStillnessCorrectionTime", 2.0f);
 	g_StillnessCalibrationEaseInTime = IniFile.ReadFloat("JOYCONS", "StillnessCalibrationEaseInTime", 3.0f);
+
 	if (PrimaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(PrimaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (SecondaryGamepad.DeviceIndex != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
 	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetStillnessSettings(SecondaryGamepad.DeviceIndex2, g_MaxStillnessError, g_MinStillnessCollectionTime, g_MinStillnessCorrectionTime, g_StillnessCalibrationEaseInTime);
+
+	g_GravityShakinessMin = IniFile.ReadFloat("JOYCONS", "GravityShakinessMin", 0.01f);
+	g_GravityShakinessMax = IniFile.ReadFloat("JOYCONS", "GravityShakinessMax", 0.4f);
+	g_GravityStillSpeed = IniFile.ReadFloat("JOYCONS", "GravityStillSpeed", 1.0f);
+	g_GravityShakySpeed = IniFile.ReadFloat("JOYCONS", "GravityShakySpeed", 0.1f);
+
+	if (PrimaryGamepad.DeviceIndex != -1) JslSetGravitySettings(PrimaryGamepad.DeviceIndex, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (PrimaryGamepad.DeviceIndex2 != -1) JslSetGravitySettings(PrimaryGamepad.DeviceIndex2, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (SecondaryGamepad.DeviceIndex != -1) JslSetGravitySettings(SecondaryGamepad.DeviceIndex, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
+	if (SecondaryGamepad.DeviceIndex2 != -1) JslSetGravitySettings(SecondaryGamepad.DeviceIndex2, g_GravityShakinessMin, g_GravityShakinessMax, g_GravityStillSpeed, g_GravityShakySpeed);
 
 	AppStatus.ShowBatteryStatusOnLightBar = IniFile.ReadBoolean("Gamepad", "ShowBatteryStatusOnLightBar", true);
 	AppStatus.SleepTimeOut = IniFile.ReadInteger("SETTINGS", "SleepTimeOut", 15);
@@ -2241,28 +2265,6 @@ int main(int argc, char **argv)
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
 
-		//@063 Software Accelerometer Calibration (ALT + G)
-		if (AppStatus.SkipPollCount == 0 && (
-			(AppStatus.HotKeys.AccelCalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.AccelCalibrateKey)) || (IsKeyPressed(VK_MENU) && IsKeyPressed('G')))) {
-			if (PrimaryGamepad.DeviceIndex != -1) {
-				JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex);
-				if (PrimaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex2);
-			}
-			if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
-				JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex);
-				if (SecondaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex2);
-			}
-
-			// Асинхронный звуковой сигнал успеха (двойной короткий писк)
-			std::thread([]() {
-				Beep(1200, 50);
-				Sleep(50);
-				Beep(1500, 100);
-			}).detach();
-
-			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
-		}
-
 		if (AppStatus.IsManualCalibrating) {
 			AppStatus.ManualCalibrationTimer--;
 
@@ -2275,7 +2277,7 @@ int main(int argc, char **argv)
 			}
 
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-			bool isSuccess = (autoCal.isSteady && autoCal.confidence > 0.99f);
+			bool isSuccess = (autoCal.isSteady && autoCal.confidence > 1.0f);
 			bool isTimeout = (AppStatus.ManualCalibrationTimer <= 0);
 
 			// Если JSL поймал ИДЕАЛЬНЫЙ НОЛЬ (успех) ИЛИ вышло время в 5 секунд (провал)
@@ -2306,6 +2308,28 @@ int main(int argc, char **argv)
 					Beep(300, 400);
 				}
 			}
+		}
+
+		//@063 Software Accelerometer Calibration (ALT + G)
+		if (AppStatus.SkipPollCount == 0 && (
+			(AppStatus.HotKeys.AccelCalibrateKey != 0 && IsKeyPressed(AppStatus.HotKeys.AccelCalibrateKey)) || (IsKeyPressed(VK_MENU) && IsKeyPressed('G')))) {
+			if (PrimaryGamepad.DeviceIndex != -1) {
+				JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex);
+				if (PrimaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex2);
+			}
+			if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
+				JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex);
+				if (SecondaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex2);
+			}
+
+			// Асинхронный звуковой сигнал успеха (двойной короткий писк)
+			std::thread([]() {
+				Beep(1200, 50);
+				Sleep(50);
+				Beep(1500, 100);
+			}).detach();
+
+			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
 
 		//Вибро-помощник
@@ -3024,28 +3048,35 @@ int main(int argc, char **argv)
 			}
 		}
 
+		//@064 Создаем 32-битный контейнер ЗАРАНЕЕ, чтобы 17-й и 18-й биты (LT/RT) не обрезались для Minus Plus
+		DWORD XboxButtons = report.wButtons;
+
 		if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_DS || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_DS4) {
 			if (!(PrimaryGamepad.InputState.buttons & JSMASK_PS)) {
-				report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SHARE ? CurrentXboxProfile.Back : 0;
-				report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS ? CurrentXboxProfile.Start : 0;
+				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SHARE ? CurrentXboxProfile.Back : 0;	//@064
+				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS ? CurrentXboxProfile.Start : 0;
+				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SHARE ? CurrentXboxProfile.Back : 0;
+				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS ? CurrentXboxProfile.Start : 0;
 			}
 		}
 		else if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
 			if (!(PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && !(PrimaryGamepad.InputState.buttons & JSMASK_HOME)) { // Защита от протекания кнопок в игру при использовании хоткеев (CAPTURE / HOME)
-				report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;
-				report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
+				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;	//@064
+				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
+				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;
+				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
 			}
 		}
 
 		unsigned int mappedButtons = PrimaryGamepad.InputState.buttons;		//@051 Новый код модификаторов PS HOME и Capture через mappedButtons
-		//if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE) {
+		//if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE) {	//@064
 		if (mappedButtons & JSMASK_PS || mappedButtons & JSMASK_CAPTURE || mappedButtons & JSMASK_HOME) {
 			unsigned int hotkeyMask = JSMASK_UP | JSMASK_DOWN | JSMASK_LEFT | JSMASK_RIGHT | JSMASK_N | JSMASK_S | JSMASK_W | JSMASK_E | JSMASK_L | JSMASK_R | JSMASK_LCLICK | JSMASK_RCLICK | JSMASK_SHARE;
 			mappedButtons &= ~hotkeyMask; // Стираем кнопки хоткеев из маски для игры
 		}
 
 		{ // Mapping standard game buttons using the safe masked layout
-			DWORD XboxButtons = report.wButtons;
+			//DWORD XboxButtons = report.wButtons;
 			XboxButtons |= mappedButtons & JSMASK_L ? CurrentXboxProfile.LeftBumper : 0;
 			XboxButtons |= mappedButtons & JSMASK_R ? CurrentXboxProfile.RightBumper : 0;
 			XboxButtons |= mappedButtons & JSMASK_LCLICK ? CurrentXboxProfile.LeftStick : 0;
@@ -3164,8 +3195,9 @@ int main(int argc, char **argv)
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 			}
 
-			//@ Toggle AimingByPressingMode (Pressing vs Always-on Gyro)
-			if (AppStatus.SkipPollCount == 0 && IsKeyPressed(VK_MENU) && IsKeyPressed('F'))
+			//@053 Toggle AimingByPressingMode (Pressing vs Always-on Gyro)
+			if (AppStatus.SkipPollCount == 0 && (
+				(AppStatus.AimingPressModeToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingPressModeToggleButton) == AppStatus.AimingPressModeToggleButton && AppStatus.JoyconChangeModesWithButton == 0) || (IsKeyPressed(VK_MENU) && IsKeyPressed('F'))))
 			{
 				AppStatus.AimingByPressingMode = !AppStatus.AimingByPressingMode;
 

@@ -585,6 +585,8 @@ struct _AppStatus {
 	int AimingModeToggleButton = 0;			// Toggle Hotkey
 	std::string AimingModeToggleButtonName;// в консоль
 	bool AimingByPressingMode = true;		// switch MotionAimingModeOnlyPressed / MotionAimingMode
+	int AimingPressModeToggleButton = 0;	// hotkey для  AimingByPressingMode
+	std::string AimingPressModeToggleButtonName;
 	bool ShowFullMenu = false;		//@107 Alt+Z change Menu Layers
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
 	int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnect
