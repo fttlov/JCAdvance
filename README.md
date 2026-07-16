@@ -371,10 +371,8 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 ### Polling Rate & Performance
 
 Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
-What limitations? The Wheel function did not work properly when SleepTimeout < 15 and has been rewritten, adding WheelXboxHoldTimer. <br>
-*Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
-    
- Default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
+
+ After fixing limitations and bugs default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
   
 <details>
 <summary><b>Why exactly 250 Hz</b></summary>
@@ -498,7 +496,9 @@ Smoothing Time (time to reach 100% speed, where 100% like without filter) :
 I tested this feature using an old "Logitech Wingman" wheel and it f@cking works! 
 
 ### Fixes & Adjustments
-  - **Gyro Stick Fix:** Resolved an issue where moving the gyro on the Y-axis caused the stick to erratically snap to the center (a JoyShockLibrary fork for DSAdvance bug). <br>
+*Note:* For details on the updated library, visit the [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary)
+  - **JoyShockLibrary Fixes:** For details on the updated library, visit the [JoyShockLibrary Fork Page](https://github.com/fttlov/JoyShockLibrary) 
+  - **Gyro Magic Wheel:** function did not work properly when SleepTimeout < 15 (66hz) and has been rewritten, adding WheelXboxHoldTimer
   - **Joy-Con Rumble:** Patched rumble logic for Joy-Cons (added `PacketCounter2`, flood protection, etc.)
   - **Connection Stability:** Faster connection/disconnection handling, especially for the secondary Joy-Con
   - **Crash Fixes:** Fixed a crash occurring when disconnecting two Joy-Cons simultaneously
