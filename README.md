@@ -280,7 +280,7 @@ Press Alt + C (or your mapped Key). You will hear a low beep. Place the controll
 Note: If you move the controller too much during this process, you will hear a low error beep after 5 seconds, meaning calibration failed
 
 #### Manual Accelerometer Calibration
-This is only necessary in rare cases when you want to use 1, 2 or 3 Gyro space mode (more on this below) but are unable to perform a hardware calibration of the accelerometer
+This is only necessary in rare cases (e.g., the device was dropped, a failed firmware update, etc.) and when you want to use 1, 2 or 3 Gyro space mode (more on this below) but are unable to perform a hardware calibration of the accelerometer
 
 #### Config.ini Settings
 AutoCalibrationEnabled=1 — (Default) Continuous background calibration is ON <br>
