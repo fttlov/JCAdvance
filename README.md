@@ -483,14 +483,13 @@ Smoothing Time (time to reach 100% speed, where 100% like without filter) :
 - Value 75 (~24.0ms to reach full speed)
 
   #### Advanced Radial Anti-Deadzone & Gyro Integration 
-Many modern games have forced, unchangeable deadzones that ignore small stick movements, which completely destroys the micro-precision required for gyro aiming. To fix this, JCAdvance features a sophisticated Radial (Elliptical) Anti-Deadzone. <br>
+Many modern games have forced, unchangeable deadzones that ignore small stick movements. To fix this, JCAdvance features a sophisticated Radial (Elliptical) Anti-Deadzone. <br>
 Unlike basic "axial" (square) anti-deadzones that ruin diagonal aiming, our radial math perfectly preserves the exact angle of your input while pushing the values just past the game's deadzone threshold <br>
-AntiDeadZoneLeftX/Y & AntiDeadZoneRightX/Y <br>
+-AntiDeadZoneLeftX/Y & AntiDeadZoneRightX/Y <br>
 Pushes the physical stick inputs past the game's deadzone. For example, setting 20 seamlessly bypasses a 20% in-game deadzone, making the sticks instantly responsive.
-GyroApplyAntiDeadZone <br>
-When true, the emulator merges your gyro micro-movements with the right stick before pushing them through the radial Anti-Deadzone. This is a game-changer for gyro aiming: the game engine will no longer "eat" your tiny tracking adjustments <br>
-GyroApplyLinearity <br>
-When false, disables the right stick's response curve (linearity) for the gyroscope. This allows your physical stick to have a customized curve, while the gyro retains a pure, raw 1:1 translation
+-GyroApplyAntiDeadZone & GyroApplyLinearity <br>
+When true, the emulator applying radial Anti-Deadzone for hardware and Gyro Stick   <br>
+When false, applying only for hardware sticks, gyro retains a pure, raw 1:1 translation. The same applies to Linearity
 
 #### DualShock Emulation
   Added a feature for Nintendo controllers. When enabled, JCAdvance emulates a DirectInput Wireless Controller instead of an Xbox 360 controller. This is highly useful for legacy DirectInput games (e.g., F.E.A.R., Half-Life, classic *Need for Speed* titles)
