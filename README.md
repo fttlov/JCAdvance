@@ -226,7 +226,7 @@ __________
 
   ### OSD
 
-The OSD now displays real-time sticks, triggers and gyroscope telemetry.<br>
+The OSD now displays real-time sticks, triggers and gyroscope/accelerometer telemetry.<br>
 **For Triggers**: raw data from 0 to 255. <br>
 **For Sticks**: raw data fromm -32768 to 32768 <br>
 Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibration handles thermal gyro drift (see more in "Calibration") <br>
