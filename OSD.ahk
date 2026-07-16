@@ -15,6 +15,7 @@ TxtRS       := Overlay.Add("Text", "w370 cFF9F00 y+5", "RS X:      0 | Y    :   
 TxtLine1    := Overlay.Add("Text", "w370 c555555 y+5", "------------------------------")
 TxtGyro1    := Overlay.Add("Text", "w370 c00FFFF y+5", "Calib:    0% | Steady: NO ")
 TxtGyro2    := Overlay.Add("Text", "w370 c00FFFF y+5", "BiasX:  0.00 | BiasY:  0.00")
+TxtAccel    := Overlay.Add("Text", "w370 c00FFFF y+5", "Shake: 0.000 | MinAc: 0.000")
 TxtLine2    := Overlay.Add("Text", "w370 c555555 y+5", "------------------------------")
 TxtHW1      := Overlay.Add("Text", "w370 c00FF00 y+5", "Waiting for device...         ")
 TxtHW2      := Overlay.Add("Text", "w370 c00FF00 y+2", "                              ")
@@ -82,6 +83,9 @@ WatchXInput() {
         steady := NumGet(pBuf, 4, "Float") ? "YES" : "NO "
         biasX  := NumGet(pBuf, 8, "Float")
         biasY  := NumGet(pBuf, 12, "Float")
+		
+		shake  := NumGet(pBuf, 40, "Float")
+        minAc  := NumGet(pBuf, 44, "Float")
         
         hz1    := NumGet(pBuf, 16, "Float")
         hz2    := NumGet(pBuf, 20, "Float")
@@ -92,6 +96,8 @@ WatchXInput() {
         
         StrGyro1 := Format("Calib: {:4.0f}% | Steady: {}", conf, steady)
         StrGyro2 := Format("BiasX: {:5.2f} | BiasY: {:5.2f}", biasX, biasY)
+		
+		StrAccel := Format("Shake: {:5.3f} | MinAc: {:5.3f}", shake, minAc)
         
         StrHW1 := Format("{}: {:3.0f}Hz | {:3.0f}%", GetDevName(type1), hz1, bat1)
         if (hz2 > 0)
@@ -103,6 +109,8 @@ WatchXInput() {
             TxtGyro1.Value := StrGyro1
         if (TxtGyro2.Value !== StrGyro2)
             TxtGyro2.Value := StrGyro2
+		if (TxtAccel.Value !== StrAccel)
+            TxtAccel.Value := StrAccel	
         if (TxtHW1.Value !== StrHW1)
             TxtHW1.Value := StrHW1
         if (TxtHW2.Value !== StrHW2)

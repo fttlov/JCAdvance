@@ -366,12 +366,12 @@ MainGui.Add("Text", "x20 y685 w810 Center cRed", T("* Only digital buttons can b
 ; =========================================
 if (Layout == "Nintendo") {
     Tabs.UseTab("Joy-Con")
-    MainGui.Add("Text", "x25 y65 w810 Center", T("Emulate keyboard/mouse keys using the Joy-Cons buttons"))
+    MainGui.Add("Text", "x25 y60 w810 Center", T("Emulate keyboard/mouse keys using the Joy-Cons buttons"))
 
-    MainGui.Add("Picture", "x60 y140 w134 h-1", A_ScriptDir "\Icons\joycon_left.png")
-    MainGui.Add("Picture", "x656 y140 w134 h-1", A_ScriptDir "\Icons\joycon_right.png")
+    MainGui.Add("Picture", "x60 y160 w134 h-1", A_ScriptDir "\Icons\joycon_left.png")
+    MainGui.Add("Picture", "x656 y160 w134 h-1", A_ScriptDir "\Icons\joycon_right.png")
 
-    yPos := 110
+    yPos := 100
     for key in JoyconMapping {
         val := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", key, "NONE")
         MainGui.Add("Text", "x290 y" (yPos+1) " w70", key ":")
@@ -383,7 +383,7 @@ if (Layout == "Nintendo") {
         yPos += 30
     }
 
-    yPos += 2
+    yPos += 5
     MainGui.Add("Text", "x110 y" yPos " w830 cBlue", T("*Also you can configure Analog Sticks directions to emulate Keyboard keys and Mouse in XboxProfiles\*.ini"))
 }
 
@@ -448,7 +448,7 @@ yPos := 60
 
 ; --- Группа 1: WHEEL ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y" yPos " w480 h225 Center Section", "Wheel")
+MainGui.Add("GroupBox", "x175 y" yPos " w480 h220 Center Section", "Wheel")
 MainGui.SetFont("cDefault Norm s10")
 
 ; Описание (обычный цвет текста)
@@ -517,7 +517,7 @@ CtrlSettings[keyDead] := {type: "edt", ctrl: edtDead, file: ConfigIni, sec: "Mot
 
 ; --- Группа 2: Left STICK ---
 
-yPos += 40
+yPos += 35
 
 MainGui.SetFont("cBlue Bold")
 MainGui.Add("GroupBox", "x175 y" yPos " w480 h120 Center Section", "Left Stick")
@@ -880,12 +880,12 @@ MainGui.SetFont("cDefault Norm s10")
 AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength"), , "xs+165 ys+25", 110, 45)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x25 y+20 w800 cRed", T("** Linearity"))
+MainGui.Add("Text", "x25 y+20 w800 cRed", T("* Linearity"))
 MainGui.Add("Text", "x25 y+1 w820", T("Adjusts stick sensitivity curve:"))
 MainGui.Add("Text", "x25 y+3 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
 MainGui.Add("Text", "x25 y+3 w820", T("50 (Default): Perfectly linear response"))
 MainGui.Add("Text", "x25 y+3 w820", T("100: Higher sensitivity near the center for instant response (Logarithmic)"))
-MainGui.Add("Text", "x25 y+7 w800 cRed", T("*** Left Stick Mode:"))
+MainGui.Add("Text", "x25 y+7 w800 cRed", T("** Left Stick Mode:"))
 MainGui.Add("Text", "x25 y+1 w820", T("'AutoSprintButton' held down when stick direction in: default - none; 1 - front hemisphere (45 degrees); 2 - all directions"))
 
 ; =========================================
@@ -897,7 +897,7 @@ AddMappedDropdown(ConfigIni, "Gamepad", "EmulatedController", T("Emulated Contro
 
 ; --- ГРУППА 1: Wheel settings (Driving mode) ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+30 w480 h115 Center Section", T("Wheel settings (Driving mode)"))
+MainGui.Add("GroupBox", "x175 y+30 w480 h120 Center Section", T("Wheel settings (Driving mode)"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddInput(XboxIni, "SETTINGS", "SteeringWheelAngle", T("Steering Wheel Angle"), , "xs+135 ys+40", 160, 50, true, "0-360")
@@ -905,7 +905,7 @@ AddInput(XboxIni, "SETTINGS", "LinearityWheel", T("Steering Wheel Linearity"), ,
 
 ; --- ГРУППА 2: External Pedals Settings ---
 MainGui.SetFont("cBlue Bold")
-MainGui.Add("GroupBox", "x175 y+50 w480 h190 Center Section", T("External Pedals Settings"))
+MainGui.Add("GroupBox", "x175 y+50 w480 h215 Center Section", T("External Pedals Settings"))
 MainGui.SetFont("cDefault Norm s10")
 
 AddMappedDropdown(ConfigIni, "ExternalPedals", "DInput", T("DirectInput Search"), [T("On"), T("Off")], Map(T("On"), "1", T("Off"), "0"), "xs+135 ys+40", 160, 55)
@@ -918,13 +918,14 @@ for axis in AxesList {
 }
 
 ; Выбор осей для Педали 1 и Педали 2
-AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal1Axis", T("Pedal 1 Axis"), AxesList, AxesMap, "xs+135 y+10", 110, 105)
-AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal2Axis", T("Pedal 2 Axis"), AxesList, AxesMap, "xs+135 y+10", 110, 105)
+AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal1Axis", T("Pedal 1 Axis"), AxesList, AxesMap, "xs+135 y+15", 110, 105)
+AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal2Axis", T("Pedal 2 Axis"), AxesList, AxesMap, "xs+135 y+15", 110, 105)
 
-;AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "xs+15 y+30", 110, 340)
-AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "xs+15 y+30", 110, 340, false)
+;AddInput(ConfigIni, "ExternalPedals", "DeviceName", T("Device Name"), "AUTO", "xs+15 y+40", 110, 340)
+MainGui.Add("Text", "xs+135 y+15 w120", T("Device Name:"))
+AddInput(ConfigIni, "ExternalPedals", "DeviceName", T(""), "AUTO", "xs+125 y+15", 0, 225, false)
 
-MainGui.Add("Text", "x25 y+170 w820 cRed", T("External Pedals:"))
+MainGui.Add("Text", "x25 y+143 w820 cRed", T("External Pedals:"))
 MainGui.Add("Text", "x25 y+5 w820", T("Use pedals as analog triggers. Note: This is an experimental feature; proper functioning is not guaranteed."))
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))

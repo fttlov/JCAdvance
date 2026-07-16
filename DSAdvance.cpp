@@ -1731,7 +1731,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 3.6");
+	SetConsoleTitle("JCAdvance 3.7");
 	WindowToCenter();
 
 	bool ForceEnLang = false;
@@ -2026,8 +2026,8 @@ int main(int argc, char **argv)
 			HotReloadTimer--;
 		}
 		else {
-			// Reset timer to 5 sec.
-			HotReloadTimer = 5000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
+			// Reset timer to 10 sec.
+			HotReloadTimer = 10000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
 
 			// 1. Check Config.ini
 			uint64_t currentConfigTime = GetFileModifiedTime("Config.ini");
@@ -2221,7 +2221,7 @@ int main(int argc, char **argv)
 		if (aimingHandle != -1) {
 			static bool wasSteadyAndConfident = false;
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence > 0.99f);
+			bool isSteadyAndConfident = (autoCal.isSteady && autoCal.confidence >= 1.0f);
 
 			if (isSteadyAndConfident && !wasSteadyAndConfident) {
 
@@ -2283,7 +2283,7 @@ int main(int argc, char **argv)
 			}
 
 			JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-			bool isSuccess = (autoCal.isSteady && autoCal.confidence > 1.0f);
+			bool isSuccess = (autoCal.isSteady && autoCal.confidence >= 1.0f);
 			bool isTimeout = (AppStatus.ManualCalibrationTimer <= 0);
 
 			// Если JSL поймал ИДЕАЛЬНЫЙ НОЛЬ (успех) ИЛИ вышло время в 5 секунд (провал)
@@ -4133,6 +4133,9 @@ int main(int argc, char **argv)
 			float bx, by, bz;
 			JslGetCalibrationOffset(aimingHandle, bx, by, bz);
 
+			float shakiness = 0.0f, minDeltaAccel = 0.0f;
+			JslGetAccelerometerTelemetry(aimingHandle, shakiness, minDeltaAccel);
+
 			pTelemetry[0] = autoCal.confidence;
 			pTelemetry[1] = autoCal.isSteady ? 1.0f : 0.0f;
 			pTelemetry[2] = bx;
@@ -4143,6 +4146,8 @@ int main(int argc, char **argv)
 			pTelemetry[7] = PrimaryGamepad.DeviceIndex2 != -1 ? JslGetBattery(PrimaryGamepad.DeviceIndex2) : -1.0f;
 			pTelemetry[8] = (float)JslGetControllerType(PrimaryGamepad.DeviceIndex);
 			pTelemetry[9] = PrimaryGamepad.DeviceIndex2 != -1 ? (float)JslGetControllerType(PrimaryGamepad.DeviceIndex2) : 0.0f;
+			pTelemetry[10] = shakiness;
+			pTelemetry[11] = minDeltaAccel;
 
 			// RTSS OSD (Через AIDA64)
 			if (pTelemetryAIDA) {
@@ -4154,6 +4159,8 @@ int main(int argc, char **argv)
 					"<sys><id>XBOX_STEADY</id><label>Is Steady</label><value>%.0f</value></sys>"
 					"<sys><id>XBOX_BIASX</id><label>Bias X</label><value>%.4f</value></sys>"
 					"<sys><id>XBOX_BIASY</id><label>Bias Y</label><value>%.4f</value></sys>"
+					"<sys><id>XBOX_SHAKE</id><label>Shake</label><value>%.3f</value></sys>"
+					"<sys><id>XBOX_MINAC</id><label>MinAc</label><value>%.3f</value></sys>"
 					"<sys><id>XBOX_POLL1</id><label>Poll Rate 1</label><value>%.1f</value></sys>"
 					"<sys><id>XBOX_POLL2</id><label>Poll Rate 2</label><value>%.1f</value></sys>"
 					"<sys><id>XBOX_BATT1</id><label>Battery 1</label><value>%.0f</value></sys>"
@@ -4170,6 +4177,8 @@ int main(int argc, char **argv)
 					autoCal.isSteady ? 1.0f : 0.0f,
 					bx,
 					by,
+					shakiness,
+					minDeltaAccel,
 					JslGetPollRate(PrimaryGamepad.DeviceIndex),
 					PrimaryGamepad.DeviceIndex2 != -1 ? JslGetPollRate(PrimaryGamepad.DeviceIndex2) : 0.0f,
 					JslGetBattery(PrimaryGamepad.DeviceIndex),
