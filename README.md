@@ -241,7 +241,7 @@ Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, y
 
 Also added current battery status and device poling rate info
 
-  ### New Smart Gyro Sensitivity Adjustment
+  ### Smart Gyro Sensitivity Adjustment
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
