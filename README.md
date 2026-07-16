@@ -349,7 +349,7 @@ b) controller orientation - horizontal, with R and ZR pointing at the screen, or
 Differences between modes: <br>
 0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
 1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
-With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector, but the greater the vertical angle of the gamepad (with the R and ZR buttons pointing closer to the ceiling), the more the ‘screwdriver’ gesture will affect the movement of the cursor/joystick along the X-axis.  <br>
+With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector, but the greater the vertical angle of the gamepad (with the R and ZR buttons pointing closer to the ceiling), the more the ‘screwdriver’ gesture will affect the movement of the cursor/stick along the X-axis  <br>
 3 — Wrist rotation does not matter (within 180 degrees) and no more the screwdriver effect in any grip! <br>
 Designed specifically for the Joy-Con
 
