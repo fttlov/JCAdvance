@@ -791,7 +791,7 @@ MainGui.Add("Text", "x20 y+7 w820 cRed", T("** Tightening:"))
 MainGui.Add("Text", "x20 y+1 w820", T("Is a zero-latency, velocity-based threshold filter (by JibbSmart) that attenuates micro-movements to eliminate hand `ntremors, pulse twitches and hardware sensor noise. 0 - Disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-cons"))
 
 MainGui.Add("Text", "x20 y+7 w820 cRed", T(" *** EMA Filter:"))
-MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% and decelerate to 0% speed (value - rise time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
+MainGui.Add("Text", "x20 y+1 w820", T("Smoothing time to reach 100% and decelerate to 0% speed (value - rise/fall time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
 
 ; =========================================
 ; TAB 6:Analog (config.ini)
