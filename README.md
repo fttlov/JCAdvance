@@ -235,7 +235,7 @@ Gyro telemetry: This helps you understand how the JoyShockLibrary auto-calibrati
 **BiasX / BiasY**: The actual hardware drift offsets (in degrees/second). Sensors naturally drift. These numbers show the raw error the emulator is suppressing during calibration to keep crosshair perfectly still.<br>
 **MinAc (MinDeltaAccel):** Shows the lowest recorded accelerometer noise threshold used as a baseline for software auto-calibration. For example, the Mobapad M6S outputs a value around 0.003 - 0.004. This is a sufficiently low value, indicating that the sensor is healthy and ready for perfect calibration. <br>
 **Shake (Shakiness):** Displays the real-time level of vibration or hand tremor. Approximate "healthy" metrics: ~0.003 (resting on a desk), ~0.005 - 0.01 (in hands resting on a desk), and 0.01 - 0.015 (free-hand aiming).  <br>
-If the readings significantly exceed these values, you need to perform a hardware calibration. If that doesn't help and the sensors are too "noisy," try increasing the GravityShakinessMin value in config.ini to match the current reading in the OSD "on the table."
+If the readings significantly exceed these values and the device is not functioning properly, you need to perform a hardware calibration
 
 Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, you might see the Bias values jump or slightly fluctuate (e.g., from 1.09 to 1.02). This is normal! It proves the software calibration is actively recalculating the thermal drift.
 
