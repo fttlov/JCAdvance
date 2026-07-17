@@ -263,6 +263,8 @@ Hardware Calibration Methods: <br>
 ⚠️ For succsesfull calibrating **Accelerometer sensor** on separated Joy-Cons, attach them to the Switch console or use the charging Grip. If you lay a bare Joy-Con on a table, it will tilt due to the protruding SL/SR buttons, resulting in a crooked calibration. <br>
 You can use a smartphone simple bubble-level app (or pro free app like Phyphox) to verify your desk or floor is actually flat <br>
 
+Practical tip: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on surface and put something under  the surface to achieve values close to "0" for the Accelerometer X and Y parameters. Don't forget to solve the problem with the camera module—for example, by using a case
+
   ### Software Calibration (correction) & Drift Prevention
   Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this JCAdvacne features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate "cursor/stick drift"<br> 
 
