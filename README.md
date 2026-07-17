@@ -328,14 +328,14 @@ Accelerometer fine-tuning settings from Joyshocklibrary (Nintendo only) :<br>
 
   ### Gyro Motion Space
 
-This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist (clockwise or counter-clockwise) and how you hold the gamepad (horizontally – with ZL(L2) and ZR(R2) facing the screen; vertically – facing the ceiling). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: <br>
+This option controls how the gyroscope interprets hand movements into mouse/stick movements depending on the tilt of your wrist and how you hold the gamepad (horizontally – with ZL(L2) and ZR(R2) facing the screen; vertically – facing the ceiling). In DSAdvance, "0" is a hard-coded value. Now we have all 3 modes from the JoyShockLibrary creator: <br>
 
 * **0 (Local Space):** Relies entirely on the gyroscope. Movement is calculated relative to the controller's plastic body, ignoring gravity <br>
 * **1 (World Space):** Relies on the gyroscope and accelerometer. It uses real-world gravity to separate horizontal and vertical aiming <br>
 * **2 (Player Space):** Relies on the gyroscope and accelerometer. For two-handed controllers
 
 (!) New setting: <br>
-* **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle. A limit has been added for extreme angles; otherwise, the direction of motion reverses. Also a limit has been added for extreme angles; otherwise, the direction of motion reverses. <br>
+* **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle. A limit has been added for extreme angles; otherwise, the direction of motion reverses. <br>
 Designed specifically for the Joy-Con
 
 ⚠️ For modes 1 2 3: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
