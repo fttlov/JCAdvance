@@ -108,15 +108,14 @@ Stick as trigger имеет приоритет над другими режим�
 Для решения проблемы рекомендуется использовать утилиту для скрытия геймпада [HidHide](https://github.com/nefarius/HidHide) от того же nefarius.
 <details>
   <summary><h4>Быстрая настройка HidHide</h4> (разверунуть)</summary>
-Скачиваем по ссылке выше и устанавливаем HidHide, затем:
-  
-1. Запускаем HidHide Configuration Client
+Скачиваем по ссылке выше, устанавливаем и Запускаем HidHide Configuration Clien, затем:
 
-2. Добавляем в исключения JCAdvance.exe и Config.exe
- 
-3. Ставим галку рядом с нужным геймпадом
- 
-4. Ставим галку enable device hiding
+1. Добавляем в исключения JCAdvance.exe и Config.exe
+
+2. Ставим галку рядом с нужным геймпадом
+   
+3. Ставим галку enable device hiding
+
  <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/HidHide1.png" width="150"></td>
