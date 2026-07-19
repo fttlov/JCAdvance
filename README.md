@@ -76,7 +76,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Gyro Melee Gesture:** Perform physical punching, hooking, or hammering gestures to trigger virtual buttons
 - **Gyro Space Option:** A crucial setting for Gyro Mouse/Stick modes (see [Technical Details](#tech-info) for more information)
 - **Gyro Tightening Adjustment:** filter to eliminate hand tremors and hardware sensor noise by JibbSmart
-- **Smart Sensitivity Adjustment:** Change the sensitivity by hotkeys in game and view the latest values in the console
+- **Advanced Sensitivity Adjustment:** Change the sensitivity by hotkeys in game and view the latest values in the console
 - **Сalibration indicator:** successful first auto-calibration by the beep
 - **Manual recalibrating:** Place device on a flat surface, press customizable hotkey and wait for the beep
 - **Left handed mode:** Option to read Gyro data from the left Joy-Con in combined mode
@@ -241,7 +241,7 @@ Pro Tip: If you hold the gamepad for a few minutes and then put it on a table, y
 
 Also added current battery status and device poling rate info
 
-  ### Smart Gyro Sensitivity Adjustment
+  ### Advanced Gyro Sensitivity Adjustment
 
 How it works: Launch the game, use the in-game settings to configure the controls, then, if necessary, use hotkeys to fine-tune the gyro (aiming) sensitivity (+- 5 units). After exiting the game, you’ll see a full log of the sensitivity changes in the console window; take the latest value and save it to Config.exe 
 
