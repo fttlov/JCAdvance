@@ -33,7 +33,7 @@
 <details>
   <summary><h4>Learn more about Gyro Сoncept and Digital Trigger Bypass</h4></summary>
 
-While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space**, **Tightening** setting (by JibbSmart) for different controllers and ability to use all analog axes of the XBOX virtual controller for Joy-Cons.
+While *DSAdvance* was primarily designed for two-handed Sony controllers with Joy-Con support, **JCAdvance** focuses on making Joy-Cons easy and intuitive to use. It introduces flexible gyroscope adjustments via the **Gyro Space**, **Tightening** setting (by Jibb Smart) for different controllers and ability to use all analog axes of the XBOX virtual controller for Joy-Cons.
 
 The core philosophy of Gyro Motion differs between controller types:
 * **Two-handed controllers:** Gyro is best used for fine-tuning and adjusting classic stick aiming.
@@ -266,7 +266,7 @@ You can use a smartphone simple bubble-level app (or pro free app like Phyphox) 
 Practical tip: Launch Phyphox, select Acceleration with g > Simple > place your smartphone on surface and put something under  the surface to achieve values close to "0" for the Accelerometer X and Y parameters. Don't forget to solve the problem with the camera module—for example, by using a case
 
   ### Software Calibration (correction) & Drift Prevention
-  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this JCAdvacne features a smart calibration system (by JibbSmart) to keep your gyro aiming perfectly accurate and eliminate cursor/stick drift <br> 
+  Due to imperfections in MEMS sensors (such as temperature drift—the sensor heating up), particularly in the Joy-Con controllers, a cumulative **gyroscope** drift effect may occur over time — a slight deviation from zero that manifests as random movement of the in-game camera. After the temperature rises during the first few minutes of a gaming session (due to the battery, the palm of the hand, or the crystal’s own heat generation) and then stabilizes, the drift generally stops increasing, but it needs to be compensated for. To do this JCAdvacne features a smart calibration system (by Jibb Smart) to keep your gyro aiming perfectly accurate and eliminate cursor/stick drift <br> 
 
 ⚠️ Software corrections affects only the gyroscope sensor and works when the emulator is running
 
