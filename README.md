@@ -86,7 +86,7 @@ In "Stick as trigger" mode, you can only assign two buttons to the free X-axis (
 - **Anti-Deadzone:** Advanced Radial Anti-Deadzone for hardware and Gyro stick
 - **Non-Linear Response:** Non-linear stick and steering wheel sensitivity options
 - **EMA Smoothing Filter:** Exponential Moving Average (see [Technical Details](#tech-info) for more information)
-- **OSD info**: current values from sticks, triggers and gyroscope; current battery status and device polling rate
+- **OSD info**: current values from sticks, triggers and IMU; current battery status and device polling rate
 - **DirectInput Emulation:** Option to emulate a DirectInput controller instead of a virtual XBOX 360 controller
 - **Improved Driving Mode:** Eliminated sudden steering wheel jerks to the opposite side at maximum angles
 - Added a hotkey for manual steering wheel recalibration/centering
