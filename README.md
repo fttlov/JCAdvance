@@ -25,8 +25,8 @@
  
 ## Key Differences in JCAdvance:
 - **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
-- **Gyro Calibration:** Advanced calibration for Joy-con to compensate for thermal IMU drift (see [Technical Details](#tech-info))
 - **Digital Trigger Bypass for Joy-Cons:** utilize all 6 virtual Xbox analog axes (4 mapped to sticks + 2 to gyro)
+- **Gyro Calibration:** Advanced calibration for Joy-con to compensate for thermal IMU drift (see [Technical Details](#tech-info))
 - **GUI:** New config tool and redesigned user-friendly main interface
 - **Bug Fixes**, **improvements** and some **new features**
 
