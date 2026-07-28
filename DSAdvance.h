@@ -1,13 +1,23 @@
 ﻿#pragma once
 
-// Library for VSCode
+// C++ Standard Library
+#include <algorithm>      // For std::transform & std::clamp
+#include <cmath>          // For math: powf, sqrtf, roundf и т.д.
 #include <mutex>
 #include <string>
 #include <thread>
+#include <unordered_map>  // For std::unordered_map (KeyNameToKeyCode)
 #include <vector>
+
+// Windows & External Libraries
 #include <windows.h>
 #include "IniReader/IniReader.h"
+
+#pragma warning(push)
+//#pragma warning(disable: 4190) // Warning C4190
 #include "JoyShockLibrary/JoyShockLibrary.h"
+#pragma warning(pop)
+
 #include "ViGEm/Client.h"
 #include "hidapi.h"
 
@@ -153,6 +163,14 @@ inline float ApplyLinearity(float value, float linearity) {
 	// Рассчитываем степень p (теперь при 0 степень = 4.0, при 100 степень = 0.25)
 	float p = powf(2.0f, (50.0f - linearity) / 25.0f);
 	return (value >= 0.0f ? 1.0f : -1.0f) * powf(fabsf(value), p);
+}
+
+//@133 Ускоренная функция расчета линейности стика (степень p рассчитывается заранее)
+inline float ApplyLinearityFast(float value, float p_precalculated) {
+	if (p_precalculated == 1.0f || value == 0.0f) {
+		return value; // Быстрый обход для 1:1 линейности
+	}
+	return (value >= 0.0f ? 1.0f : -1.0f) * powf(fabsf(value), p_precalculated);
 }
 
 // Aiming
@@ -384,6 +402,12 @@ struct AdvancedGamepad {
 		float LinearityRightX = 50.0f;
 		float LinearityRightY = 50.0f;
 
+		//@133 Кешированные степени p:
+		float p_LeftX = 1.0f;
+		float p_LeftY = 1.0f;
+		float p_RightX = 1.0f;
+		float p_RightY = 1.0f;
+
 		float AntiDeadZoneLeftX = 0.0f;	//@132
 		float AntiDeadZoneLeftY = 0.0f;
 		float AntiDeadZoneRightX = 0.0f;
@@ -437,6 +461,8 @@ struct AdvancedGamepad {
 		float CustomMulSens = 1.0f;
 		float MouseSmooth = 0.0f;	//@111 EMA Filter
 		float JoySmooth = 0.0f;
+		float CachedMouseAlpha = 0.0f;	//@133
+		float CachedJoyAlpha = 0.0f;
 		float EmaGyroX = 0.0f;
 		float EmaGyroY = 0.0f;
 		float EmaGyroZ = 0.0f;
@@ -610,6 +636,8 @@ struct _AppStatus {
 	bool AutoCalibrationEnabled = true; // @124
 	bool IsManualCalibrating = false;
 	int ManualCalibrationTimer = 0;
+	int GyroCalibrateButton = 0;	//@124 gamepad calib
+	std::string GyroCalibrateButtonName;
 	bool StartupCalibrationFrozen = false;
 	int CalibRumbleTimer = 0;
 	bool BackgroundCalibSound = false;
@@ -620,7 +648,7 @@ struct _AppStatus {
 		std::string ResetKeyName;
 		int ResetKey = 0;
 		int OSDKey = 0;	//@130
-		std::string GyroCalibrateKeyName = "NONE"; // @124
+		std::string GyroCalibrateKeyName = "NONE"; // @124 keyboard calib
 		int GyroCalibrateKey = 0;
 		std::string AccelCalibrateKeyName = "NONE";		//@131
 		int AccelCalibrateKey = 0;
@@ -1361,13 +1389,13 @@ inline unsigned int WebColorToRGB(const std::string& webColor) {
 	char buf[3] = { 0 };
 
 	buf[0] = webColor[0], buf[1] = webColor[1];
-	red = strtol(buf, NULL, 16);
+	red = static_cast<unsigned char>(strtol(buf, NULL, 16));
 
 	buf[0] = webColor[2], buf[1] = webColor[3];
-	green = strtol(buf, NULL, 16);
+	green = static_cast<unsigned char>(strtol(buf, NULL, 16));
 
 	buf[0] = webColor[4], buf[1] = webColor[5];
-	blue = strtol(buf, NULL, 16);
+	blue = static_cast<unsigned char>(strtol(buf, NULL, 16));
 
 	return (red << 16) | (green << 8) | blue;
 }
