@@ -136,7 +136,8 @@ typedef struct JSL_SETTINGS {
 	int colour = 0;
 	int playerNumber = 0;
 	int controllerType = 0;
-	std::string controllerPath;
+	//std::string controllerPath;
+	char controllerPath[256];		//@209
 	int splitType = 0;
 	bool isCalibrating = false;
 	bool autoCalibrationEnabled = false;
@@ -233,6 +234,7 @@ extern "C" JOY_SHOCK_API void JslSetGravitySettings(int deviceId, float shakines
 extern "C" JOY_SHOCK_API void JslGetCalibrationOffset(int deviceId, float& xOffset, float& yOffset, float& zOffset);
 extern "C" JOY_SHOCK_API void JslSetCalibrationOffset(int deviceId, float xOffset, float yOffset, float zOffset);
 extern "C" JOY_SHOCK_API JSL_AUTO_CALIBRATION JslGetAutoCalibrationStatus(int deviceId);
+extern "C" JOY_SHOCK_API void JslGetAccelerometerTelemetry(int deviceId, float& shakiness, float& minDeltaAccel);	//@503
 
 // this function will get called for each input event from each controller
 extern "C" JOY_SHOCK_API void JslSetCallback(void(*callback)(int, JOY_SHOCK_STATE, JOY_SHOCK_STATE, IMU_STATE, IMU_STATE, float));
