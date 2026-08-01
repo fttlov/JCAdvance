@@ -334,7 +334,7 @@ This option controls how the gyroscope interprets hand movements into mouse/stic
 * **2 (Player Space):** Relies on the gyroscope and accelerometer. For two-handed controllers
 
 (!) New setting: <br>
-* **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle. A limit has been added for extreme angles; otherwise, the direction of motion reverses. <br>
+* **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle, but have a limits for extreme angles; otherwise, the direction of motion reverses. <br>
 Designed specifically for the Joy-Con
 
 ⚠️ For modes 1 2 3: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see hardware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
