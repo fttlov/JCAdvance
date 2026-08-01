@@ -337,17 +337,24 @@ This option controls how the gyroscope interprets hand movements into mouse/stic
 * **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle. A limit has been added for extreme angles; otherwise, the direction of motion reverses. <br>
 Designed specifically for the Joy-Con
 
-⚠️ For modes 1 2 3: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see harware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
+⚠️ For modes 1 2 3: If your in-game crosshair moves diagonally when you swipe your hands horizontally (cross-talk), your accelerometer is miscalibrated. Calibrate the accelerometer correctly (see hardware calibration). If you cannot perform a hardware calibration of the accelerometer, use software calibration (hotkey) or Local Space mode only. <br>
 
 In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Con: 1 or 3.
 
-**For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left: <br>
-0 — "steering wheel" movement to the left <br>
-2 — tilt the right side of the gamepad (R1) away from you while bringing the left side (L1) closer. If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
+**For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left-right: <br>
+0 — "steering wheel" movement to the left  0 — Turn the controller like a car steering wheel (Roll,  Gyroscope only mode) <br>
+2 — Twist the controller like tank steering levers (Yaw, Gyroscope + Accelerometer mode) 
+If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
 
 **For Joy-Cons** the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: <br>
-a) wrist rotation (clockwise/counter-clockwise, Z-axis Roll, where the SL and SR buttons point to the floor or ceiling) <br>
-b) controller orientation - horizontal, with R and ZR pointing at the screen, or vertical, with them pointing to the ceiling. <br>
+a) Roll - clockwise/counter-clockwise wrist rotation (like a screwdriver)   <br>
+b) Pitch - controller orientation, where horizontal - with R and ZR pointing at the screen, vertical-  with them pointing to the ceiling <br>
+
+Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Pitch = nose up/down, Yaw = nose left/right.
+Roll — twisting around the nose axis ("screwdriver" gesture). Behavior in different modes:
+0 — At Roll > 0, Pitch and Yaw axes skew. Requires keeping the Joy-Con level at all times (gyroscope only mode).
+1 — At Roll < 120°, no axis skew occurs. At Pitch > 0, wrist twisting (screwdriver) starts controlling Yaw (+accelerometer)
+3 — No axis skewing. No screwdriver effect, but aim locks when Pitch > 90° (+accelerometer)
 
 Differences between modes: <br>
 0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
@@ -356,7 +363,9 @@ With a relatively horizontal grip (R and ZR pointing at the screen), the cursor 
 3 — Wrist rotation does not matter (within 180 degrees) and no more the screwdriver effect in any grip! <br>
 Designed specifically for the Joy-Con
 
-Conclusion: Mode "3" provide the best accuracy and predictability for Joy-Con gyro motion aiming, provided the accelerometer is calibrated correctly
+Conclusion: With a more or less horizontal grip, Mode "3" provides the best accuracy and predictability for gyro aiming.   <br>
+You can see this for yourself by testing how the mouse cursor behaves in different modes; for example, try drawing an infinity symbol while tilting the gamepad at different angles.  <br>
+If, for some reason, you’re using a vertical grip, Mode "1" is the best choice
 
   ### Tightening (Dynamic Smoothing)
 
