@@ -353,15 +353,8 @@ b) Pitch - controller orientation, where horizontal - with R and ZR pointing at 
 Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Pitch = nose up/down, Yaw = nose left/right.
 Roll — twisting around the nose axis ("screwdriver" gesture). Behavior in different modes:
 0 — At Roll > 0, Pitch and Yaw axes skew. Requires keeping the Joy-Con level at all times (gyroscope only mode).
-1 — At Roll < 120°, no axis skew occurs. At Pitch > 0, wrist twisting (screwdriver) starts controlling Yaw (+accelerometer)
+1 — At Roll < 120°, no axis skew occurs. At Pitch > 0, wrist twisting (screwdriver) starts influencing Yaw (+accelerometer)
 3 — No axis skewing. No screwdriver effect, but aim locks when Pitch > 90° (+accelerometer)
-
-Differences between modes: <br>
-0 — Wrist rotation always affects aiming regardless of the controller's orientation. This means that to move the cursor perfectly horizontally to the left, you must move your wrist or entire arm to the left without twisting your hand at all. <br>
-1 — Wrist rotation does not matter (within 180 degrees, i.e. the range of rotation of the SL and SR buttons from floor to ceiling), but your grip does. <br>
-With a relatively horizontal grip (R and ZR pointing at the screen), the cursor will strictly follow your hand's movement vector, but the greater the vertical angle of the gamepad (with the R and ZR buttons pointing closer to the ceiling), the more the ‘screwdriver’ gesture will affect the movement of the cursor/stick along the X-axis  <br>
-3 — Wrist rotation does not matter (within 180 degrees) and no more the screwdriver effect in any grip! <br>
-Designed specifically for the Joy-Con
 
 Conclusion: With a more or less horizontal grip, Mode "3" provides the best accuracy and predictability for gyro aiming.   <br>
 You can see this for yourself by testing how the mouse cursor behaves in different modes; for example, try drawing an infinity symbol while tilting the gamepad at different angles.  <br>
