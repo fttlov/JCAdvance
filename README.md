@@ -350,10 +350,10 @@ If you hold the gamepad horizontally (which is uncomfortable), the "steering whe
 a) Roll - clockwise/counter-clockwise wrist rotation (like a screwdriver)   <br>
 b) Pitch - controller orientation, where horizontal - with R and ZR pointing at the screen, vertical-  with them pointing to the ceiling <br>
 
-Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Pitch = nose up/down, Yaw = nose left/right.
-Roll — twisting around the nose axis ("screwdriver" gesture). Behavior in different modes:
-0 — At Roll > 0, Pitch and Yaw axes skew. Requires keeping the Joy-Con level at all times (gyroscope only mode).
-1 — At Roll < 120°, no axis skew occurs. At Pitch > 0, wrist twisting (screwdriver) starts influencing Yaw (+accelerometer)
+Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Controls: Pitch = nose up/down, Yaw = nose left/right.
+Roll — twisting around the nose axis ("screwdriver" gesture). Behavior in different modes: <br>
+0 — At Roll > 0, Pitch and Yaw axes skew. Requires keeping the Joy-Con level at all times (gyroscope only mode) <br>
+1 — At Roll < 120°, no axis skew occurs. At Pitch > 0, wrist twisting (screwdriver) starts influencing Yaw (+accelerometer) <br>
 3 — No axis skewing. No screwdriver effect, but aim locks when Pitch > 90° (+accelerometer)
 
 Conclusion: With a more or less horizontal grip, Mode "3" provides the best accuracy and predictability for gyro aiming.   <br>
