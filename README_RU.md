@@ -3,7 +3,7 @@
 
 ## Что это:
 
-Joy-con Advance - это эмулятор XBOX/DS4 геймпада с расширенным функционалом для Joy-con, Pro Controller, DualShock 4 и DualSense Edge, основанный на DSAdvance от r57zone <br>
+Joy-con Advance - это эмулятор XBOX/DS4 геймпада с расширенным функционалом для Joy-con, Pro Controller, DualShock 4 и DualSense, основанный на DSAdvance от r57zone <br>
 
 ## Базовые возможности оригинала:
 - Назначайте кнопки вашего геймпада для эмуляции кнопок Xbox или клавиатуры/мыши (раздельные профили) <br>
