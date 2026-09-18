@@ -343,7 +343,7 @@ In short: for two-handed gamepads, the recommended values are 0 or 2. For Joy-Co
 
 **For two-handed gamepads:** let’s take the example of the standard grip, where the L1 and R1 buttons are positioned at an angle of roughly 45 degrees from us. To move the mouse cursor up and down, rotate the gamepad around its axis, with L1 and R1 moving from the ceiling toward the screen and back. This applies to all modes (0, 2). The difference begins with left-right movements. To move the cursor to the left-right: <br>
 0 — Turn the controller like a car steering wheel (Roll,  Gyroscope only mode) <br>
-2 — Twist the controller like tank steering levers (Yaw, Gyroscope + Accelerometer mode) 
+2 — Twist the controller like tank steering levers (Yaw, Gyroscope + Accelerometer mode) <br>
 If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns. <br>
 
 **For Joy-Cons** the situation is different. Since you hold a single Joy-Con in a free hand, you control the cursor either by twisting your wrist (faster but less precise) or by moving your entire forearm (slower but more precise). Two main factors negatively impact how accurately the cursor tracks your hand's actual movement vector: <br>
