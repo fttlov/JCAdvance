@@ -402,7 +402,7 @@ The number shown in the OSD is literally a counter of how many of these over-the
 | Device | Connection | Expected OSD Rate | Transmission Details |
 | :--- | :--- | :--- | :--- |
 | **Sony DualShock 4 / DualSense** | Bluetooth | **~250 Hz** | Sony's protocol polls the controller every 4 ms |
-| **Mobapad M6s / M6 HD** (and clones) | Bluetooth | **133 – 160 Hz** | Depends on your PC's Bluetooth adapter chip |
+| **Mobapad M6s / M6 HD**  | Bluetooth | **133 – 160 Hz** | Depends on your PC's Bluetooth adapter chip |
 | **Original Joy-Con (L / R)** | Bluetooth | **~66.7 Hz** | Sends a packet every 15 ms (containing 3 IMU samples) |
 | **Nintendo Switch Pro Controller** | Bluetooth | **~66.7 Hz** | Standard Nintendo polling interval for the Switch |
 
