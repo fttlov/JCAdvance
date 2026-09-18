@@ -382,26 +382,48 @@ Due to certain limitations within some functions in the code and bugs in JoyShoc
 <details>
 <summary><b>Why exactly 250 Hz</b></summary>
 
-For example, the Mobapad M6S (a Joy-Con equivalent) is polled by the system via Bluetooth at a frequency of **125 Hz** (with a communication interval of 8 ms, as specified by Windows). You can check your device's polling frequency in the OSD.
+The built-in OSD displays the **actual incoming packet rate (Hz)** for each connected device.
 
-#### Asynchronous Bluetooth Polling
+### 1. How Bluetooth Data Exchange Works (Where These Numbers Come From)
 
-Left and Right Joy-Cons are completely independent Bluetooth devices. They transmit their data packets asynchronously (staggered in time) rather than at the exact same millisecond. 
-* The Left Joy-Con might transmit its reports at `0 ms`, `8 ms`, `16 ms`, and `24 ms`
-* The Right Joy-Con might transmit its reports at `4 ms`, `12 ms`, `20 ms`, and `28 ms`
+Bluetooth is not a continuous analog wire. Over-the-air data transmission is strictly bound to fixed time intervals:
 
-While your Bluetooth adapter doesn't "overclock" its hardware, its radio module naturally manages independent time-slots for both devices simultaneously. From the Windows operating system's perspective, new controller data arrives in the queue **every 4 milliseconds** (resulting in a combined throughput of **250 Hz**)
+1. **Time Slots:** Bluetooth airtime is sliced into microscopic windows of exactly **625 µs (0.625 ms)** each. That equates to 1,600 slots per second.
+2. **Packet-Based Exchange:** A controller does not transmit data continuously. Instead, it wakes up on a schedule (via Sniff Mode), sends a single data packet (a report containing buttons, sticks, and gyro data), and goes back to sleep to conserve battery.
+3. **Quantized Intervals:** A minimal communication round-trip (host poll + controller response) requires a slot pair — **1.25 ms**. Because of this, any standard polling interval is physically a multiple of 1.25 ms:
+   * **10 slots (6.25 ms)** $\rightarrow$ $1000 / 6.25 =$ **160 Hz**
+   * **12 slots (7.50 ms)** $\rightarrow$ $1000 / 7.50 =$ **133.3 Hz**
+   * **24 slots (15.0 ms)** $\rightarrow$ $1000 / 15.0 =$ **66.7 Hz**
 
-#### Eliminating Input Lag
+The number shown in the OSD is literally a counter of how many of these over-the-air packets the Windows OS managed to receive and process over the last second.
 
-If you keep your emulator's loop at **125 Hz** (`SleepTimeOut = 8`), the program only checks the Windows input queue every 8 ms. This means the Right Joy-Con's aiming data (arriving at `4 ms`) is forced to wait in the OS buffer for 4 ms before being processed at `8 ms`.
+### 2. Expected OSD Metrics for Supported Controllers
 
-By setting the emulator's polling rate to **250 Hz** (`SleepTimeOut = 4`):
-1. The engine queries the input queue every 4 ms
-2. It intercepts and processes the Left Joy-Con's packet at `0 ms` and the Right Joy-Con's aiming packet almost instantly at `4 ms`
-3. This effectively **halves the average input lag** of your aiming hand, delivering the most responsive gyro controls possible
+| Device | Connection | Expected OSD Rate | Transmission Details |
+| :--- | :--- | :--- | :--- |
+| **Sony DualShock 4 / DualSense** | Bluetooth | **~250 Hz** | Sony's protocol polls the controller every 4 ms |
+| **Mobapad M6s / M6 HD** (and clones) | Bluetooth | **133 – 160 Hz** | Depends on your PC's Bluetooth adapter chip |
+| **Original Joy-Con (L / R)** | Bluetooth | **~66.7 Hz** | Sends a packet every 15 ms (containing 3 IMU samples) |
+| **Nintendo Switch Pro Controller** | Bluetooth | **~66.7 Hz** | Standard Nintendo polling interval for the Switch |
 
-Note: For single controllers (Switch Pro Controller or DualSense) use default 250hz or set the polling rate shown in the OSD
+### 3. Impact of the Bluetooth Adapter and Radio Conditions
+
+Controllers like the **Mobapad M6s** clearly highlight the differences between various host controller chips on a PC:
+
+* **Broadcom Adapters (e.g., Asus USB-BT400):** Negotiate a minimum interval of 10 slots, delivering a stable **150–160 Hz**. Broadcom's link manager scheduler is optimized for low-latency gaming HID devices.
+* **Built-in Intel Modules (Wi-Fi/BT combo: 9260, AX200, AX210, etc.):** Hardware antennas are shared between Wi-Fi and Bluetooth. Intel's firmware conservatively caps the interval at 12 slots to protect coexisting traffic, locking the polling rate at exactly **133 Hz**.
+* **Frequency Drops (e.g., dropping from 160 down to 110–130 Hz):** Indicate physical **Packet Loss**. The human body heavily absorbs 2.4 GHz radio waves. Obstructing the line-of-sight between the adapter and the controller with a hand or knee causes dropped slots due to transmission errors. For the controller handling gyro aiming, maintaining line-of-sight is critical to eliminate crosshair stutter.
+
+### 4. Emulator Internal Loop (`SleepTimeOut`) and Input Queuing
+
+The emulator settings allow configuring the tick rate of the main processing loop (`SleepTimeOut`): **250 Hz** (4 ms), **125 Hz** (8 ms), **66.7 Hz** (15 ms), or **33.3 Hz** (30 ms).
+
+For smooth gyro aiming, follow this core rule: **The emulator's processing frequency must be greater than or equal to the physical packet arrival rate.**
+
+* **What happens if the emulator loop is slower than the device (e.g., a 125 Hz loop with a 160 Hz Mobapad):**
+  The controller sends a packet every 6.25 ms, but the emulator only retrieves data from the OS buffer every 8 ms. Packets arrive unevenly: during one tick the emulator gets nothing, and during the next it gets two packets at once. This introduces micro-stuttering in crosshair motion and erratic input latency.
+* **Running at 250 Hz (4 ms tick rate):**
+  The emulator is guaranteed to pick up each fresh packet from any controller (whether a 250 Hz DualSense or a 160 Hz Mobapad) the moment it enters the OS buffer, ensuring minimal input latency.
 
 </details>
 
@@ -531,7 +553,7 @@ __________
 - ~~DPI / Resolution Scaling: `Config.exe` is built using AutoHotkey. High DPI settings or unusual Windows resolutions may cause UI elements to overlap or cut off. If this happens, temporarily lower your OS scaling, change resolution.~~ Fixed
 - **Antivirus Flags:** Some antivirus software may flag `Config.exe` as a false positive due to DLL calls. The source code is entirely open-source, but if you prefer, you can configure everything manually in the `.ini` files
 - Steam Input conflict. Disable it (for Switch, Playstation .etc) or use HidHide
-- **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, as well as some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
+- **Bluetooth Jitter:** If you experience connection drops or infinite rumble loops while using two Joy-Cons simultaneously, your Bluetooth adapter may be struggling. Known reliable adapters include the ASUS USB-BT400 and cheaper alternatives based on the same BCM20702 chip, Intel 9260, AX200, AX210, some Bluetooth 4.0 adapters from Ugreen. There are several threads on Reddit discussing this issue
 
 ### The list of supported controllers is limited by Joyshocklibrary
 And will not be expanded until the transition to SDL, which is a long way off
