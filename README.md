@@ -395,6 +395,8 @@ Bluetooth is not a continuous analog wire. Over-the-air data transmission is str
    * **12 slots (7.50 ms)** $\rightarrow$ $1000 / 7.50 =$ **133.3 Hz**
    * **24 slots (15.0 ms)** $\rightarrow$ $1000 / 15.0 =$ **66.7 Hz**
 
+Note: Actual figures are available only for the Mobapad M6S with the Asus Bt-400 (160 Hz) and Intel 9260 (133 Hz). For all other devices, refresh rate data was obtained from the Internet.
+
 The number shown in the OSD is literally a counter of how many of these over-the-air packets the Windows OS managed to receive and process over the last second.
 
 ### 2. Expected OSD Metrics for Supported Controllers
