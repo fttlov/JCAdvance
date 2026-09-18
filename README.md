@@ -512,7 +512,7 @@ Smoothing Time (time to reach 100% speed, where 100% like without filter) :
 - Value 75 (~24.0ms to reach full speed)
 
 
-  #### Advanced Radial Anti-Deadzone & Gyro Integration 
+#### Advanced Radial Anti-Deadzone & Gyro Integration 
 Many modern games have forced, unchangeable deadzones that ignore small stick movements. To fix this, JCAdvance features a sophisticated Radial (Elliptical) Anti-Deadzone. <br>
 Unlike basic "axial" (square) anti-deadzones that ruin diagonal aiming, our radial math perfectly preserves the exact angle of your input while pushing the values just past the game's deadzone threshold <br>
 -AntiDeadZoneLeftX/Y & AntiDeadZoneRightX/Y <br>
