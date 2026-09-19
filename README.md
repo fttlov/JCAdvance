@@ -375,7 +375,7 @@ When you move the controller quickly (fast flicks), the filter automatically dis
 
 ### Polling Rate & Performance
 
-Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.6 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
+Due to certain limitations within some functions in the code and bugs in JoyShockLibrary, the developer of DSAdvance was forced to use SleepTimeout=15, which corresponds to 66.67 Hz — a clearly insufficient rate for smooth movement, especially for Gyro Mouse. <br>
 
  After fixing limitations and bugs default program polling rate is now 250 Hz (sleepTimeout=4 in config.ini; 1 sec = 1000ms / 4). CPU usage even at 250 Hz is only 0.30% to 0.60% :) The app uses a surprisingly small amount of PC resources
   
