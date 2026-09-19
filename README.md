@@ -21,7 +21,7 @@
 - Support for two gamepads (second gamepad is limited to basic functions)<br>
 - Magic Wheel feature: use the gyro movements in different directions as additional buttons/actions<br>
 - External pedal: connect pedals to emulate triggers or sticks (limited device support) <br>
-- Minimal memory and CPU usage (0.20% - 0.50%)<br>
+- Minimal CPU/RAM usage
  
 ## Key Differences in JCAdvance:
 - **Gyro Concept:** Separate gyro motion approaches and fine-tuning for Joy-Cons and two-handed gamepads
