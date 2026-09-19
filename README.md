@@ -382,8 +382,6 @@ Due to certain limitations within some functions in the code and bugs in JoyShoc
 <details>
 <summary><b>Why exactly 250 Hz</b></summary>
 
-The built-in OSD displays the **actual incoming packet rate (Hz)** for each connected device.
-
 ### 1. How Bluetooth Data Exchange Works (Where These Numbers Come From)
 
 Bluetooth is not a continuous analog wire. Over-the-air data transmission is strictly bound to fixed time intervals:
@@ -395,18 +393,20 @@ Bluetooth is not a continuous analog wire. Over-the-air data transmission is str
    * **12 slots (7.50 ms)** $\rightarrow$ $1000 / 7.50 =$ **133.3 Hz**
    * **24 slots (15.0 ms)** $\rightarrow$ $1000 / 15.0 =$ **66.7 Hz**
 
-Note: Actual figures are available only for the Mobapad M6S with the Asus Bt-400 (160 Hz) and Intel 9260 (133 Hz). For all other devices, refresh rate data was obtained from the Internet.
-
+The built-in OSD displays the **actual incoming packet rate (Hz)** for each connected device.
 The number shown in the OSD is literally a counter of how many of these over-the-air packets the Windows OS managed to receive and process over the last second.
 
 ### 2. Expected OSD Metrics for Supported Controllers
 
 | Device | Connection | Expected OSD Rate | Transmission Details |
 | :--- | :--- | :--- | :--- |
-| **Sony DualShock 4 / DualSense** | Bluetooth | **~250 Hz** | Sony's protocol polls the controller every 4 ms |
+| **Sony DualShock 4** | Bluetooth | **~250 Hz** | Sony's protocol polls the controller every 4 ms |
+| **Sony DualSense** | Bluetooth | **??? Hz** | Currently in testing |
 | **Mobapad M6s / M6 HD**  | Bluetooth | **133 – 160 Hz** | Depends on your PC's Bluetooth adapter chip |
 | **Original Joy-Con (L / R)** | Bluetooth | **~66.7 Hz** | Sends a packet every 15 ms (containing 3 IMU samples) |
 | **Nintendo Switch Pro Controller** | Bluetooth | **~66.7 Hz** | Standard Nintendo polling interval for the Switch |
+
+Note: Actual figures are available only for the Mobapad M6S with the Asus Bt-400 (160 Hz) and Intel 9260 (133 Hz). For all other devices, refresh rate data was obtained from the Internet.
 
 ### 3. Impact of the Bluetooth Adapter and Radio Conditions
 
