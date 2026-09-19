@@ -395,7 +395,7 @@ Bluetooth is not a continuous analog wire. Over-the-air data transmission is str
 
 ### 2. Expected OSD Metrics for Supported Controllers
 
-| Device | Connection | Expected OSD Rate | Transmission Details |
+| Device | Connection | Expected OSD Rate | Details |
 | :--- | :--- | :--- | :--- |
 | **Sony DualShock 4** | Bluetooth | **~250 Hz** | Sony's protocol polls the controller every 4 ms |
 | **Sony DualSense** | Bluetooth | **??? Hz** | Currently in testing |
@@ -403,7 +403,8 @@ Bluetooth is not a continuous analog wire. Over-the-air data transmission is str
 | **Original Joy-Con (L / R)** | Bluetooth | **~66.7 Hz** | Sends a packet every 15 ms (containing 3 IMU samples) |
 | **Nintendo Switch Pro Controller** | Bluetooth | **~66.7 Hz** | Standard Nintendo polling interval for the Switch |
 
-Note: Actual figures are available only for the Mobapad M6S with the Asus Bt-400 (160 Hz) and Intel 9260 (133 Hz). For all other devices, refresh rate data was obtained from the Internet.
+Note: Actual figures are available only for the Mobapad M6S with the Asus Bt-400 (160 Hz) and Intel 9260 (133 Hz). For all other devices, refresh rate data was obtained from the Internet. <br>
+It’s also important to note that things aren’t all that bad for Nintendo. The IMU chip itself operates at a frequency of 200hz, and the Bluetooth packet contains data from three simultaneous gyroscope and accelerometer measurements, which are processed by Joyshocklibrary
 
 ### 3. Impact of the Bluetooth Adapter and Radio Conditions
 
