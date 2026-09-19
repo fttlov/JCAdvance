@@ -412,7 +412,7 @@ Controllers like the **Mobapad M6s** clearly highlight the differences between v
 
 * **Broadcom Adapters (e.g., Asus USB-BT400):** Negotiate a minimum interval of 10 slots, delivering a stable **150–160 Hz**. Broadcom's link manager scheduler is optimized for low-latency gaming HID devices.
 * **Built-in Intel Modules (Wi-Fi/BT combo: 9260, AX200, AX210, etc.):** Hardware antennas are shared between Wi-Fi and Bluetooth. Intel's firmware conservatively caps the interval at 12 slots to protect coexisting traffic, locking the polling rate at exactly **133 Hz**.
-* **Frequency Drops (e.g., dropping from 160 down to 110–130 Hz):** Indicate physical **Packet Loss**. The human body heavily absorbs 2.4 GHz radio waves. Obstructing the line-of-sight between the adapter and the controller with a hand or knee causes dropped slots due to transmission errors. For the controller handling gyro aiming, maintaining line-of-sight is critical to eliminate crosshair stutter.
+* **Frequency Drops (e.g., dropping from 160 down to 110–130 Hz):** Indicate physical **Packet Loss**. The human body heavily absorbs 2.4 GHz radio waves. Obstructing the line-of-sight between the adapter and the controller with a hand or knee causes dropped slots due to transmission errors.
 
 The built-in OSD displays the **actual incoming packet rate (Hz)** for each connected device. <br>
 The number shown in the OSD is literally a counter of how many of these over-the-air packets the Windows OS managed to receive and process over the last second.
