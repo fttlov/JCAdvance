@@ -87,7 +87,7 @@
 </details>
 
 <details>
-  <summary><h2 id="gyro-info">Core Philosophy: Adaptive Gyro Motion & 'Stick as Triggers'</h2></summary>
+  <summary><h2 id="gyro-info">Core Philosophy, Adaptive Gyro Motion and 'Stick as Triggers'</h2></summary>
 
 *DSAdvance* was originally developed as an emulator tailored for two-handed Sony controllers, with Joy-Con support added as a secondary feature.<br>
 
