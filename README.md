@@ -28,13 +28,13 @@
 ## Major differences in JCAdvance:
 
 - **Adaptive [Gyro Motion](#gyro-info)**: independent gyroscope tuning tailored across different controller types
-- **Enhanced auto-calibration** pipeline for Joy-Con to mitigate IMU 'Thermal Drift' (see [instructions](#calibration))
-- **Parametric Gyro Motion acceleration** engine with an interactive real-time graph and tooltips (see [instructions](#parametric))
+- **Enhanced auto-calibration** pipeline for Joy-Con to mitigate IMU 'Thermal Drift' (see [details](#calibration))
+- **Parametric Gyro Motion acceleration** engine with an interactive real-time graph and tooltips (see [details](#parametric))
 - '**Stick as Triggers**' mode: brings full analog trigger functionality to Joy-Cons, bypassing their digital-only limitation
 - **Fully customizable hotkeys** with multi-button chord/combo support (e.g., `R + HOME`)
 - '**Action Layers for buttons**': bind two distinct in-game actions to a single physical button (short tap vs hold)
-- **'MUTE mode'** in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [instructions](#action))
-- **Real-time OSD telemetry** for sticks, triggers, gyro velocity, and calibration status (AHK/ RTSS) (see [instructions](#osd))
+- **'MUTE mode'** in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [details](#action))
+- **Real-time OSD telemetry** for sticks, triggers, gyro velocity, and calibration status (AHK/ RTSS) (see [details](#osd))
 - Extensive core emulator and JoyShockLibrary bugfixes, stability improvements, and enhancements<br>
 - **GUI**! Clean, intuitive Win32 configuration tool for all settings
 
