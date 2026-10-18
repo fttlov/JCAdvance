@@ -36,7 +36,7 @@
 - **'MUTE mode'** in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [instructions](#action))
 - **Real-time OSD telemetry** for sticks, triggers, gyro velocity, and calibration status (AHK/ RTSS) (see [instructions](#osd))
 - Extensive core emulator and JoyShockLibrary bugfixes, stability improvements, and enhancements<br>
-- **Graphical Configurator (GUI)**! Clean, intuitive Win32 configuration tool for all settings
+- **GUI**! Clean, intuitive Win32 configuration tool for all settings
 
 <table>
   <tr>
