@@ -42,6 +42,15 @@ Joy-con Advance - это эмулятор XBOX/DS4 геймпада с расш�
   </tr>
 </table>
 
+<table align="center">
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="133"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2_en.png" width="133"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/OSD%20(2).png" width="133"></td>
+  </tr>
+</table>
+
+
 <details>
   <summary><h4>Полный список нововведений</h4></summary>
 
