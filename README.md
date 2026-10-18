@@ -27,7 +27,7 @@
 
 ## Major differences in JCAdvance:
 
-- Distinct [Gyro Motion](#gyro-info) concept for Joy-Cons and classic gamepads: independent gyro settings tailored for each type
+- Adaptive [Gyro Motion](#gyro-info): independent gyroscope tuning tailored across different controller types
 - **Enhanced auto-calibration** pipeline for Joy-Con to mitigate 'Thermal Drift' (see [instructions](#calibration))
 - **Parametric Gyro Motion acceleration** engine with an interactive real-time graph and tooltips (see [instructions](#parametric))
 - '**Stick as Triggers**' mode: brings full analog trigger functionality to Joy-Cons, bypassing their digital-only limitation
@@ -87,7 +87,7 @@
 </details>
 
 <details>
-  <summary><h2 id="gyro-info">Different Approaches, the Gyro Motion Concept, and 'Stick as Triggers' Mode</h2></summary>
+  <summary><h2 id="gyro-info">Core Philosophy: Adaptive Gyro & 'Stick as Triggers'</h2></summary>
 
 *DSAdvance* was originally developed as an emulator tailored for two-handed Sony controllers, with Joy-Con support added as a secondary feature.<br>
 
