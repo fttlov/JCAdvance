@@ -81,7 +81,7 @@ Joy-con Advance - это эмулятор XBOX/DS4 геймпада с расш�
 </details>
 
 <details>
- <summary><h2 id="gyro-info">Концепция JCadvance, 'Адаптивный Gyro Motion' и режиме 'Стик как триггеры'</h2></summary>
+ <summary><h2 id="gyro-info">Концепция JCadvance, 'Адаптивный Gyro Motion' и режим 'Стик как триггеры'</h2></summary>
 
 *DSAdvance* - это, прежде всего, эмулятор для двуручных контроллеров от Sony. С поддержкой Joy-Con.<br>
 
