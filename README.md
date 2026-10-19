@@ -97,25 +97,47 @@
 <details>
   <summary><h2 id="gyro-info">Core Philosophy, Adaptive Gyro Motion and Stick as Triggers Mode</h2></summary>
 
-*DSAdvance* was originally developed as an emulator tailored for two-handed Sony controllers, with Joy-Con support added as a secondary feature.<br>
+*DSAdvance* was originally created as an emulator for traditional two-handed Sony controllers with basic Joy-Con support.<br>
 
-**JCAdvance** not only focuses on split Joy-Con ergonomics, but provides flexible gyro tuning (Gyro Space, Tightening, Parametric Acceleration) across various controller types , as well as a definitive solution to the Joy-Con's lack of analog triggers.<br>
+**JCAdvance** shifts the focus toward maximizing ergonomics for Joy-Cons (and their third-party clones) while overcoming their hardware limitations. 
+Independent gyroscope motion processing settings are implemented for each controller type ([Gyro Space](#gyro-space), [Tightening](#tightening), [Parametric Acceleration](#parametric)). 
 
-### The Inherent Flaw of "Two-Handed" Gyro Gaming (DualSense / Pro Controller)
+---
 
-When people play shooters using motion controls on a monolithic gamepad, they rarely realize how biomechanically unnatural it actually is:
+### "Adaptive Gyro Motion"
 
-* **Muscle Interference (Cross-Hand Tension):** Both hands grip a single piece of plastic. Physical tension in your left hand (active strafing, dodging, jumping, or weapon swapping) inevitably travels through the controller body straight into your right hand, and vice versa.
-* **Restricted Joint Mobility:** Wrist rotation is constrained because the other hand must mirror and adapt to that angle in real time. It is impossible to execute a sharp, clean flick with just your wrist without awkwardly twisting your opposite shoulder.
+**Adaptive Gyro Motion** establishes distinct control paradigms for two fundamentally different device architectures: **monolithic two-handed controllers** and **split Joy-Cons**. 
 
-**With Split Joy-Cons, your hands are physically decoupled:** Your left hand with the analog stick can rest completely relaxed on the couch, while your right hand is 100% liberated in free space — only engaging your wrist and forearm. Zero parasite tension.
+Physical hand movements in 3D space are translated onto the screen via mathematical coordinate projections in [Gyro Motion Space](#gyro-space):
 
-### **Adaptive Gyro Motion** and new capabilities for Joy-Cons:
+* For two-handed gamepads, modes **0** or **2** are recommended.
+* For split Joy-Cons, the specialized **3 (Planar Space)** mode was engineered.
 
-* **Two-handed controllers**: Gyro Motion is primarily used for micro-adjustments and precision aiming, complementing traditional right-stick camera controls.<br>
-* **Joy-Cons:** Separated hands grant independent 6-DOF freedom. Gyroscope is used for primary camera looking and aiming in FPS/TPS games without touching the **right stick** at all.<br>
-  *Since the physical right analog stick is now completely free on Joy-cons*: <br>
-* **JCAdvance allows you to use the right stick's Y-axis as virtual analog triggers**. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled in real time using a customisable hotkey. <br>
+Each form factor features unique biomechanics, distinct advantages, and hardware trade-offs:
+
+#### 1. Two-Handed Controllers (DualSense, DualShock 4, Pro Controller)
+
+* **Control Paradigm:** The gyroscope plays a **secondary role**. Coarse camera orientation and wide turns are handled by the right analog stick, while gyro aiming is used for fine micro-adjustments.
+* **Pros (+):** Genuine, full-travel **analog triggers** (L2/R2).
+* **Cons (-):** Biomechanical interference — both hands are physically locked to a single piece of plastic.
+  * *Parasitic muscle tension:* When your left hand aggressively moves the analog stick (strafing, dodging) or presses shoulder buttons, muscular tension transfers through the shared controller shell directly into your right hand, disrupting aim stability.
+  * *Restricted joint mobility:* It is impossible to execute a clean, snap wrist flick with one hand alone — your opposite hand and shoulder are forced to awkwardly compensate for the shared tilt angle.
+
+#### 2. Split Joy-Cons
+
+* **Control Paradigm:** Complete 6-DOF spatial freedom. The right Joy-Con becomes a natural extension of your wrist. The precision and tracking speed of the gyroscope are more than enough to handle **all in-game camera looking and aiming exclusively via hand/wrist motion**, without ever touching the physical right stick!
+* **Pros (+):** Ideal biomechanics for gyro gaming. The left hand introduces zero parasitic shake and can rest completely relaxed on your lap or couch, while the right hand moves with 100% freedom and independence.
+* **Cons (-):** Complete **absence of analog triggers** (digital-only ZL/ZR microswitches).
+
+---
+
+### Overcoming Joy-Con Limitations: 'Stick as Triggers'
+
+Because playing with Joy-Cons allows you to completely eliminate the right stick from camera control duties, it can be repurposed for other vital actions. JCAdvance turns the Joy-Con's primary hardware limitation into an asset:
+
+*Since the physical right analog stick is now completely free on Joy-cons*: <br>
+
+* **'Stick as Triggers'**: JCAdvance allows you to use the right stick's Y-axis as virtual analog triggers. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled in real time using a customisable hotkey. <br>
 
 Practical examples of 'Stick as Triggers':<br>
 
@@ -172,7 +194,6 @@ __________
 
 <details open>
   <summary><h1 id="tech-info">Technical information and instructions</h1></summary>
-
 
 <details>
     <summary><h3>Interface, Settings, and Profiles</h3></summary>
@@ -427,7 +448,7 @@ JCAdvance supports all 3 standard JSL Gyro Space modes:
 👌 **New mode added to JoyShockLibrary:**<br>
 
 * **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle, but have a limits for extreme angles; otherwise, the direction of motion reverses. <br>
-Designed specifically for the Joy-Con
+  Designed specifically for the Joy-Con
 
 ⚠️ *If horizontal hand movements cause diagonal crosshair drift in modes 1, 2, or 3, your accelerometer requires calibration (see Hardware Calibration). If hardware calibration is impossible, use manual software calibration or stay on Local Space.*
 
@@ -438,7 +459,7 @@ Designed specifically for the Joy-Con
   * **2**: Turn controller like tank steering levers (Yaw) (gyro+accelerometer)
 
 If you hold the gamepad horizontally (which is uncomfortable), the "steering wheel" movement returns in mode 2. <br>
- 
+
 * **Joy-Cons**: Hand movements can turn via wrist rotation or forearm sweeps. Two factors interfere with true vector tracking:
   * a) **Roll**: Wrist twisting clockwise/counter-clockwise ("screwdriver" gesture)
   * b) **Pitch**: Grip angle ('horizontal' with buttons facing screen or 'vertical' facing ceiling)
@@ -468,7 +489,6 @@ A dynamic, zero-latency velocity threshold filter by Jibb Smart designed to elim
 * **`10.0+`**: Overly high values cause small aiming adjustments to feel sluggish.
 
 </details>
-
 
 <details>
     <summary><h3 id="parametric">Parametric Gyro Acceleration</h3></summary>
@@ -547,10 +567,12 @@ These are **hardware motion units (mickeys/counts)** dispatched by the emulator 
 Thanks to integration over real elapsed time (`loopDeltaTime`), the total count output (3375 counts per second) remains **mathematically invariant across any emulator frequency** (125, 250, or 500 Hz). Only packet density changes:
 
 * At 250 Hz: dispatched in batches of `13.5` counts per frame.
+
 * At 500 Hz: dispatched in batches of `6.75` counts per frame.
+
 * At 125 Hz: dispatched in batches of `27.0` counts per frame.
 
-    </details>
+  </details>
 
 ⚠️ The graph visualizer is built on the Raw Accel principle.
 
@@ -785,6 +807,7 @@ Many games assign sprint to a button. JCAdvance can map this action to left stic
   An advanced smoothing filter designed to eliminate hand tremor without introducing traditional input lag. When you move the controller, the in-game camera begins moving instantly (0 ms initial latency). Instead of delaying your input, EMA acts like simulated physical inertia or a "stretched rubber band".<br>
   *Example (EMA = 50 / ~8 ms):* During a sudden flick, the crosshair reacts immediately, but takes approximately 8 milliseconds to smoothly reach the full tracking speed of your hand. This filters out micro-tremors and pulse twitches, giving the crosshair a slightly "heavier", remarkably stable feel. Higher values result in smoother acceleration and a longer deceleration "tail" (when physical motion ceases, the crosshair continues gliding to a halt for a split second).<br>
   Ramp-up time to 100% velocity and decay time back to 0% (where 100% and 0% represent unfiltered raw input):<br>
+
   * **Value 25:** `~2.7 ms`
   * **Value 50:** `~8 ms`
   * **Value 75:** `~24 ms`
@@ -807,6 +830,7 @@ As far as can be understood, the original author of DSAdvance focused primarily 
 The code has been completely rewritten to perform genuine DirectInput device enumeration via the Windows Registry, automatically capture device names, and filter out regular gamepads (isolating only steering wheels and pedal sets). In `Config.exe`, you can now manually specify the device name (from the registry or `joy.cpl`) and reassign axes, as different manufacturers map pedals to completely different axes. All 8 standard Windows DirectInput axes are available for manual configuration. Default axes: `Z` and `Z-ROTATION`.<br>
 
 **How to connect and configure:**<br>
+
 1. Connect your wheel/pedals to your PC.<br>
 2. In `Config.exe` under the **Driving** tab, set **DirectInput Search** to **On**.<br>
 3. Launch `JCAdvance.exe` and check the console window. If you see a line like:  
