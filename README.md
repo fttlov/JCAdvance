@@ -354,6 +354,68 @@ Battery percentage and live polling rate (Hz) are also displayed.
 </details>
 
 <details>
+  <summary><h3>Polling Rate and Performance</h3></summary>
+
+Due to legacy DSAdvance architecture and JoyShockLibrary bugs, the original author utilized `sleepTimeout=15` (66.67 Hz), which is insufficient for smooth gyro mouse tracking.<br>
+For example, the Magic Wheel feature previously dropped virtual button inputs at higher polling rates. This logic was completely rewritten with dedicated pulse timers for reliable button registration up to 250 Hz. CPU usage remains negligible (`~0.60% CPU`).<br>
+
+- Fixed upstream bugs and improved JoyShockLibrary: [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).<br>
+- Resolved an intermittent gyro stick issue where smooth hand movements caused sub-millisecond snaps toward center, and enabled full Gyro Motion Space support.<br>
+
+Default rate is now **250 Hz** (`sleepTimeout=4` in `config.ini`).
+
+<details>
+  <summary>Why exactly 250 Hz</summary>
+
+### 1. Bluetooth Timeslots and Radio Scheduling
+
+Bluetooth radio transmission is quantized into discrete hardware time intervals:
+
+1. **Time Slots:** Bluetooth airtime is sliced into **625 µs (0.625 ms)** intervals (1600 slots per second).
+2. **Packet Transmission:** In Sniff Mode, gamepads wake up on schedule, dispatch one HID report (buttons, sticks, IMU), and return to low-power state.
+3. **Interval Quantization:** A minimal polling cycle (adapter poll + gamepad response) takes 2 slots — **1.25 ms**. Polling intervals are strictly multiples of 1.25 ms:
+   * **10 slots (6.25 ms)** $\rightarrow$ **160 Hz**
+   * **12 slots (7.50 ms)** $\rightarrow$ **133.3 Hz**
+   * **24 slots (15.0 ms)** $\rightarrow$ **66.7 Hz**
+
+### 2. Expected OSD Polling Rates (Ideal Conditions)
+
+| Device                             | Connection | Expected OSD Rate | Notes                                           |
+|:---------------------------------- |:---------- |:----------------- |:----------------------------------------------- |
+| **Sony DualShock 4**               | Bluetooth  | **~250 Hz**       | Native Sony Bluetooth protocol polls every 4 ms |
+| **Sony DualSense**                 | Bluetooth  | **Testing**       | Hardware capable up to 1000 Hz                  |
+| **Mobapad M6s / M6 HD**            | Bluetooth  | **133 – 160 Hz**  | Varies by PC Bluetooth host controller chip     |
+| **Official Joy-Con (L / R)**       | Bluetooth  | **~66.7 Hz**      | 15 ms packet containing 3 internal IMU samples  |
+| **Nintendo Switch Pro Controller** | Bluetooth  | **~66.7 Hz**      | Standard Nintendo Switch protocol interval      |
+
+*Note: The official Joy-Con IMU runs internally at 200 Hz; each 66.7 Hz Bluetooth packet carries 3 discrete sensor frames processed by JoyShockLibrary.*
+
+### 3. Bluetooth Adapters and Radio Interference
+
+* **Broadcom Adapters (e.g., Asus USB-BT400):** Negotiate a tight 10-slot interval, delivering **150–160 Hz** in clean conditions.
+* **Integrated Intel Modules (Wi-Fi/BT combo: 9260, AX200, AX210, etc.):** Share antennas between Wi-Fi and Bluetooth. Intel firmware caps polling at 12 slots, fixing rates at **133 Hz**.
+* **Packet Drops:** The human body absorbs 2.4 GHz radio waves. Blocking line-of-sight between controller and adapter causes packet loss.
+
+OSD displays the **real-time packet arrival rate (Hz)** processed by Windows.
+
+---
+
+### 4. Emulator Loop (`SleepTimeOut`) and Input Queues
+
+Internal emulator cycle rates: **250 Hz** (4 ms), **125 Hz** (8 ms), **66.7 Hz** (15 ms), or **33.3 Hz** (30 ms).
+
+Rule of thumb: **Emulator processing frequency should equal or exceed physical packet arrival frequency.**
+
+* **When emulator loop is slower than device rate (e.g., 125 Hz loop with 160 Hz Mobapad):**
+  Packets arrive every 6.25 ms, but are fetched only every 8 ms. Packets buffer unevenly, producing micro-stutter and unstable input latency.
+* **Running at 250 Hz (4 ms loop):**
+  The emulator immediately flushes every packet the moment it hits the OS buffer, delivering minimal input lag.
+
+</details>
+
+</details>
+
+<details>
   <summary><h3 id="calibration">Calibration</h3></summary>
 
 ⚠️ *Hardware calibration is described for diagnostic understanding and is only needed if factory sensor tables are corrupted (hard drops, bad firmware flashes). If you have no severe issues, "if it works, don't touch it." Software calibration, however, is a routine part of daily play.*
@@ -627,68 +689,6 @@ Test preset for Halo MCC (in-game controller settings: Look Sensitivity 10/10, L
 `GyroAccelStart = 1`<br>
 `GyroAccelEnd = 75`<br>
 `GyroAccelCap = 1.3 – 1.5`
-
-</details>
-
-<details>
-  <summary><h3>Polling Rate and Performance</h3></summary>
-
-Due to legacy DSAdvance architecture and JoyShockLibrary bugs, the original author utilized `sleepTimeout=15` (66.67 Hz), which is insufficient for smooth gyro mouse tracking.<br>
-For example, the Magic Wheel feature previously dropped virtual button inputs at higher polling rates. This logic was completely rewritten with dedicated pulse timers for reliable button registration up to 250 Hz. CPU usage remains negligible (`~0.60% CPU`).<br>
-
-- Fixed upstream bugs and improved JoyShockLibrary: [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).<br>
-- Resolved an intermittent gyro stick issue where smooth hand movements caused sub-millisecond snaps toward center, and enabled full Gyro Motion Space support.<br>
-
-Default rate is now **250 Hz** (`sleepTimeout=4` in `config.ini`).
-
-<details>
-  <summary>Why exactly 250 Hz</summary>
-
-### 1. Bluetooth Timeslots and Radio Scheduling
-
-Bluetooth radio transmission is quantized into discrete hardware time intervals:
-
-1. **Time Slots:** Bluetooth airtime is sliced into **625 µs (0.625 ms)** intervals (1600 slots per second).
-2. **Packet Transmission:** In Sniff Mode, gamepads wake up on schedule, dispatch one HID report (buttons, sticks, IMU), and return to low-power state.
-3. **Interval Quantization:** A minimal polling cycle (adapter poll + gamepad response) takes 2 slots — **1.25 ms**. Polling intervals are strictly multiples of 1.25 ms:
-   * **10 slots (6.25 ms)** $\rightarrow$ **160 Hz**
-   * **12 slots (7.50 ms)** $\rightarrow$ **133.3 Hz**
-   * **24 slots (15.0 ms)** $\rightarrow$ **66.7 Hz**
-
-### 2. Expected OSD Polling Rates (Ideal Conditions)
-
-| Device                             | Connection | Expected OSD Rate | Notes                                           |
-|:---------------------------------- |:---------- |:----------------- |:----------------------------------------------- |
-| **Sony DualShock 4**               | Bluetooth  | **~250 Hz**       | Native Sony Bluetooth protocol polls every 4 ms |
-| **Sony DualSense**                 | Bluetooth  | **Testing**       | Hardware capable up to 1000 Hz                  |
-| **Mobapad M6s / M6 HD**            | Bluetooth  | **133 – 160 Hz**  | Varies by PC Bluetooth host controller chip     |
-| **Official Joy-Con (L / R)**       | Bluetooth  | **~66.7 Hz**      | 15 ms packet containing 3 internal IMU samples  |
-| **Nintendo Switch Pro Controller** | Bluetooth  | **~66.7 Hz**      | Standard Nintendo Switch protocol interval      |
-
-*Note: The official Joy-Con IMU runs internally at 200 Hz; each 66.7 Hz Bluetooth packet carries 3 discrete sensor frames processed by JoyShockLibrary.*
-
-### 3. Bluetooth Adapters and Radio Interference
-
-* **Broadcom Adapters (e.g., Asus USB-BT400):** Negotiate a tight 10-slot interval, delivering **150–160 Hz** in clean conditions.
-* **Integrated Intel Modules (Wi-Fi/BT combo: 9260, AX200, AX210, etc.):** Share antennas between Wi-Fi and Bluetooth. Intel firmware caps polling at 12 slots, fixing rates at **133 Hz**.
-* **Packet Drops:** The human body absorbs 2.4 GHz radio waves. Blocking line-of-sight between controller and adapter causes packet loss.
-
-OSD displays the **real-time packet arrival rate (Hz)** processed by Windows.
-
----
-
-### 4. Emulator Loop (`SleepTimeOut`) and Input Queues
-
-Internal emulator cycle rates: **250 Hz** (4 ms), **125 Hz** (8 ms), **66.7 Hz** (15 ms), or **33.3 Hz** (30 ms).
-
-Rule of thumb: **Emulator processing frequency should equal or exceed physical packet arrival frequency.**
-
-* **When emulator loop is slower than device rate (e.g., 125 Hz loop with 160 Hz Mobapad):**
-  Packets arrive every 6.25 ms, but are fetched only every 8 ms. Packets buffer unevenly, producing micro-stutter and unstable input latency.
-* **Running at 250 Hz (4 ms loop):**
-  The emulator immediately flushes every packet the moment it hits the OS buffer, delivering minimal input lag.
-
-</details>
 
 </details>
 
