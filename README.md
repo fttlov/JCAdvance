@@ -726,7 +726,7 @@ Full gyro activation without losing a single gamepad button!
 </details>
 
 <details>
-  <summary><h3>Right Stick Modes</h3></summary>
+  <summary><h3>Right Stick Modes (for Joy-Con)</h3></summary>
 
 The right analog stick supports three distinct operating modes:
 
@@ -736,7 +736,7 @@ The right analog stick supports three distinct operating modes:
 
 In `Config.exe`, the "Next Right Stick Mode" setting controls runtime hotkey cycling. You can cycle all 3 modes sequentially or configure a two-way toggle (e.g., Standard ⇄ As Buttons).
 
-#### 🎮 Right Stick as Triggers (for Joy-Con)
+#### 🎮 Right Stick as Triggers
 
 Nintendo Joy-Cons feature digital ZL/ZR switches, making games requiring analog trigger travel (racing throttles, lock-on thresholds, weapon cocking) difficult to play.
 
