@@ -137,14 +137,14 @@ Because playing with Joy-Cons allows you to completely eliminate the right stick
 
 *Since the physical right analog stick is now completely free on Joy-cons*: <br>
 
-* **'Stick as Triggers'**: JCAdvance allows you to use the right stick's Y-axis as virtual analog triggers. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled in real time using a customisable hotkey. <br>
+* **'Stick as Triggers'**: allows to use the right stick's Y-axis as virtual analog triggers. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled in real time using a customisable hotkey. <br>
 
 Practical examples of 'Stick as Triggers':<br>
 
 **Red Dead Redemption 2**: Gently push the right stick upward to progressively fill the "Draw" meter in duels (bypassing the digital trigger limitation); smoothly cock your revolver hammer and fire, or tap ZR for rapid hip-fire.<br>
 **GTA V**: Use the right stick (Y+/Y-) for progressive analog throttle and braking while driving; trigger subtle walking/drawing animations on foot.<br>
 
-* **'Stick as Buttons'**: If you don't need analog triggers, turn the right stick into 4 additional digital buttons! Assign any virtual Xbox, keyboard, or mouse action to the four cardinal directions.<br>
+* **'Stick as Buttons'**: Don't need analog triggers, turn the right stick into 4 additional digital buttons! Assign any virtual Xbox, keyboard, or mouse action to the four cardinal directions.<br>
 
 Notes:<br>
 
