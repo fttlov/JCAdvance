@@ -100,7 +100,7 @@
 *DSAdvance* was originally created as an emulator for traditional two-handed Sony controllers with basic Joy-Con support.<br>
 
 **JCAdvance** shifts the focus toward maximizing ergonomics for Joy-Cons (and their third-party clones) while overcoming their hardware limitations. 
-Independent gyroscope motion processing settings are implemented for each controller type ([Gyro Space](#gyro-space), [Tightening](#tightening), [Parametric Acceleration](#parametric)). 
+Independent gyroscope motion processing settings are implemented for each controller type ([Gyro Space](#gyro-space), [Tightening](#tightening)). 
 
 ---
 
