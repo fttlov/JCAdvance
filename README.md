@@ -133,9 +133,7 @@ Each form factor features unique biomechanics, distinct advantages, and hardware
 
 ### Overcoming Joy-Con Limitations: 'Stick as Triggers'
 
-Because playing with Joy-Cons allows you to completely eliminate the right stick from camera control duties, it can be repurposed for other vital actions. JCAdvance turns the Joy-Con's primary hardware limitation into an asset:
-
-*Since the physical right analog stick is now completely free on Joy-cons*: <br>
+Since playing with Joy-Cons allows you to completely eliminate the right stick from camera control duties, this enables you to overcome the lack of analog triggers using: <br>
 
 * **'Stick as Triggers'**: allows to use the right stick's Y-axis as virtual analog triggers. These will work alongside the digital buttons you have already assigned to the triggers (like ZL ZR), and can be fully controlled in real time using a customisable hotkey. <br>
 
