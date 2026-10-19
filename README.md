@@ -117,7 +117,7 @@ Each form factor features unique biomechanics, distinct advantages, and hardware
 
 #### 1. Two-Handed Controllers (DualSense, DualShock 4, Pro Controller)
 
-* **Control Paradigm:** The gyroscope plays a **secondary role**. Coarse camera orientation and wide turns are handled by the right analog stick, while gyro aiming is used for fine micro-adjustments.
+* **Control Paradigm:** The gyroscope plays a **secondary role**. Coarse camera orientation and wide turns are handled by the right analog stick, while gyro aiming is used for precision aiming.
 * **Pros (+):** Genuine, full-travel **analog triggers** (L2/R2).
 * **Cons (-):** Biomechanical interference — both hands are physically locked to a single piece of plastic.
   * *Parasitic muscle tension:* When your left hand aggressively moves the analog stick (strafing, dodging) or presses shoulder buttons, muscular tension transfers through the shared controller shell directly into your right hand, disrupting aim stability.
