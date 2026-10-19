@@ -27,7 +27,7 @@
 
 ## Major differences in JCAdvance:
 
-- **Adaptive [Gyro Motion](#gyro-info)**: independent gyroscope tuning tailored across different controller types
+- **[Adaptive Gyro Motion](#gyro-info)**: independent gyroscope tuning tailored across different controller types
 - **Enhanced auto-calibration** pipeline for Joy-Con to mitigate IMU 'Thermal Drift' (see [details](#calibration))
 - **Parametric Gyro Motion acceleration** engine with an interactive real-time graph and tooltips (see [details](#parametric))
 - '**Stick as Triggers**' mode: brings full analog trigger functionality to Joy-Cons, bypassing their digital-only limitation
