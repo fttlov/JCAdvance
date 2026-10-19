@@ -383,7 +383,7 @@ Bluetooth radio transmission is quantized into discrete hardware time intervals:
 | Device                             | Connection | Expected OSD Rate | Notes                                           |
 |:---------------------------------- |:---------- |:----------------- |:----------------------------------------------- |
 | **Sony DualShock 4**               | Bluetooth  | **~250 Hz**       | Native Sony Bluetooth protocol polls every 4 ms |
-| **Sony DualSense**                 | Bluetooth  | **Testing**       | Hardware capable up to 1000 Hz                  |
+| **Sony DualSense**                 | Bluetooth  | **500+ Hz**       | Confirmed. Hardware capable up to 1000 Hz       |
 | **Mobapad M6s / M6 HD**            | Bluetooth  | **133 – 160 Hz**  | Varies by PC Bluetooth host controller chip     |
 | **Official Joy-Con (L / R)**       | Bluetooth  | **~66.7 Hz**      | 15 ms packet containing 3 internal IMU samples  |
 | **Nintendo Switch Pro Controller** | Bluetooth  | **~66.7 Hz**      | Standard Nintendo Switch protocol interval      |
@@ -402,9 +402,11 @@ OSD displays the **real-time packet arrival rate (Hz)** processed by Windows.
 
 ### 4. Emulator Loop (`SleepTimeOut`) and Input Queues
 
-Internal emulator cycle rates: **250 Hz** (4 ms), **125 Hz** (8 ms), **66.7 Hz** (15 ms), or **33.3 Hz** (30 ms).
+Internal emulator cycle rates: **500 Hz** (2ms), **250 Hz** (4 ms), **125 Hz** (8 ms), **66.7 Hz** (15 ms), or **33.3 Hz** (30 ms).
 
 Rule of thumb: **Emulator processing frequency should equal or exceed physical packet arrival frequency.**
+
+⚠️ A 500 Hz mode has been added for DualSense users, 1000 Hz makes no sense (1ms vs 2ms)
 
 * **When emulator loop is slower than device rate (e.g., 125 Hz loop with 160 Hz Mobapad):**
   Packets arrive every 6.25 ms, but are fetched only every 8 ms. Packets buffer unevenly, producing micro-stutter and unstable input latency.
