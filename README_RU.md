@@ -718,7 +718,7 @@ JoySens = 100 и GyroAccelEnd = **75 °/с** — это выверенный ф�
   Ниже 1.0 - торможение <br>
   Выше 1.0 - ускорение
 
-Тестовые пресеты:
+Тестовые пресеты для гиро-стик Joy-con:
 
 **Halo MCC** (Скорость стика 10/10, ускорение 1/10, deadzone 0%) <br>
 
@@ -736,10 +736,10 @@ Left Stick Antideadzone = 50 <br>
 Right Stick Antideadzone = 27 <br>
 применить ADZ к гиро-стику <br>
 
-JoySens = 60 <br>
-GyroAccelStart = 25 <br>
-GyroAccelEnd = 75 <br>
-GyroAccelCap = 0.5
+JoySens = 30 <br>
+GyroAccelStart = 20 <br>
+GyroAccelEnd = 90 <br>
+GyroAccelCap = 0.35
 
 </details>
 
