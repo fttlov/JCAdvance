@@ -684,7 +684,7 @@ In gyro-stick mode, acceleration does not attempt to exceed the hardware ceiling
   `Below 1.0` — Deceleration (suppressed initial response)<br>
   `Above 1.0` — Acceleration (faster initial curve progression)
 
-Test presets:
+Test presets for Joy-Con gyro stick:
 
 **Halo MCC** (Stick speed: 10/10, Acceleration: 1/10, deadzone 0%)
 
@@ -702,10 +702,10 @@ Left Stick Antideadzone = 50 <br>
 Right Stick Antideadzone = 27 <br>
 apply ADZ to Gyro 
 
-JoySens = 60 <br>
-GyroAccelStart = 25 <br>
-GyroAccelEnd = 75 <br>
-GyroAccelCap = 0.5
+JoySens = 30 <br>
+GyroAccelStart = 20 <br>
+GyroAccelEnd = 90 <br>
+GyroAccelCap = 0.35
 
 </details>
 
