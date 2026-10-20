@@ -686,7 +686,7 @@ In gyro-stick mode, acceleration does not attempt to exceed the hardware ceiling
 
 Test presets:
 
-Halo MCC (Stick speed: 10/10, Acceleration: 1/10, deadzone 0%): br>
+**Halo MCC** (Stick speed: 10/10, Acceleration: 1/10, deadzone 0%): br>
 
 Left Stick Antideadzone = 20
 Left Stick Linearity = 33
@@ -696,7 +696,7 @@ GyroAccelStart = 1 br>
 GyroAccelEnd = 75 br>
 GyroAccelCap = 1.3 - 1.5
 
-Alien Isolation  (Stick speed: 10)
+**Alien Isolation**  (Stick speed: 10)
 
 Right Stick Antideadzone = 27, apply ADZ to Gyro
 
