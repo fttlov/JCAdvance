@@ -720,7 +720,7 @@ JoySens = 100 и GyroAccelEnd = **75 °/с** — это выверенный ф�
 
 Тестовые пресеты:
 
-Halo MCC (Скорость стика 10/10, ускорение 1/10, deadzone 0%): br>
+**Halo MCC** (Скорость стика 10/10, ускорение 1/10, deadzone 0%): br>
 
 Left Stick Antideadzone = 20
 Left Stick Linearity = 33
@@ -730,7 +730,7 @@ GyroAccelStart = 1 br>
 GyroAccelEnd = 75 br>
 GyroAccelCap = 1.3 - 1.5
 
-Alien Isolation  (скорость стика: 10)
+**Alien Isolation**  (скорость стика: 10)
 
 Right Stick Antideadzone = 27, применить ADZ к гиро-стику
 
