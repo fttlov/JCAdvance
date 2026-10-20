@@ -732,7 +732,8 @@ GyroAccelCap = 1.3 - 1.5
 
 **Alien Isolation**  (скорость стика: 10) <br>
 
-Right Stick Antideadzone = 27, 
+Left Stick Antideadzone = 50 <br>
+Right Stick Antideadzone = 27 <br>
 применить ADZ к гиро-стику <br>
 
 JoySens = 60 <br>
