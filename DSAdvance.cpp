@@ -1298,8 +1298,7 @@ void LoadConfig() {	//@057 Realtime reading config (by modified file date) and a
 	PrimaryGamepad.Motion.Tightening = IniFile.ReadFloat("Motion", "Tightening", 2.0f); //@030
 	PrimaryGamepad.Motion.RatchetDelayTime = IniFile.ReadFloat("Motion", "RatchetDelayTime", 150.0f);	//@058 Clutch Smoothing
 	PrimaryGamepad.Motion.MotionWheelButtonsDeadZone = IniFile.ReadFloat("Motion", "MotionWheelButtonsDeadZone", 12.0f);
-	PrimaryGamepad.Motion.MouseSmooth = ClampFloat(IniFile.ReadFloat("Motion", "MouseSmooth", 0), 0, 99) * 0.01f; //@029 EMA Filter
-	PrimaryGamepad.Motion.JoySmooth = ClampFloat(IniFile.ReadFloat("Motion", "JoySmooth", 0), 0, 99) * 0.01f;
+	
 	//@067 Считаем готовые альфы при загрузке конфига:
 	PrimaryGamepad.Motion.CachedMouseAlpha = (PrimaryGamepad.Motion.MouseSmooth > 0.0f) ? powf(PrimaryGamepad.Motion.MouseSmooth, AppStatus.FrameTime / 0.015f) : 0.0f;
 	PrimaryGamepad.Motion.CachedJoyAlpha = (PrimaryGamepad.Motion.JoySmooth > 0.0f) ? powf(PrimaryGamepad.Motion.JoySmooth, AppStatus.FrameTime / 0.015f) : 0.0f;
@@ -1386,6 +1385,8 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.Motion.JoySensX = IniFile.ReadFloat("SETTINGS", "JoySensX", 100) * 0.002f;
 	PrimaryGamepad.Motion.JoySensY = IniFile.ReadFloat("SETTINGS", "JoySensY", 100) * 0.002f;
 	PrimaryGamepad.Motion.JoySensAvg = (PrimaryGamepad.Motion.JoySensX + PrimaryGamepad.Motion.JoySensY) * 0.5f;
+	PrimaryGamepad.Motion.MouseSmooth = ClampFloat(IniFile.ReadFloat("SETTINGS", "MouseSmooth", 0), 0, 99) * 0.01f; //@029 EMA Filter
+	PrimaryGamepad.Motion.JoySmooth = ClampFloat(IniFile.ReadFloat("SETTINGS", "JoySmooth", 0), 0, 99) * 0.01f;
 	//PrimaryGamepad.Motion.GyroApplyLinearity = IniFile.ReadBoolean("SETTINGS", "GyroApplyLinearity", true);	//@065
 	PrimaryGamepad.Motion.GyroApplyAntiDeadZone = IniFile.ReadBoolean("SETTINGS", "GyroApplyAntiDeadZone", false);
 	PrimaryGamepad.Motion.GyroAccelStart = IniFile.ReadFloat("SETTINGS", "GyroAccelStart", 50.0f);
@@ -2185,7 +2186,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 4.0 RC1");
+	SetConsoleTitle("JCAdvance 4.0 RC2");
 	WindowToCenter();
 
 	SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE); //@RTSS
@@ -3352,7 +3353,7 @@ int main(int argc, char **argv)
 		}
 
 		// Локально проверяем, активен ли гироскоп прямо сейчас
-		bool isAimActiveCheck = (AppStatus.AimingButton != 0) && (
+		/*bool isAimActiveCheck = (AppStatus.AimingButton != 0) && (
 			(AppStatus.AimingButton == JSMASK_ZL && DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) > 0) ||
 			(AppStatus.AimingButton == JSMASK_ZR && DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) > 0) ||
 			(PrimaryGamepad.InputState.buttons & AppStatus.AimingButton)
@@ -3370,6 +3371,18 @@ int main(int argc, char **argv)
 				float invMag = 1.0f / mag; //@067 Делаем ВСЕГО ОДНО деление
 				float dirX = lx * invMag;  // Заменяем деление на умножение
 				float dirY = ly * invMag;  // Заменяем деление на умножение
+				rx = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + rx * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
+				ry = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + ry * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
+			}
+		}*/
+
+		//@$$$ исправленный @065, были перепутаны l и r. Новая логира работы ADZ при совместной работе стика и гиро стика
+		if (PrimaryGamepad.Sticks.AntiDeadZoneRightX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneRightY > 0.0f) {
+			float mag = sqrtf(rx * rx + ry * ry);
+			if (mag > 0.0001f) {
+				float invMag = 1.0f / mag;
+				float dirX = rx * invMag; // Исправлено: честный rx вместо lx!
+				float dirY = ry * invMag; // Исправлено: честный ry вместо ly!
 				rx = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + rx * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
 				ry = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + ry * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
 			}
@@ -4351,54 +4364,32 @@ int main(int argc, char **argv)
 				MouseMove(-effGyroY * baseMultMouse * PrimaryGamepad.Motion.SensX,
 					-effGyroX * baseMultMouse * PrimaryGamepad.Motion.SensY);
 			}
-			else { //Joystick
+			else { //Joystick + @$$$ логика работы ниже
 				// Используем baseMultJoy для стиков
-				/*float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
-				float gyroRY = ClampFloat(effGyroX * baseMultJoy * PrimaryGamepad.Motion.JoySensY, -1.0f, 1.0f);
-
-				// 8. Применяем кривую линейности (Response Curve) от правого стика
-				gyroRX = ApplyLinearity(gyroRX, PrimaryGamepad.Sticks.LinearityRightX);
-				gyroRY = ApplyLinearity(gyroRY, PrimaryGamepad.Sticks.LinearityRightY);
-
-				// 9. Суммируем с физическим стиком и отправляем виртуальному Xbox
-				report.sThumbRX = std::clamp((int)(gyroRX * 32767 + report.sThumbRX), -32767, 32767);
-				report.sThumbRY = std::clamp((int)(gyroRY * 32767 + report.sThumbRY), -32767, 32767);*/
-
-				//@065
 				float gyroRX = ClampFloat(-effGyroY * baseMultJoy * PrimaryGamepad.Motion.JoySensX, -1.0f, 1.0f);
 				float gyroRY = ClampFloat(effGyroX * baseMultJoy * PrimaryGamepad.Motion.JoySensY, -1.0f, 1.0f);
 
-				// ОПЦИОНАЛЬНО: Применяем кривую линейности для гироскопа
-				/*if (PrimaryGamepad.Motion.GyroApplyLinearity) {
-					gyroRX = ApplyLinearity(gyroRX, PrimaryGamepad.Sticks.LinearityRightX);
-					gyroRY = ApplyLinearity(gyroRY, PrimaryGamepad.Sticks.LinearityRightY);
-				}
-				/*if (PrimaryGamepad.Motion.GyroApplyLinearity) {	//@067
-					gyroRX = ApplyLinearityFast(gyroRX, PrimaryGamepad.Sticks.p_RightX);
-					gyroRY = ApplyLinearityFast(gyroRY, PrimaryGamepad.Sticks.p_RightY);
-				}*/
+				float curStickX = report.sThumbRX / 32767.0f;
+				float curStickY = report.sThumbRY / 32767.0f;
+				float stickMag = sqrtf(curStickX * curStickX + curStickY * curStickY);
 
-				// Складываем сырой гироскоп с уже подготовленным правым стиком
-				float combinedX = gyroRX + (report.sThumbRX / 32767.0f);
-				float combinedY = gyroRY + (report.sThumbRY / 32767.0f);
-
-				// ОПЦИОНАЛЬНО: Применяем сложную эллиптическую Anti-Deadzone для суммы (Гироскоп + Стик)
-				if (PrimaryGamepad.Motion.GyroApplyAntiDeadZone &&
+				// Если физический стик брошен (в центре), а гироскоп движется:
+				// выталкиваем гироскоп из мертвой зоны на пьедестал ADZ!
+				if (PrimaryGamepad.Motion.GyroApplyAntiDeadZone && stickMag < 0.0001f &&
 					(PrimaryGamepad.Sticks.AntiDeadZoneRightX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneRightY > 0.0f)) {
-					float mag = sqrtf(combinedX * combinedX + combinedY * combinedY);
-					if (mag > 0.0001f) {
-						float dirX = combinedX / mag;
-						float dirY = combinedY / mag;
-						// Растягиваем сумму наружу, обходя игровую мертвую зону с идеальным сохранением угла
-						combinedX = (dirX * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + combinedX * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
-						combinedY = (dirY * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + combinedY * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
+					float gMag = sqrtf(gyroRX * gyroRX + gyroRY * gyroRY);
+					if (gMag > 0.0001f) {
+						float invG = 1.0f / gMag;
+						gyroRX = (gyroRX * invG * PrimaryGamepad.Sticks.AntiDeadZoneRightX) + gyroRX * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightX);
+						gyroRY = (gyroRY * invG * PrimaryGamepad.Sticks.AntiDeadZoneRightY) + gyroRY * (1.0f - PrimaryGamepad.Sticks.AntiDeadZoneRightY);
 					}
 				}
 
-				// Финальная отправка виртуальному Xbox
-				//report.sThumbRX = std::clamp((int)(combinedX * 32767.0f), -32767, 32767);
-				//report.sThumbRY = std::clamp((int)(combinedY * 32767.0f), -32767, 32767);
-				report.sThumbRX = std::clamp((int)(combinedX * 32767.0f), -PrimaryGamepad.Sticks.MaxRightStickLimit, PrimaryGamepad.Sticks.MaxRightStickLimit);	//@074
+				// Плавное сложение без двойного наложения пьедестала
+				float combinedX = gyroRX + curStickX;
+				float combinedY = gyroRY + curStickY;
+
+				report.sThumbRX = std::clamp((int)(combinedX * 32767.0f), -PrimaryGamepad.Sticks.MaxRightStickLimit, PrimaryGamepad.Sticks.MaxRightStickLimit);
 				report.sThumbRY = std::clamp((int)(combinedY * 32767.0f), -PrimaryGamepad.Sticks.MaxRightStickLimit, PrimaryGamepad.Sticks.MaxRightStickLimit);
 			}
 		}
@@ -5169,9 +5160,9 @@ int main(int argc, char **argv)
 
 					char rtssBuf[1024];
 					sprintf_s(rtssBuf, sizeof(rtssBuf),
-						"<P=%d,%d><C=FF9F00>LT  : %-6d | RT   : %-6d\n"
-						"LS X: %-6d | Y    : %-6d\n"
-						"RS X: %-6d | Y    : %-6d\n"
+						"<P=%d,%d><C=FF9F00>LT  : %-6d | RT  : %-6d\n"
+						"LS X: %-6d | RS X: %-6d\n"
+						"LS Y: %-6d | RS Y: %-6d\n"
 						"<C=555555>------------------------------\n"
 						"<C=00FFFF>Calib: %4.0f%% | Steady: %s\n"
 						"BiasX: %5.2f | BiasY: %5.2f\n"
