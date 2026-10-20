@@ -718,11 +718,26 @@ JoySens = 100 и GyroAccelEnd = **75 °/с** — это выверенный ф�
   Ниже 1.0 - торможение <br>
   Выше 1.0 - ускорение
 
-Тестовый пресет для Halo MCC (настройки стика в игре: Скорость 10/10, Ускорение 1/10):
-JoySens = 100
-GyroAccelStart = 1
-GyroAccelEnd = 75
+Тестовые пресеты:
+
+Halo MCC (Скорость стика 10/10, ускорение 1/10, deadzone 0%): br>
+
+Left Stick Antideadzone = 20
+Left Stick Linearity = 33
+
+JoySens = 100 br>
+GyroAccelStart = 1 br>
+GyroAccelEnd = 75 br>
 GyroAccelCap = 1.3 - 1.5
+
+Alien Isolation  (скорость стика: 10)
+
+Right Stick Antideadzone = 27, применить ADZ к гиро-стику
+
+JoySens = 60 br>
+GyroAccelStart = 25 br>
+GyroAccelEnd = 75 br>
+GyroAccelCap = 0.5
 
 </details>
 
