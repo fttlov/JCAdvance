@@ -901,7 +901,7 @@ And will not be expanded until the transition to SDL, which is a long way off
 * DS4Windows[[1]](https://github.com/Jays2Kings/DS4Windows)[[2]](https://github.com/Ryochan7/DS4Windows) for the battery level.
 * [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
-* [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller interractive image.
+* [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller .svg interactive image.
 
 <details>
   <summary><h3>Building, Editing, Translating</h3> (Click to open)</summary>
