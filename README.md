@@ -355,7 +355,7 @@ Battery percentage and live polling rate (Hz) are also displayed.
   <summary><h3>Polling Rate and Performance</h3></summary>
 
 Due to legacy DSAdvance architecture and JoyShockLibrary bugs, the original author utilized `sleepTimeout=15` (66.67 Hz), which is insufficient for smooth gyro mouse tracking.<br>
-For example, the Magic Wheel feature previously dropped virtual button inputs at higher polling rates. This logic was completely rewritten with dedicated pulse timers for reliable button registration up to 250 Hz. CPU usage remains negligible (`~0.60% CPU`).<br>
+For example, the Magic Wheel feature previously dropped virtual button inputs at higher polling rates. This logic was completely rewritten with dedicated pulse timers for reliable button registration up to 250 Hz. CPU usage remains negligible (`~0.60%`) on old i5 3570k.<br>
 
 - Fixed upstream bugs and improved JoyShockLibrary: [JoyShockLibrary Fork](https://github.com/fttlov/JoyShockLibrary).<br>
 - Resolved an intermittent gyro stick issue where smooth hand movements caused sub-millisecond snaps toward center, and enabled full Gyro Motion Space support.<br>
