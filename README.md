@@ -388,7 +388,9 @@ Bluetooth radio transmission is quantized into discrete hardware time intervals:
 
 *Note: The official Joy-Con IMU runs internally at 200 Hz; each 66.7 Hz Bluetooth packet carries 3 discrete sensor frames processed by JoyShockLibrary.*
 
-### 3. Bluetooth Adapters and Radio Interference (Example for Mobapad)
+### 3. Bluetooth Adapters and Radio Interference
+
+Devices such as the **Mobapad M6s** clearly illustrate the difference in how PC host controllers operate:
 
 * **Broadcom Adapters (e.g., Asus USB-BT400):** Negotiate a tight 10-slot interval, delivering **150–160 Hz** in clean conditions.
 * **Integrated Intel Modules (Wi-Fi/BT combo: 9260, AX200, AX210, etc.):** Share antennas between Wi-Fi and Bluetooth. Intel firmware caps polling at 12 slots, fixing rates at **133 Hz**.
