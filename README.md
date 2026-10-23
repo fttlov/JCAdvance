@@ -351,7 +351,8 @@ Telemetry parameters for tracking thermal drift and sensor auto-calibration (see
 * **Shake (Shakiness)**: Real-time hand tremor / environmental vibration index. Mobapad M6S typical metrics: `~0.003` (resting on table), `~0.005–0.01` (resting in hand on table), and `0.01–0.015` (held unsupported in mid-air).<br>
 * **MinAc (MinDeltaAccel)**: Lowest recorded accelerometer noise threshold used as a baseline anchor for software auto-calibration. Typical Mobapad M6S reading: `0.003–0.005` (indicates healthy hardware ready for calibration). If your values drastically exceed this range accompanied by uncommanded camera drift, perform hardware calibration.
 
-*Tip*: If you play for a few minutes and place the gamepad on a table, you may see Bias numbers slightly update (e.g., shifting from 1.09 to 1.02). This confirms the software calibration has detected thermal expansion and compensated for drift.<br>
+*Tip*: If you play for a few minutes and place the gamepad on a table, you may see Bias numbers slightly update (e.g., shifting from 1.09 to 1.02). This confirms the software calibration has detected thermal expansion and compensated for drift.
+
 Battery percentage and live polling rate (Hz) are also displayed.
 
 </details>
