@@ -339,7 +339,7 @@ Two OSD output engines are available in `Config.exe`:<br>
 Telemetry parameters for tracking thermal drift and sensor auto-calibration (see "Software Calibration" below):<br>
 <table align="center">
   <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/OSD%20(2).png" width="125"></td>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/OSD%20(2).png" width="150"></td>
   </tr>
 </table>
 
