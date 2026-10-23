@@ -480,7 +480,7 @@ Gyroscopes measure velocity (°/s). To determine camera angle, software continuo
 In JoyShockLibrary, default calibration presets assume heavy 250g Sony controllers resting on a player's lap during cutscenes. Lightweight split Joy-Cons held in one hand have far higher jitter and less thermal mass; they cannot be calibrated reliably in-hand. JCAdvance adapts these thresholds for fast 2–3 second calibration specifically on table surfaces.
 
 **Real-World Example (Mobapad M6S):**<br>
-Launch the emulator, connect Joy-Cons, place on desk, listen for the initialization beep, and play. Over the first few minutes, temperature rises and drift develops. Placing the controller down for 2–3 seconds recalibrates the baseline. After 2–3 quick table rests during the first 5–10 minutes, the sensor temperature reaches equilibrium and you can play for hours without drift.
+Launch the emulator, connect Joy-Cons, place on desk, listen for the initialization beep, and play. Over the first few minutes, temperature rises and drift develops. Placing the controller down for 2–3 seconds recalibrates the baseline. After 2 quick table rests during first minutes of gameplay, the sensor temperature reaches equilibrium and you can play for hours without drift.
 
 **IMU Library Improvements:**<br>
 
