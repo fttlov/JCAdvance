@@ -115,7 +115,7 @@ Physical hand movements in 3D space are translated onto the screen via mathemati
 
 Each form factor features unique biomechanics, distinct advantages, and hardware trade-offs:
 
-#### 1. Two-Handed Controllers (DualSense, DualShock 4, Pro Controller)
+#### 1. Two-Handed Controllers (DualSense, DualShock 4)
 
 * **Control Paradigm:** The gyroscope plays a **secondary role**. Coarse camera orientation and wide turns are handled by the right analog stick, while gyro aiming is used for precision aiming.
 * **Pros (+):** Genuine, full-travel **analog triggers** (L2/R2).
