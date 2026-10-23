@@ -445,7 +445,7 @@ Hardware calibration methods:<br>
 
 ### Software Calibration (Thermal Drift Compensation)
 
-MEMS gyroscopes suffer from **thermal drift** — internal crystal heating (from battery, hands, internal circuitry) shifts the sensor's electronic zero-point over the first 5–10 minutes of play, causing unwanted camera wandering. Once temperature stabilizes, drift halts, but that offset must be canceled.<br>
+MEMS gyroscopes suffer from **thermal drift** — internal crystal heating (from battery, hands, internal circuitry) shifts the sensor's electronic zero-point over first minutes of play, causing unwanted camera wandering. Once temperature stabilizes, drift halts, but that offset must be canceled.<br>
 JCAdvance integrates an automated software calibration engine by Jibb Smart to maintain pixel-perfect stability without manual zeroing.<br>
 
 ⚠️ *Software calibration is active only while the emulator is running and adjusts gyroscope offsets dynamically.*
