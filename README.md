@@ -337,6 +337,11 @@ Two OSD output engines are available in `Config.exe`:<br>
 * **Sticks**: 16-bit signed deflection (-32768 to 32768).<br>
 
 Telemetry parameters for tracking thermal drift and sensor auto-calibration (see "Software Calibration" below):<br>
+<table align="center">
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/OSD%20(2).png" width="125"></td>
+  </tr>
+</table>
 
 * **Calib (0–100%)**: Algorithm confidence. After initial baseline lock, it remains at 100%, indicating sensor noise floor has been determined. Drops to 0% only during manual recalibration or device reconnection.<br>
 * **Steady (YES / NO)**: Physical stillness detector. When indicating `YES`, the controller is resting stationary and background calibration is active.<br>
