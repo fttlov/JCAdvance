@@ -48,6 +48,8 @@ Global CtrlSony := Map()
 Global CtrlWheel := Map()
 Global CtrlSettings := Map()
 Global CtrlExtraXbox := Map()
+Global CtrlXboxLabels := Map()
+Global LastHoveredLabelKey := ""
 
 Global JslConnected := false
 Global JslDevHandles := Buffer(16, 0)
@@ -420,7 +422,8 @@ for key in XboxMapLeft {
     val := SavedXboxMap_Tap.Has(key) ? SavedXboxMap_Tap[key] : "NONE"
     
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x25 y" (yPosLeft+1) " w80 +Right", key ":")
+    ;MainGui.Add("Text", "x25 y" (yPosLeft+1) " w80 +Right", key ":")
+	CtrlXboxLabels[key] := MainGui.Add("Text", "x25 y" (yPosLeft+1) " w80 +Right", key ":")
     MainGui.SetFont("Norm")
     
     ;ddl := MainGui.Add("ComboBox", "x115 y" yPosLeft " w120 Choose1", XboxKeys)
@@ -442,7 +445,8 @@ for key in XboxMapRight {
     CtrlXbox[key] := ddl
     
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
+    ;MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
+	CtrlXboxLabels[key] := MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
     MainGui.SetFont("Norm")
     
     yPosRight += 42
@@ -470,7 +474,8 @@ yExtra := 530
 for key in ExtraButtonsLeft {
     val := SavedExtraMap_Tap.Has(key) ? SavedExtraMap_Tap[key] : "NONE"
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x190 y" (yExtra+1) " w80 +Right", key ":")
+    ;MainGui.Add("Text", "x190 y" (yExtra+1) " w80 +Right", key ":")
+	CtrlXboxLabels[key] := MainGui.Add("Text", "x190 y" (yExtra+1) " w80 +Right", key ":")
     MainGui.SetFont("Norm")
     ddl := MainGui.Add("DropDownList", "x280 y" yExtra " w120 Choose1", XboxKeys)
     SetDdlValue(ddl, val)
@@ -486,7 +491,8 @@ for key in ExtraButtonsRight {
     SetDdlValue(ddl, val)
     CtrlExtraXbox[key] := ddl
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x570 y" (yExtra+1) " w80", ":" key)
+    ;MainGui.Add("Text", "x570 y" (yExtra+1) " w80", ":" key)
+	CtrlXboxLabels[key] := MainGui.Add("Text", "x570 y" (yExtra+1) " w80", ":" key)
     MainGui.SetFont("Norm")
     yExtra += 35
 }
@@ -1050,7 +1056,7 @@ valForce := IniRead(A_ScriptDir "\" ConfigIni, "Motion", "MeleeGForce", "5.0")
 intForce := Round(Float(IsNumber(valForce) ? valForce : 5.0) * 10)
 
 MainGui.Add("Text", "x200 y" (yPos+3) " w250", T("Melee Gesture Force (g)") ":")
-edtForce := MainGui.Add("Edit", "x410 y" yPos " w42", Format("{:.1f}", Float(valForce)))
+edtForce := MainGui.Add("Edit", "x410 y" yPos " w45", Format("{:.1f}", Float(valForce)))
 udForce  := MainGui.Add("UpDown", "-0x2 Range0-200", intForce)
 
 udForce.OnEvent("Change", (ud, *) => (edtForce.Value := Format("{:.1f}", ud.Value * 0.1), SetUnsaved()))
@@ -1368,7 +1374,7 @@ if FileExist(templatePath) {
     htmlContent := StrReplace(htmlContent, "{{LINE_CURVED_STICK}}", T("Accelerated"))
     
 	htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_UPTO}}", T("Up to"))
-    htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_1TO1}}", T("mouse response is 1:1 (base MouseSens "))
+    htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_1TO1}}", T("mouse response is 1:1 (on base MouseSens "))
     htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_FROM}}", T("From"))
     htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_TO}}", T("to"))
     htmlContent := StrReplace(htmlContent, "{{INFO_MOUSE_INC}}", T("sensitivity smoothly increases to"))
@@ -1407,8 +1413,8 @@ AddInput(XboxIni, "SETTINGS", "MouseSensX", T("Mouse X:"), "180", "xs+246 ys+35"
 AddInput(XboxIni, "SETTINGS", "MouseSensY", T("Mouse Y:"), "170", "xs+246 ys+67", 60, 50, true, "0-999")
 AddInput(XboxIni, "SETTINGS", "JoySensX", T(" :Stick X"), "120", "xs+420 ys+35", 55, 50, true, "0-999", 1)
 AddInput(XboxIni, "SETTINGS", "JoySensY", T(" :Stick Y"), "120", "xs+420 ys+67", 55, 50, true, "0-999", 1)
-AddInput(ConfigIni, "Motion", "MouseSmooth", T("EMA¹ Mouse:"), , "xs+224 ys+100", 82, 50, true, "0-100")
-AddInput(ConfigIni, "Motion", "JoySmooth", T(" :EMA¹ Stick"), , "xs+420 ys+100", 85, 50, true, "0-100", 1)
+AddInput(XboxIni, "SETTINGS", "MouseSmooth", T("EMA¹ Mouse:"), , "xs+224 ys+100", 82, 50, true, "0-100")
+AddInput(XboxIni, "SETTINGS", "JoySmooth", T(" :EMA¹ Stick"), , "xs+420 ys+100", 85, 50, true, "0-100", 1)
 
 if CtrlSettings.Has(XboxIni "_SETTINGS_MouseSensX") {
     CtrlSettings[XboxIni "_SETTINGS_MouseSensX"].ctrl.OnEvent("Change", SyncSensToHtml.Bind("mouse"))
@@ -1437,7 +1443,7 @@ Tabs.UseTab("Analog")
 
 ; --- Группа 1: LEFT HAND (Левая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x30 y50 w380 h290 Center Section", T("LEFT STICK"))
+MainGui.Add("GroupBox", "x30 y50 w380 h290 Center Section", T("LEFT"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
 AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("Trigger DeadZone :"), , "xs+108 ys+35", 112, 42, true)
@@ -1452,7 +1458,7 @@ AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Stick Y"), "xs+181 
 
 ; --- Группа 2: RIGHT HAND (Правая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x435 y50 w380 h290 Center Section", T("RIGHT STICK"))
+MainGui.Add("GroupBox", "x435 y50 w380 h290 Center Section", T("RIGHT"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
 ; Включаем левый спиннер (true в самом конце)
@@ -1605,12 +1611,15 @@ UpdateRSModes(true)
 
 ; --- Сноски и примечания (внизу вкладки) ---
 MainGui.Add("Text", "x15 y557 w120 cRed", T("¹ Linearity"))
-MainGui.Add("Text", "x25 y+0 w820", T("Stick Response Curve:"))
-MainGui.Add("Text", "x25 y+1 w820", T("0: Lower sensitivity near the center for precise aiming (Exponential)"))
-MainGui.Add("Text", "x25 y+1 w820", T("50 (Default): Perfectly linear response"))
-MainGui.Add("Text", "x25 y+1 w820", T("100: Higher sensitivity near the center for instant response (Logarithmic)"))
+MainGui.Add("Text", "x25 y+0 w490", T("Stick Response Curve:"))
+MainGui.Add("Text", "x25 y+1 w490", T("0: Lower sensitivity near the center for precise aiming"))
+MainGui.Add("Text", "x25 y+1 w490", T("50: Perfectly linear response 1:1 (Default)"))
+MainGui.Add("Text", "x25 y+1 w490", T("100: Higher sensitivity near the center for instant response"))
 MainGui.Add("Text", "x15 y+2 w800 cRed", T("² Left Stick Mode:"))
 MainGui.Add("Text", "x25 y+0 w820", T("'AutoSprintButton' held down when stick direction in: 1 - front hemisphere (45 degrees); 2 - all directions"))
+
+; Наглядная мини-плашка кривых справа от Linearity
+MainGui.Add("Picture", "x415 y575 w260 h75", A_ScriptDir "\Icons\linearity.png")
 
 ; =========================================
 ; TAB 8: DRIVING
@@ -2240,7 +2249,7 @@ SaveAllConfigs(*) {
         ; --- Явное прямое сохранение параметров акселерации ---
         SmartIniWrite(Format("{:.1f}", GyroAccelStart), A_ScriptDir "\" XboxIni, "SETTINGS", "GyroAccelStart")
         SmartIniWrite(Format("{:.1f}", GyroAccelEnd),   A_ScriptDir "\" XboxIni, "SETTINGS", "GyroAccelEnd")
-        SmartIniWrite(Format("{:.1f}", GyroAccelCap),   A_ScriptDir "\" XboxIni, "SETTINGS", "GyroAccelCap")
+        SmartIniWrite(Format("{:.2f}", GyroAccelCap),   A_ScriptDir "\" XboxIni, "SETTINGS", "GyroAccelCap")
         SmartIniWrite(GyroAccelEnabled,                 A_ScriptDir "\" XboxIni, "SETTINGS", "GyroAccelEnabled")
         SmartIniWrite(GyroGraphMode,                    A_ScriptDir "\" XboxIni, "SETTINGS", "GyroGraphMode")
 		
@@ -2624,28 +2633,33 @@ WB_TitleChange(Text, *) {
     GyroAccelCap   := cap
 
     ; Пропорциональная синхронизация: X следует за ползунком, Y сохраняет коэффициент
+    ; Синхронизируем X и Y ТОЛЬКО если пользователь реально сдвинул ползунок Sens
     if (mode == "stick") {
-        newY := Round(sens * RatioJoySens)
-        GyroGraphSensJ := sens
-        GyroSensJoyX   := sens
-        GyroSensJoyY   := newY
+        if (sens != GyroGraphSensJ) {
+            newY := Round(sens * RatioJoySens)
+            GyroGraphSensJ := sens
+            GyroSensJoyX   := sens
+            GyroSensJoyY   := newY
 
-        kX := XboxIni "_SETTINGS_JoySensX", kY := XboxIni "_SETTINGS_JoySensY"
-        if (CtrlSettings.Has(kX) && IsObject(CtrlSettings[kX].ctrl))
-            CtrlSettings[kX].ctrl.Value := Format("{:.0f}", sens)
-        if (CtrlSettings.Has(kY) && IsObject(CtrlSettings[kY].ctrl))
-            CtrlSettings[kY].ctrl.Value := Format("{:.0f}", newY)
+            kX := XboxIni "_SETTINGS_JoySensX", kY := XboxIni "_SETTINGS_JoySensY"
+            if (CtrlSettings.Has(kX) && IsObject(CtrlSettings[kX].ctrl))
+                CtrlSettings[kX].ctrl.Value := Format("{:.0f}", sens)
+            if (CtrlSettings.Has(kY) && IsObject(CtrlSettings[kY].ctrl))
+                CtrlSettings[kY].ctrl.Value := Format("{:.0f}", newY)
+        }
     } else {
-        newY := Round(sens * RatioMouseSens)
-        GyroGraphSensM := sens
-        GyroSensMouseX := sens
-        GyroSensMouseY := newY
+        if (sens != GyroGraphSensM) {
+            newY := Round(sens * RatioMouseSens)
+            GyroGraphSensM := sens
+            GyroSensMouseX := sens
+            GyroSensMouseY := newY
 
-        kX := XboxIni "_SETTINGS_MouseSensX", kY := XboxIni "_SETTINGS_MouseSensY"
-        if (CtrlSettings.Has(kX) && IsObject(CtrlSettings[kX].ctrl))
-            CtrlSettings[kX].ctrl.Value := Format("{:.0f}", sens)
-        if (CtrlSettings.Has(kY) && IsObject(CtrlSettings[kY].ctrl))
-            CtrlSettings[kY].ctrl.Value := Format("{:.0f}", newY)
+            kX := XboxIni "_SETTINGS_MouseSensX", kY := XboxIni "_SETTINGS_MouseSensY"
+            if (CtrlSettings.Has(kX) && IsObject(CtrlSettings[kX].ctrl))
+                CtrlSettings[kX].ctrl.Value := Format("{:.0f}", sens)
+            if (CtrlSettings.Has(kY) && IsObject(CtrlSettings[kY].ctrl))
+                CtrlSettings[kY].ctrl.Value := Format("{:.0f}", newY)
+        }
     }
 
     SetUnsaved()
@@ -2703,8 +2717,10 @@ PollXboxGamepad() {
 	; Мост AHK -> JS активируется сразу при готовности страницы, даже если геймпад не подключен
     if (IsSet(wbPad) && IsObject(wbPad)) {
         try {
-            if (wbPad.ReadyState == 4 && wbPad.Document.readyState == "complete")
+            if (wbPad.ReadyState == 4 && wbPad.Document.readyState == "complete") {
                 wbPad.Document.parentWindow.AhkClick := BindFromPadClick
+                wbPad.Document.parentWindow.AhkHover := PadHoverFromHtml
+            }
         }
     }
 
@@ -2908,3 +2924,82 @@ BindFromPadClick(virtBtn) {
     }
 }
 
+; Наведение на кнопку в HTML -> фокусировка выпадающего списка в AHK
+PadHoverFromHtml(virtBtn, isHover) {
+    global CtrlXbox, CtrlExtraXbox, CtrlXboxLabels, LastHoveredLabelKey
+
+    ; Снимаем подсветку с предыдущей метки
+    if (LastHoveredLabelKey != "" && CtrlXboxLabels.Has(LastHoveredLabelKey)) {
+        CtrlXboxLabels[LastHoveredLabelKey].SetFont("cDefault Bold")
+        LastHoveredLabelKey := ""
+    }
+
+    if (!isHover || virtBtn == "" || virtBtn == "NONE")
+        return
+
+    ; Ищем, какому физическому списку назначена эта виртуальная кнопка
+    targetKey := ""
+    targetCtrl := 0
+
+    for k, ctrl in CtrlXbox {
+        if (ctrl.Text == virtBtn) {
+            targetKey := k
+            targetCtrl := ctrl
+            break
+        }
+    }
+    if (targetKey == "") {
+        for k, ctrl in CtrlExtraXbox {
+            if (ctrl.Text == virtBtn) {
+                targetKey := k
+                targetCtrl := ctrl
+                break
+            }
+        }
+    }
+
+    ; Подсвечиваем текстовую метку кнопки ярким синим цветом и даем фокус полю
+    if (targetKey != "") {
+        targetCtrl.Focus()
+        if CtrlXboxLabels.Has(targetKey) {
+            CtrlXboxLabels[targetKey].SetFont("c0969da Bold")
+            LastHoveredLabelKey := targetKey
+        }
+    }
+}
+
+; Наведение мыши на список в AHK -> мягкая подсветка кнопки на геймпаде (WM_MOUSEMOVE)
+OnMessage(0x0200, OnGuiMouseMove)
+Global LastHoverHwnd := 0
+
+OnGuiMouseMove(wParam, lParam, msg, hwnd) {
+    global CtrlXbox, CtrlExtraXbox, wbPad, Tabs, LastHoverHwnd
+    if (!IsSet(Tabs) || Tabs.Text != "Xbox" || hwnd == LastHoverHwnd)
+        return
+    LastHoverHwnd := hwnd
+
+    foundVirt := ""
+    for _, ctrl in CtrlXbox {
+        if (ctrl.Hwnd == hwnd) {
+            foundVirt := ctrl.Text
+            break
+        }
+    }
+    if (foundVirt == "") {
+        for _, ctrl in CtrlExtraXbox {
+            if (ctrl.Hwnd == hwnd) {
+                foundVirt := ctrl.Text
+                break
+            }
+        }
+    }
+
+    if (IsSet(wbPad) && IsObject(wbPad)) {
+        try {
+            if (foundVirt != "" && foundVirt != "NONE")
+                wbPad.Document.parentWindow.setHoverButton(foundVirt)
+            else
+                wbPad.Document.parentWindow.setHoverButton("")
+        }
+    }
+}

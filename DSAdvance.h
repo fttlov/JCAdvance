@@ -655,7 +655,7 @@ struct _AppStatus {
 	bool ShowFullMenu = false;		//@107 Alt+Z change Menu Layers
 	bool GyroFromLeft = false;		//@108 Gyro левша Joy-Con
 	//int DeviceChangeDebounce = 0;	//@109 Таймер отложенного Refresh, fix connect/reconnect
-	ULONGLONG DeviceChangeDeadline = 0;	//@???
+	ULONGLONG DeviceChangeDeadline = 0;	//@140
 	int GyroSpace = 1;				//@113
 	std::string LangFile = "";		//@116
 	bool SplitJoycons = false;		//@118
@@ -669,14 +669,14 @@ struct _AppStatus {
 	bool AutoCalibrationEnabled = true; // @124
 	bool IsManualCalibrating = false;
 	//int ManualCalibrationTimer = 0;
-	ULONGLONG ManualCalibDeadline = 0;	//@???
+	ULONGLONG ManualCalibDeadline = 0;	//@140
 	int GyroCalibrateButton = 0;	//@124 gamepad calib
 	std::string GyroCalibrateButtonName;
 	bool StartupCalibrationFrozen = false;
 	int CalibRumbleTimer = 0;
 	bool BackgroundCalibSound = false;
 	bool IsOsdActive = false;	//@130
-	int OsdType = 0; //@RTSS 0 = AHK Desktop, 1 = RTSS Direct
+	int OsdType = 0; //@139 0 = AHK Desktop, 1 = RTSS Direct
 	int OsdPosX = 20;
 	int OsdPosY = 20;
 	int LastControllersSignature = 0; //@135 Контрольная сумма реально подключенных геймпадов
