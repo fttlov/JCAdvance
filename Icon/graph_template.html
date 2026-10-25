@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="Chart.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { 
+            font-family: 'Segoe UI', -apple-system, Tahoma, sans-serif; 
+            background: #f9f9f9; 
+            color: #24292f; 
+            margin: 0; 
+            padding: 2px 4px; 
+            width: 100%;
+            height: 100%;
+            overflow: hidden; 
+            font-size: 14px;
+        }
+        .container { 
+            width: 100%; 
+            margin: 0; 
+            background: #f6f8fa; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            border: 1px solid #d0d7de; 
+        }
+        .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        h3 { 
+            margin: 0; 
+            color: #0969da; 
+            font-size: 1.5em; 
+            flex: 1; 
+            text-align: center; 
+            white-space: nowrap; 
+            padding: 0 10px; 
+        }
+		h3.title-disabled { color: #57606a; opacity: 0.45; }
+        .mode-switch { background: #eaeef2; padding: 3px; border-radius: 6px; display: inline-block; }
+        .mode-btn { 
+            background: transparent; 
+            border: none; 
+            color: #57606a; 
+            padding: 4px 12px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 0.95em;
+        }
+        .mode-btn.active { background: #0969da; color: #ffffff; }
+        
+        .controls { 
+            background: #ffffff; 
+            padding: 0.35em 0.8em; 
+            border-radius: 6px; 
+            border: 1px solid #d0d7de; 
+            margin-bottom: 0.35em; 
+            display: table;
+            width: 100%;
+        }
+        .controls-col { display: table-cell; width: 50%; vertical-align: top; padding: 0 0.5em; }
+        .control-row { margin-bottom: 0.2em; }
+        label { color: #57606a; display: block; margin-bottom: 0.1em; font-size: 0.95em; line-height: 1.2; }
+        input[type=range] { 
+            width: 100%; 
+            height: 1.15em; 
+            margin: 0; 
+            padding: 0; 
+            cursor: pointer; 
+            vertical-align: middle;
+        }
+        input[type=range]::-ms-tooltip {
+            display: none;
+        }
+        .val { font-weight: bold; color: #0969da; }
+        
+		.toggle-btn { padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95em; border: 1px solid transparent; }
+        .toggle-btn.btn-active { background: #ffebe9; color: #ff8182; border-color: #cf222e; }
+        .toggle-btn.btn-disabled { background: #dafbe1; color: #1a7f37; border-color: #2da44e; }
+        .row-disabled { opacity: 0.45; }
+		
+        .chart-box { position: relative; width: 100%; margin-bottom: 6px; }
+        
+        .info-panel { 
+            padding: 8px 12px; 
+            background: #ffffff; 
+            border: 1px solid #d0d7de; 
+            border-left: 4px solid #0969da; 
+            border-radius: 4px; 
+            line-height: 1.45; 
+            color: #24292f; 
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body scroll="no">
+
+<div class="header-row">
+        <button class="toggle-btn btn-active" id="btnToggle" onclick="toggleAccel()">{{BTN_DISABLE}}</button>
+        <h3>{{TITLE}}</h3>
+        <div class="mode-switch">         
+            <button class="mode-btn" id="btnMouse" onclick="setMode('mouse', true)">{{BTN_MOUSE}}</button>
+			<button class="mode-btn active" id="btnStick" onclick="setMode('stick', true)">{{BTN_STICK}}</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="controls-col" style="padding-left: 0;">
+            <div class="control-row">
+                <label><span id="lblSensName">{{LBL_SENS_STICK}}</span>: <span class="val" id="valSens">100</span></label>
+                <input type="range" id="sens" min="30" max="250" step="1" value="100" 
+                       oninput="handleSlider(false)" onchange="handleSlider(true)" onmousemove="handleDrag(event)">
+            </div>
+            <div class="control-row">
+                <label>GyroAccelStart: <span class="val" id="valStart">25</span> {{UNIT_DEG}}</label>
+                <input type="range" id="start" min="1" max="150" step="1" value="25" 
+                       oninput="handleSlider(false)" onchange="handleSlider(true)" onmousemove="handleDrag(event)">
+            </div>
+        </div>
+        <div class="control-row">
+                <label><span id="lblCapName">{{LBL_CAP_STICK}}</span>: <span class="val" id="valCap">1.5</span></label>
+                <input type="range" id="cap" min="0.1" max="10.0" step="0.01" value="1.5" 
+                       oninput="handleSlider(false)" onchange="handleSlider(true)" onmousemove="handleDrag(event)">
+            </div>
+            <div class="control-row">
+                <label>GyroAccelEnd: <span class="val" id="valEnd">180</span> {{UNIT_DEG}}</label>
+                <input type="range" id="end" min="5" max="250" step="1" value="180" 
+                       oninput="handleSlider(false)" onchange="handleSlider(true)" onmousemove="handleDrag(event)">
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-box" id="chartBox">
+        <canvas id="chartCanvas"></canvas>
+    </div>
+
+    <div class="info-panel" id="infoPanel"></div>
+//</div>
+
+<script>
+    var chart = null;
+    var currentMode = 'stick';
+    var storedSensStick = 100;
+    var storedSensMouse = 180;
+    var dpi = 1.0;
+	var isAccelEnabled = 1;
+    var memStart = 25, memEnd = 180, memCap = 2.5;
+    var btnTextEnable = '{{BTN_ENABLE}}', btnTextDisable = '{{BTN_DISABLE}}';
+
+    // Текстовые переменные для локализации
+    var i18n = {
+        sensStick: '{{LBL_SENS_STICK}}',
+        capStick: '{{LBL_CAP_STICK}}',
+        axisStick: '{{AXIS_STICK}}',
+        sensMouse: '{{LBL_SENS_MOUSE}}',
+        capMouse: '{{LBL_CAP_MOUSE}}',
+        axisMouse: '{{AXIS_MOUSE}}',
+        lineRawStick: '{{LINE_RAW_STICK}}',
+        lineCurvedStick: '{{LINE_CURVED_STICK}}',
+        lineRawMouse: '{{LINE_RAW_MOUSE}}',
+        lineCurvedMouse: '{{LINE_CURVED_MOUSE}}',
+        natCap: '{{INFO_NAT_CAP}}',
+		accelOff: '{{INFO_ACCEL_OFF}}',
+        degSec: '{{UNIT_DEG}}',
+		unitK: '{{UNIT_K}}',
+		protipPrefix: '{{LBL_PROTIP_PREFIX}}',
+        protipText: '{{LBL_PROTIP_TEXT}}',
+		jibbPrefix: '{{LBL_JIBB_PREFIX}}',
+        jibbText: '{{LBL_JIBB_TEXT}}',
+        warnTitle: '{{INFO_WARN_TITLE}}',
+        warnText: '{{INFO_WARN_TEXT}}',
+        stickDesc1: '{{INFO_STICK_DESC1}}',
+        stickDesc2: '{{INFO_STICK_DESC2}}',
+        stickDesc3: '{{INFO_STICK_DESC3}}',
+		mouseUpTo: '{{INFO_MOUSE_UPTO}}',
+        mouse1to1: '{{INFO_MOUSE_1TO1}}',
+        mouseFrom: '{{INFO_MOUSE_FROM}}',
+        mouseTo: '{{INFO_MOUSE_TO}}',
+        mouseInc: '{{INFO_MOUSE_INC}}',
+        mouseDec: '{{INFO_MOUSE_DEC}}',
+        mouseAt: '{{INFO_MOUSE_AT}}',
+        mouseTurns: '{{INFO_MOUSE_TURNS}}',
+        mouseNoAccel: '{{INFO_MOUSE_NO_ACCEL}}'
+    };
+
+    function handleSlider(isFinal) {
+        var sensVal = parseFloat(document.getElementById('sens').value);
+        if (currentMode === 'stick') {
+            storedSensStick = sensVal;
+        } else {
+            storedSensMouse = sensVal;
+        }
+        update();
+        sendToAHK(isFinal);
+    }
+
+    function handleDrag(e) {
+        if (e.buttons === 1) {
+            handleSlider(false);
+        }
+    }
+
+    function sendToAHK(isFinal) {
+        var sens = document.getElementById('sens').value;
+        var start = document.getElementById('start').value;
+        var end = document.getElementById('end').value;
+        var cap = document.getElementById('cap').value;
+        var ts = new Date().getTime();
+        document.title = 'AHK:' + ts + '|' + currentMode + '|' + sens + '|' + start + '|' + end + '|' + cap + '|' + isAccelEnabled + '|' + (isFinal ? 1 : 0);
+    }
+
+    function toggleAccel() {
+        if (isAccelEnabled) {
+            memStart = document.getElementById('start').value;
+            memEnd = document.getElementById('end').value;
+            memCap = document.getElementById('cap').value;
+        }
+        isAccelEnabled = isAccelEnabled ? 0 : 1;
+        applyAccelState();
+        update();
+        sendToAHK(true);
+    }
+
+    function applyAccelState() {
+        var btn = document.getElementById('btnToggle');
+		var title = document.querySelector('h3');
+        if (title) title.className = isAccelEnabled ? '' : 'title-disabled';
+        var inStart = document.getElementById('start');
+        var inEnd = document.getElementById('end');
+        var inCap = document.getElementById('cap');
+        
+        inStart.disabled = !isAccelEnabled;
+        inEnd.disabled = !isAccelEnabled;
+        inCap.disabled = !isAccelEnabled;
+
+        inStart.parentElement.className = isAccelEnabled ? 'control-row' : 'control-row row-disabled';
+        inEnd.parentElement.className = isAccelEnabled ? 'control-row' : 'control-row row-disabled';
+        inCap.parentElement.className = isAccelEnabled ? 'control-row' : 'control-row row-disabled';
+
+        if (isAccelEnabled) {
+            btn.className = 'toggle-btn btn-active';
+            btn.innerText = btnTextDisable;
+            inStart.value = memStart;
+            inEnd.value = memEnd;
+            inCap.value = memCap;
+        } else {
+            btn.className = 'toggle-btn btn-disabled';
+            btn.innerText = btnTextEnable;
+            inCap.value = 1.0;
+        }
+    }
+
+    function setMode(mode, notify) {
+        currentMode = mode;
+        var bStick = document.getElementById('btnStick');
+        var bMouse = document.getElementById('btnMouse');
+        if (bStick) bStick.className = (mode === 'stick') ? 'mode-btn active' : 'mode-btn';
+        if (bMouse) bMouse.className = (mode === 'mouse') ? 'mode-btn active' : 'mode-btn';
+
+        var lblS = document.getElementById('lblSensName');
+        var lblC = document.getElementById('lblCapName');
+        var sensInput = document.getElementById('sens');
+
+        if (mode === 'stick') {
+            sensInput.value = storedSensStick;
+            if (lblS) lblS.innerText = i18n.sensStick;
+            if (lblC) lblC.innerText = i18n.capStick;
+            if (chart && chart.options && chart.options.scales) {
+                chart.options.scales.yAxes[0].ticks.min = 0;
+                delete chart.options.scales.yAxes[0].ticks.stepSize;
+                //chart.options.scales.yAxes[0].scaleLabel.labelString = i18n.axisMouse;
+				chart.options.scales.yAxes[0].scaleLabel.labelString = i18n.axisStick;
+            }
+        } else {
+            sensInput.value = storedSensMouse;
+            if (lblS) lblS.innerText = i18n.sensMouse;
+            if (lblC) lblC.innerText = i18n.capMouse;
+            if (chart && chart.options && chart.options.scales) {
+                chart.options.scales.yAxes[0].ticks.min = 0;
+                delete chart.options.scales.yAxes[0].ticks.stepSize;
+                chart.options.scales.yAxes[0].scaleLabel.labelString = i18n.axisMouse;
+            }
+        }
+
+        if (notify) sendToAHK(true);
+        if (chart) update();
+    }
+
+    function calcPointStick(v, sens, start, end, cap) {
+        var baseMult = (sens * 0.002) / 15.0;
+        var rawMagCurrent = v * baseMult, rawMagStart = start * baseMult;
+        if (rawMagStart >= 1.0 || v <= start) return Math.min(1.0, rawMagCurrent);
+        if (v >= end) return 1.0;
+        var progress = (v - start) / (end - start);
+        var curve = 1.0 - Math.pow(1.0 - progress, cap);
+        return Math.min(1.0, rawMagStart + curve * (1.0 - rawMagStart));
+    }
+
+    function calcPointMouse(v, start, end, cap) {
+        if (v <= start) return 1.0;
+        if (v >= end) return cap;
+        var progress = (v - start) / (end - start);
+        return 1.0 + progress * (cap - 1.0);
+    }
+	
+	window.setSensFromAHK = function(val) {
+        var v = parseFloat(val);
+        if (isNaN(v)) return;
+        var inSens = document.getElementById('sens');
+        if (inSens) {
+            inSens.value = v;
+            if (currentMode === 'stick') storedSensStick = v;
+            else storedSensMouse = v;
+            update();
+        }
+    };
+	
+	function adjustChartHeight() {
+        var winH = document.documentElement.clientHeight || window.innerHeight || 430;
+        var header = document.querySelector('.header-row');
+        var ctrl = document.querySelector('.controls');
+        var info = document.getElementById('infoPanel');
+        var headerH = header ? header.offsetHeight : 28;
+        var ctrlH = ctrl ? ctrl.offsetHeight : 75;
+        var infoH = info ? info.offsetHeight : 65;
+        var chartH = Math.max(100, winH - (headerH + ctrlH + infoH + 18));
+        var box = document.getElementById('chartBox');
+        if (box) box.style.height = chartH + 'px';
+        if (chart) chart.resize();
+    }
+
+    function update() {
+        if (!chart) return;
+        var sens = parseFloat(document.getElementById('sens').value);
+        var inStart = document.getElementById('start');
+        var inEnd = document.getElementById('end');
+        var inCap = document.getElementById('cap');
+
+        if (!isAccelEnabled) {
+            inCap.value = 1.0;
+            if (currentMode === 'stick') {
+                var baseMult = 16.66 * 0.004 * (sens * 0.002);
+                inStart.value = (1.0 / baseMult).toFixed(1);
+            }
+        }
+        var start = parseFloat(inStart.value);
+        var end = parseFloat(inEnd.value);
+        var cap = parseFloat(inCap.value);
+
+        document.getElementById('valSens').innerText = sens;
+        document.getElementById('valStart').innerText = start;
+        document.getElementById('valEnd').innerText = end;
+        document.getElementById('valCap').innerText = cap.toFixed(2);
+
+        if (currentMode === 'stick') {
+            chart.options.scales.yAxes[0].ticks.stepSize = 0.125;
+            chart.options.scales.yAxes[0].ticks.max = 1.03;
+        } else {
+            delete chart.options.scales.yAxes[0].ticks.stepSize;
+            chart.options.scales.yAxes[0].ticks.max = Math.min(10.5, parseFloat((Math.max(1.0, cap) * 2.1).toFixed(2)));
+        }
+
+        var labels = [], rawLine = [], finalLine = [];
+        for (var v = 0; v <= 250; v += 1) {
+            labels.push(v);
+            if (currentMode === 'stick') {
+                rawLine.push(Math.min(1.0, (v * sens * 0.002) / 15.0));
+                finalLine.push(calcPointStick(v, sens, start, end, cap));
+            } else {
+                rawLine.push(1.0);
+                finalLine.push(calcPointMouse(v, start, end, cap));
+            }
+        }
+
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = rawLine;
+        chart.data.datasets[1].data = finalLine;
+        chart.data.datasets[0].label = (currentMode === 'stick') ? i18n.lineRawStick : i18n.lineRawMouse;
+        chart.data.datasets[1].label = (currentMode === 'stick') ? i18n.lineCurvedStick : i18n.lineCurvedMouse;
+		
+        chart.data.datasets[1].hidden = !isAccelEnabled;
+		
+        chart.update(0);
+
+        var infoText = '';
+        if (currentMode === 'stick') {
+            var baseMult = (sens * 0.002) / 15.0;
+            var naturalCapSpeed = (1.0 / baseMult).toFixed(1);
+            var startMag = (start * baseMult * 100).toFixed(0);
+
+            infoText = i18n.natCap + ' <b style="color:#cf222e">' + naturalCapSpeed + ' ' + i18n.degSec + '</b>.<br>';
+            if (!isAccelEnabled) {
+                infoText += '<span style="color:#cf222e;">' + i18n.accelOff + '</span>';
+            } else if (start >= parseFloat(naturalCapSpeed)) {
+                infoText += '<span style="color:#cf222e"><b>' + i18n.warnTitle + '</b> Start (' + start + ') ' + i18n.warnText + '</span>';
+            } else {
+                infoText += i18n.stickDesc1 + ' <b>' + start + ' ' + i18n.degSec + '</b> ' + i18n.stickDesc2 + ' <b>' + startMag + '%</b> ' + i18n.stickDesc3 + ' <b>' + end + ' ' + i18n.degSec + '</b>.';
+            }
+        } else {
+            if (!isAccelEnabled) {
+                infoText = '<span style="color:#cf222e;">' + i18n.accelOff + '</span>';
+            } else {
+                var equivSpeed = Math.round(end * cap);
+                var verb = (cap >= 1.0) ? i18n.mouseInc : i18n.mouseDec;
+
+                infoText = i18n.mouseUpTo + ' <b>' + start + ' ' + i18n.degSec + '</b> ' + i18n.mouse1to1 + ' = <b>' + sens + '</b>).<br>' +
+                           i18n.mouseFrom + ' <b>' + start + '</b> ' + i18n.mouseTo + ' <b>' + end + ' ' + i18n.degSec + '</b> ' + verb + ' <b>' + cap.toFixed(2) + 'x</b>' +
+                           i18n.mouseAt + ' <b>' + end + ' ' + i18n.degSec + '</b> ' + i18n.mouseTurns + ' <b>' + equivSpeed + ' ' + i18n.degSec + '</b> ' + i18n.mouseNoAccel;
+            }
+        }
+		
+		//infoText += '<br><span style="color:#2da44e;">' + i18n.jibbPrefix + '</span> <span>' + i18n.jibbText + '</span>';
+		/*if (isAccelEnabled) {
+            infoText += '<br><span style="color:#2da44e;">' + i18n.jibbPrefix + '</span> <span>' + i18n.jibbText + '</span>';
+        }
+        infoText += '<br><span style="color:#2da44e;">' + i18n.protipPrefix + '</span> <span>' + i18n.protipText + '</span>';
+        document.getElementById('infoPanel').innerHTML = infoText;*/
+		
+		infoText += '<br><span style="color:#2da44e; font-weight:bold;">' + i18n.protipPrefix + '</span>';
+        infoText += '<br><span>' + i18n.protipText + '</span>';
+        if (isAccelEnabled) {
+            infoText += '<br><span>' + i18n.jibbText + '</span>';
+        }
+		
+		/*infoText += '<br><span style="color:#2da44e; font-weight:bold;">' + i18n.protipPrefix + '</span>';
+        infoText += '<br><span>' + i18n.protipText + '</span>';
+        infoText += '<br><span>' + i18n.jibbText + '</span>';*/
+
+        document.getElementById('infoPanel').innerHTML = infoText;
+        adjustChartHeight();
+    }
+
+    window.onload = function() {
+        if (window.location.hash && window.location.hash.length > 1) {
+            var p = decodeURIComponent(window.location.hash.substring(1)).split('|');
+            currentMode = p[0] || 'stick';
+            if (p[1]) storedSensStick = parseFloat(p[1]);
+            if (p[2]) storedSensMouse = parseFloat(p[2]);
+            if (p[3]) memStart = document.getElementById('start').value = p[3];
+            if (p[4]) memEnd = document.getElementById('end').value = p[4];
+            if (p[5]) memCap = document.getElementById('cap').value = p[5];
+            if (p[6]) dpi = parseFloat(p[6]) || 1.0;
+            if (p[7] !== undefined) isAccelEnabled = parseInt(p[7]);
+        }
+        applyAccelState();
+
+		var baseFont = Math.round(13.5 * dpi);
+        document.body.style.fontSize = baseFont + 'px';
+
+       /* function adjustChartHeight() {
+            var winH = window.innerHeight || document.documentElement.clientHeight || 430;
+            var headerH = document.querySelector('.header-row').offsetHeight || 28;
+            var ctrlH = document.querySelector('.controls').offsetHeight || 75;
+            var infoH = document.getElementById('infoPanel').offsetHeight || 45;
+            var chartH = Math.max(140, winH - (headerH + ctrlH + infoH + 34));
+            document.getElementById('chartBox').style.height = chartH + 'px';
+            if (chart) chart.resize();
+        }*/
+        adjustChartHeight();
+
+        if (typeof Chart === 'undefined') {
+            document.getElementById('infoPanel').innerHTML = '<span style="color:red;"><b>Warning:</b> Chart.min.js not found in Icons folder!</span>';
+            return;
+        }
+
+        var ctx = document.getElementById('chartCanvas').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { borderColor: '#8c959f', borderDash: [4, 4], borderWidth: Math.round(1.5 * dpi), pointRadius: 0, fill: false },
+                    { borderColor: '#0969da', backgroundColor: 'rgba(9, 105, 218, 0.08)', borderWidth: Math.round(2.5 * dpi), pointRadius: 0, fill: true }
+                ]
+            },
+            options: {
+                devicePixelRatio: dpi,
+                responsive: true,
+                maintainAspectRatio: false,
+                //legend: { labels: { fontColor: '#24292f', fontSize: Math.round(11 * dpi), boxWidth: Math.round(14 * dpi) } },
+				hover: { mode: 'index', intersect: false },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(50, 56, 62, 0.15)',
+                    titleFontColor: '#ffffff',
+                    bodyFontColor: '#ffffff',
+                    titleFontSize: Math.round(11 * dpi),
+                    bodyFontSize: Math.round(11 * dpi),
+                    xPadding: Math.round(8 * dpi),
+                    yPadding: Math.round(8 * dpi),
+                    caretSize: Math.round(5 * dpi),
+                    cornerRadius: Math.round(4 * dpi),
+                    callbacks: {
+                        title: function(items) {
+                            return items[0].xLabel + ' ' + i18n.degSec;
+                        },
+                        label: function(item, data) {
+                            var dsLabel = data.datasets[item.datasetIndex].label || '';
+                            if (currentMode === 'stick') {
+                                return dsLabel + ': ' + Math.min(32768, Math.round(item.yLabel * 32768));
+                            }
+                            return dsLabel + ': ' + parseFloat(item.yLabel).toFixed(2) + 'x';
+                        }
+                    }
+                },
+                legend: { labels: { fontColor: '#24292f', fontSize: Math.round(11 * dpi), boxWidth: Math.round(14 * dpi) } },
+                scales: {
+                    xAxes: [{ 
+						ticks: { fontColor: '#57606a', fontSize: Math.round(10.5 * dpi) }, 
+						gridLines: { color: '#e1e4e8' },
+						scaleLabel: { display: true, labelString: i18n.degSec, fontColor: '#57606a', fontSize: Math.round(11 * dpi) }
+					}],
+                    yAxes: [{ 
+						ticks: { 
+							min: 0, 
+							fontColor: '#57606a', 
+							fontSize: Math.round(10.5 * dpi),
+							callback: function(val) {
+								//if (currentMode !== 'stick') return val;
+								if (currentMode !== 'stick') return val.toFixed(1) + 'x';
+								if (val === 0) return 0;
+								if (val > 1.0) return '';
+								if (val === 1.0) return 'max';
+								if (val === 0.125) return '4' + i18n.unitK;	// не работает
+								if (val === 0.25) return '8' + i18n.unitK;
+								if (val === 0.375) return '12' + i18n.unitK;	// не работает
+								if (val === 0.5) return '16' + i18n.unitK;
+								if (val === 0.625) return '20' + i18n.unitK;	// не работает
+								if (val === 0.75) return '24' + i18n.unitK;
+								if (val === 0.875) return '28' + i18n.unitK;	// не работает
+								return Math.round(val * 32.768) + i18n.unitK;
+							}
+						}, 
+						gridLines: { color: '#e1e4e8' }, 
+						scaleLabel: { display: true, fontColor: '#57606a', fontSize: Math.round(11 * dpi) } 
+					}]
+                }
+            }
+        });
+        setMode(currentMode, false);
+		adjustChartHeight();
+    };
+</script>
+</body>
+</html>
