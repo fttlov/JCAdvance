@@ -362,6 +362,8 @@ __________
 
 Теперь по умолчанию 250hz (sleepTimeout=4 в config.ini; 1 sec = 1000ms / 4) <br>
 
+⚠️ 500 Гц режим добавлен для польльзователей DualSense
+
 <details>
     <summary>Почему именено 250 Гц</summary>
 
