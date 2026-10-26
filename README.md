@@ -360,6 +360,8 @@ For example, the Magic Wheel feature previously dropped virtual button inputs at
 
 Default rate is now **250 Hz** (`sleepTimeout=4` in `config.ini`).
 
+⚠️ A 500 Hz mode has been added for DualSense users
+
 <details>
   <summary>Why exactly 250 Hz</summary>
 
