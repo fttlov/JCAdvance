@@ -406,7 +406,7 @@ Internal emulator cycle rates: **500 Hz** (2ms), **250 Hz** (4 ms), **125 Hz** (
 
 Rule of thumb: **Emulator processing frequency should equal or exceed physical packet arrival frequency.**
 
-⚠️ A 500 Hz mode has been added for DualSense users, 1000 Hz makes no sense (1ms vs 2ms)
+⚠️ According to the rule, the DualSense would require 1000 Hz, but even at 500 Hz there’s more than enough data — no one can tell the difference between 1 ms and 2 ms. However, you can still manually set SleepTimeOu = 1
 
 * **When emulator loop is slower than device rate (e.g., 125 Hz loop with 160 Hz Mobapad):**
   Packets arrive every 6.25 ms, but are fetched only every 8 ms. Packets buffer unevenly, producing micro-stutter and unstable input latency.
