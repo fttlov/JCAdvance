@@ -944,6 +944,7 @@ __________
 * [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 * [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller .svg interactive image.
+* [Chart.js](https://www.chartjs.org/) — Flexible, open-source HTML5 charting library for designers & developers.  Copyright (c) Chart.js Contributors. Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 <details>
   <summary><h3>Сборка</h3> (развернуть)</summary>
