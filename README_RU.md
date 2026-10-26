@@ -941,7 +941,8 @@ __________
 * [ViGEm](https://github.com/nefarius/ViGEmBus) for the ability to emulate various gamepads and [HidHide](https://github.com/nefarius/HidHide/) for hiding them.
 * [HIDAPI library](https://github.com/signal11/hidapi) with [fixes](https://github.com/libusb/hidapi) for the library to work with a USB devices. The project uses this [fork](https://github.com/r57zone/hidapi).
 * DS4Windows[[1]](https://github.com/Jays2Kings/DS4Windows)[[2]](https://github.com/Ryochan7/DS4Windows) for the battery level.
-* [JoyCon-Driver](https://github.com/fossephate/JoyCon-Driver/blob/main/joycon-driver/include/Joycon.hpp) for Joy-Cons rumble.
+* [The SDL Project](https://github.com/libsdl-org/SDL) — Nintendo Switch HD Rumble logarithmic amplitude tables and hardware encoding logic are based on the SDL3 implementation (zlib license).
+* [dekuNukem](https://github.com/dekuNukem) & Daniel J. Ogorchock — For the foundational [Nintendo Switch Reverse Engineering](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering) repository and the `hid-nintendo` Linux kernel driver.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 * [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller .svg interactive image.
 * [Chart.js](https://www.chartjs.org/) — Flexible, open-source HTML5 charting library for designers & developers.  Copyright (c) Chart.js Contributors. Licensed under the [MIT License](https://opensource.org/licenses/MIT).
