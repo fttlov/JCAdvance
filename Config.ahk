@@ -198,7 +198,24 @@ DllCall("SendMessage", "Ptr", MainGui.Hwnd, "UInt", 0x000B, "Ptr", 0, "Ptr", 0) 
 
 ; --- ГЛОБАЛЬНЫЙ ШРИФТ ---
 ;MainGui.SetFont("s10")
-MainGui.SetFont("s10 q5", "Segoe UI")
+;MainGui.SetFont("s10 q5", "Segoe UI")
+;Global GuiFontSize := (A_ScreenDPI == 120) ? "s9.0" : "s10"
+;MainGui.SetFont(GuiFontSize " q5", "Segoe UI")
+
+; --- ГЛОБАЛЬНЫЙ ШРИФТ И УМНЫЙ ПЕРЕХВАТЧИК (Calibri s11 для 120 DPI) ---
+Global GuiFontSize := (A_ScreenDPI == 120) ? "s11" : "s10"
+
+SmartSetFont(guiObj, opts := "", font := "") {
+    if (A_ScreenDPI == 120) {
+        opts := StrReplace(opts, "s10", "s11")
+        if (font == "Segoe UI" || font == "")
+            font := "Calibri"
+    }
+    Gui.Prototype.SetFont.Call(guiObj, opts, font)
+}
+MainGui.DefineProp("SetFont", { Call: SmartSetFont })
+
+MainGui.SetFont(GuiFontSize " q5", (A_ScreenDPI == 120) ? "Calibri" : "Segoe UI")
 
 ; --- ДИНАМИЧЕСКИЙ СПИСОК ВКЛАДОК ---
 Global TabList := ["Xbox"]
@@ -992,9 +1009,9 @@ for key in WheelMapping {
 yPos += 1
 keyDead := "MotionWheelButtonsDeadZone"
 valDead := IniRead(A_ScriptDir "\" ConfigIni, "Motion", keyDead, "12")
-MainGui.SetFont("Bold")
+;MainGui.SetFont("Bold")
 MainGui.Add("Text", "x200 y" (yPos+4) " w250", T("Wheel Gesture DeadZone") ":")
-MainGui.SetFont("Norm")
+;MainGui.SetFont("Norm")
 edtDead := MainGui.Add("Edit", "x410 y" yPos " w45", valDead)
 
 try {
@@ -1118,9 +1135,9 @@ radKbmSprint.OnEvent("Click", ChangeWheelList.Bind(ddlSprint, KbmKeys))
 ; 2. AutoPressStickValue
 yPos += 26
 valStick := IniRead(A_ScriptDir "\" XboxIni, "SETTINGS", "AutoPressStickValue", "90")
-MainGui.SetFont("Bold")
+;MainGui.SetFont("Bold")
 MainGui.Add("Text", "x200 y" (yPos+3) " w250", T("Auto Press Stick Value (%)") ":")
-MainGui.SetFont("Norm")
+;MainGui.SetFont("Norm")
 MainGui.Add("Text", "x520 y" (yPos+3) " w150", T("(see 'Analog' tab)"))
 edtStick := MainGui.Add("Edit", "x410 y" yPos " w45", valStick)
 
@@ -1186,48 +1203,48 @@ Tabs.UseTab("Hotkeys")
 
 ; --- БОЛЬШАЯ ГРУППА 1: Gamepad Hotkeys ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x180 y50 w495 h335 Center Section", T("Gamepad Hotkeys"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI") ; Сброс на стандартный шрифт
+MainGui.Add("GroupBox", "x180 y50 w500 h335 Center Section", T("Gamepad Hotkeys"))
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI") ; Сброс на стандартный шрифт
 
 ; Подгруппа 1.1: Aiming
 MainGui.SetFont("Bold")
 MainGui.Add("Text", "xs+25 ys+23 w450", T("Look/Aim"))
-MainGui.SetFont("Norm s10")
+MainGui.SetFont("Norm " GuiFontSize)
 
 ; Хоткеи подгруппы Aiming (позиционируются автоматически друг под другом)
-AddHotkey(XboxIni, "SETTINGS", "AimingToggleButton", T("Gyro Controls (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+8", 235)
-AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Motion Aiming Button:"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
-AddHotkey(XboxIni, "SETTINGS", "AimingPressModeToggleButton", T("Toggle Aiming Button Behavior:"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
-AddHotkey(XboxIni, "SETTINGS", "AimingModeToggleButton", T("Switch Gyro Emulation (Mouse/Stick):"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
+AddHotkey(XboxIni, "SETTINGS", "AimingToggleButton", T("Gyro Controls (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+8", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Motion Aiming Button:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingPressModeToggleButton", T("Toggle Aiming Button Behavior:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingModeToggleButton", T("Switch Gyro Emulation (Mouse/Stick):"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
 
 ; тонкая горизонтальная линия-разделитель
-MainGui.Add("Text", "xs+25 y+15 w430 h2 0x10")
+MainGui.Add("Text", "xs+25 y+15 w450 h2 0x10")
 
 ; Подгруппа 1.2: Driving
 MainGui.SetFont("Bold")
 MainGui.Add("Text", "xs+25 y+10 w450", T("Driving"))
-MainGui.SetFont("Norm s10")
+MainGui.SetFont("Norm " GuiFontSize)
 
-AddHotkey(XboxIni, "SETTINGS", "DrivingToggleButton", T("Driving Mode (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
-AddHotkey(XboxIni, "SETTINGS", "DrivingCalibrationButton", T("Wheel Centering / Recalibration:"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
+AddHotkey(XboxIni, "SETTINGS", "DrivingToggleButton", T("Driving Mode (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
+AddHotkey(XboxIni, "SETTINGS", "DrivingCalibrationButton", T("Wheel Centering / Recalibration:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
 
-MainGui.Add("Text", "xs+25 y+15 w430 h2 0x10")
+MainGui.Add("Text", "xs+25 y+15 w450 h2 0x10")
 
 MainGui.SetFont("Bold")
 MainGui.Add("Text", "xs+25 y+10 w450", T("Misc"))
-MainGui.SetFont("Norm s10")
-AddHotkey(XboxIni, "SETTINGS", "RightStickModeButton", T("Cycle Right Stick Modes:"), LayoutKeys, BindGamepad, "xs+25 y+10", 235)
+MainGui.SetFont("Norm " GuiFontSize)
+AddHotkey(XboxIni, "SETTINGS", "RightStickModeButton", T("Cycle Right Stick Modes:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
 
 ; --- БОЛЬШАЯ ГРУППА 2: Keyboard Hotkeys ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x180 y+30 w495 h160 Center Section", T("Keyboard Hotkeys"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.Add("GroupBox", "x180 y+30 w500 h160 Center Section", T("Keyboard Hotkeys"))
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddHotkey(ConfigIni, "SETTINGS", "ResetKey", T("Reset/Reconnect Gamepad:"), KbmKeys, BindKbm, "xs+25 ys+40", 235)
+AddHotkey(ConfigIni, "SETTINGS", "ResetKey", T("Reset/Reconnect Gamepad:"), KbmKeys, BindKbm, "xs+25 ys+40", 240)
 ;yPos += 30
-AddHotkey(ConfigIni, "SETTINGS", "GyroCalibrateKey", T("Gyroscope Recalibration¹:"), KbmKeys, BindKbm, "xs+25 ys+67", 235)
-AddHotkey(ConfigIni, "SETTINGS", "AccelCalibrateKey", T("Accelerometer Recalibration¹:"), KbmKeys, BindKbm, "xs+25 ys+94", 235)
-AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-Screen Display (On/Off):"), KbmKeys, BindKbm, "xs+25 ys+121", 235)
+AddHotkey(ConfigIni, "SETTINGS", "GyroCalibrateKey", T("Gyroscope Recalibration¹:"), KbmKeys, BindKbm, "xs+25 ys+67", 240)
+AddHotkey(ConfigIni, "SETTINGS", "AccelCalibrateKey", T("Accelerometer Recalibration¹:"), KbmKeys, BindKbm, "xs+25 ys+94", 240)
+AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-Screen Display (On/Off):"), KbmKeys, BindKbm, "xs+25 ys+121", 240)
 
 MainGui.Add("Text", "x25 y+12 w100 cGreen", T("Pro Tip:"))
 MainGui.Add("Text", "x25 y+1 w820", T("- Save a button: bind 'Aiming Button' to a key with 'LongPress' MUTE. Tap for in-game action, hold for Motion control with NO delay"))
@@ -1248,7 +1265,7 @@ Tabs.UseTab("Gyro")
 ; --- Группа 1: Поведение и общие настройки ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x205 y50 w430 h275 Center Section", T("Behavior and Settings"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; 8-й параметр (210) = ширина текста, 9-й параметр (140) = ширина выпадающего списка
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingMode", T("Default Gyro Emulation:"), [T("Stick"), T("Mouse")], Map(T("Stick"), "0", T("Mouse"), "1"), "xs+25 ys+45", 220, 60)
@@ -1293,7 +1310,7 @@ MainGui.Add("Text", "x25 y+3 w820", T("2 — Twist the controller like tank stee
 MainGui.SetFont("bold")
 MainGui.Add("Text", "x25 y+10", T("For Joy-Con.") " ")
 MainGui.SetFont("norm")
-MainGui.Add("Text", "x+0 w820", T("Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Controls: nose up/down — Pitch;"))
+MainGui.Add("Text", "x+0 w810", T("Imagine the Joy-Con as an airplane: ZR is the nose, ABXY is the roof. Controls: nose up/down — Pitch;"))
 MainGui.Add("Text", "x25 y+0 w820", T("nose left/right — Yaw; twisting around the nose axis ('screwdriver' gesture) — Roll. Behavior in different modes:"))
 
 MainGui.Add("Text", "x25 y+8 w820", T("0 — At Roll > 0, Pitch and Yaw axes skew. Requires keeping the Joy-Con level at all times (gyroscope only mode)"))
@@ -1405,7 +1422,7 @@ wbAccel.Navigate("file:///" . StrReplace(localHtmlPath, "\", "/") . "#" . initPa
 ; --- Группа 1: Чувствительность и фильтрация ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x15 y510 w815 h143 Center Section", T("Sensitivity and Filters"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; Включаем левый спиннер (последний параметр - true)
 
@@ -1430,11 +1447,9 @@ if CtrlSettings.Has(XboxIni "_SETTINGS_JoySensX") {
 if CtrlSettings.Has(XboxIni "_SETTINGS_JoySensY")
     CtrlSettings[XboxIni "_SETTINGS_JoySensY"].ctrl.OnEvent("Change", UpdateRatio.Bind("stick"))
 
-MainGui.Add("Text", "x15 y670 cRed", T("¹ EMA"))
-MainGui.Add("Text", "x+0 w820", T(": Smoothing time to reach 100% and decelerate to 0% speed (value - time): 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
+MainGui.Add("Text", "x15 y670 cRed", T("¹ EMA Filter"))
+MainGui.Add("Text", "x+0 w820", T(": Smoothing time to reach 100% and decelerate to 0% speed (value - time): 0 - off; 25   ~2.7ms;   50   ~8ms;   75   ~24ms"))
 
-;MainGui.Add("Text", "x25 y+4 cGreen", T("Pro Tip"))
-;MainGui.Add("Text", "x+0 w820", T(": You can check your real-time and peak gyro velocity in the OSD (Gyro: °/s)"))
 
 ; =========================================
 ; TAB 7:Analog (config.ini)
@@ -1444,7 +1459,7 @@ Tabs.UseTab("Analog")
 ; --- Группа 1: LEFT HAND (Левая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x30 y50 w380 h290 Center Section", T("LEFT"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("Trigger DeadZone :"), , "xs+108 ys+35", 112, 42, true)
 AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickX", T("Stick X DeadZone :"), , "xs+110 y+6", 110, 42, true)
@@ -1459,7 +1474,7 @@ AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Stick Y"), "xs+181 
 ; --- Группа 2: RIGHT HAND (Правая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x435 y50 w380 h290 Center Section", T("RIGHT"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; Включаем левый спиннер (true в самом конце)
 
@@ -1487,10 +1502,10 @@ AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Stick Y"), "xs+191
 
 ; --- Группа 3: HARDWARE SWAPS (Центрирована, построчно) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x185 y+45 w480 h210 Center Section", T("Hardware Swaps"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.Add("GroupBox", "x185 y+45 w480 h213 Center Section", T("Hardware Swaps"))
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+135 ys+35")
+AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+135 ys+33")
 AddToggle(XboxIni, "SETTINGS", "SWAP-TRIGGERS", T("Swap Left and Right Triggers"), "xs+135 y+8")
 AddToggle(XboxIni, "SETTINGS", "GyroApplyAntiDeadZone", T("Apply AntiDeadZone to Gyro Stick"), "xs+120 y+8")
 ;AddToggle(XboxIni, "SETTINGS", "GyroApplyLinearity", T("Apply Response Сurve to Gyro Stick"), "xs+120 y+8")
@@ -1545,7 +1560,16 @@ ddlRSMode := MainGui.Add("DropDownList", "x+10 yp-3 w110 Choose1", [T("standard"
 ddlRSMode.Text := RSModeRevMap[valRSMode]
 CtrlSettings["RightStickMode"] := {type: "mapped_ddl", ctrl: ddlRSMode, file: XboxIni, sec: "SETTINGS", valMap: RSModeMap}
 
-MainGui.Add("Text", "xs+85 y+10 w170", T("Next  Right Stick Mode") ":")
+;MainGui.Add("Text", "xs+85 y+10 w170", T("Next  Right Stick Mode") ":")
+if (A_ScreenDPI == 120) {
+    optRS := "xs+92 y+10 w163" ; <--- Настраивай x, y, w для 125% DPI здесь
+} else {
+    optRS := "xs+85 y+10 w170" ; <--- Стандартные x, y, w для всех остальных экранов
+}
+txtRS := MainGui.Add("Text", optRS, T("Next  Right Stick Mode") ":")
+if (A_ScreenDPI == 120)
+    txtRS.SetFont("s10")
+
 ddlRSNext := MainGui.Add("DropDownList", "x+10 yp-3 w110 Choose1", [T("full cycle")])
 MainGui.Add("Text", "x+5 yp+1", T("(hotkey)"))
 
@@ -1610,7 +1634,7 @@ ddlRSNext.OnEvent("Change", (*) => UpdateRSModes(false))
 UpdateRSModes(true)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x15 y557 w120 cRed", T("¹ Linearity"))
+MainGui.Add("Text", "x15 y559 w120 cRed", T("¹ Linearity"))
 MainGui.Add("Text", "x25 y+0 w490", T("Stick Response Curve:"))
 MainGui.Add("Text", "x25 y+1 w490", T("0: Lower sensitivity near the center for precise aiming"))
 MainGui.Add("Text", "x25 y+1 w490", T("50: Perfectly linear response 1:1 (Default)"))
@@ -1630,16 +1654,18 @@ Tabs.UseTab("Driving")
 
 ; --- ГРУППА 1: Wheel settings (Driving mode) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y65 w480 h120 Center Section", T("Driving mode"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.Add("GroupBox", "x175 y65 w480 h220 Center Section", T("Driving mode"))
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 AddInput(XboxIni, "SETTINGS", "SteeringWheelAngle", T("Steering Wheel Angle:"), , "xs+135 ys+40", 160, 50, true, "0-360")
 AddInput(XboxIni, "SETTINGS", "LinearityWheel", T("Steering Wheel Linearity:"), , "xs+135 y+10", 160, 50)
 
+MainGui.Add("Picture", "x290 y+20 w260 h75", A_ScriptDir "\Icons\linearity.png")
+
 ; --- ГРУППА 2: External Pedals Settings ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x175 y+50 w480 h225 Center Section", T("External Pedals¹ Settings"))
-MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
+MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 AddMappedDropdown(ConfigIni, "ExternalPedals", "DInput", T("DirectInput Search:"), [T("On"), T("Off")], Map(T("On"), "1", T("Off"), "0"), "xs+135 ys+40", 160, 55)
 
@@ -1658,7 +1684,7 @@ AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal2Axis", T("Pedal 2 Axis:"),
 MainGui.Add("Text", "xs+135 y+15 w120", T("Device Name:"))
 AddInput(ConfigIni, "ExternalPedals", "DeviceName", T(""), "AUTO", "xs+125 y+15", 0, 225, false)
 
-MainGui.Add("Text", "x15 y+178 w820 cRed", T("¹ External Pedals:"))
+MainGui.Add("Text", "x15 y585 w820 cRed", T("¹ External Pedals:"))
 MainGui.Add("Text", "x25 y+3 w820", T("Use pedals as analog triggers. Note: This is an experimental feature; proper functioning is not guaranteed."))
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))
@@ -1849,13 +1875,23 @@ MainGui.Add("GroupBox", "x175 y+48 w480 Center h200 Section", T("Misc"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
 AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength:"), , "xs+125 ys+35", 165, 50)
+MainGui.Add("Text", "xs+360 ys+34", T("(%)"))
 AddInput(ConfigIni, "Gamepad", "LongPressTimeOut", T("LongPress Button delay:"), , "xs+125 ys+65", 165, 50, true, "0-999")
 MainGui.Add("Text", "xs+360 ys+63", T("(ms)"))
 
 AddMappedDropdown(ConfigIni, "SETTINGS", "OsdType", T("OSD Type:"), [T("AHK"), T("RTSS")], Map(T("AHK"), "0", T("RTSS"), "1"), "xs+125 ys+97", 165, 50)
 
+
 AddInput(ConfigIni, "SETTINGS", "OsdPosX", T("RTSS OSD Pos X:"), "20", "xs+125 ys+125", 165, 50, true, "0-4000")
 AddInput(ConfigIni, "SETTINGS", "OsdPosY", T("RTSS OSD Pos Y:"), "20", "xs+125 ys+155", 165, 50, true, "0-4000")
+
+ToggleOsdPos := (ctrl, *) => (
+    isRtss := (ctrl.Text == T("RTSS")),
+    CtrlSettings[ConfigIni "_SETTINGS_OsdPosX"].ctrl.Enabled := isRtss,
+    CtrlSettings[ConfigIni "_SETTINGS_OsdPosY"].ctrl.Enabled := isRtss
+)
+CtrlSettings[ConfigIni "_SETTINGS_OsdType"].ctrl.OnEvent("Change", ToggleOsdPos)
+ToggleOsdPos(CtrlSettings[ConfigIni "_SETTINGS_OsdType"].ctrl)
 
 ; --- Группа 3: Special Settings ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
