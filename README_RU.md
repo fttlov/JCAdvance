@@ -1,4 +1,4 @@
-[![EN](Icon/en.png)](https://github.com/fttlov/JCAdvance)
+[![EN](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/en.png)](https://github.com/fttlov/JCAdvance)
 ← En
 
 ## Что это:
