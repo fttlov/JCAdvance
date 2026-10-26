@@ -83,14 +83,6 @@
 - Reworked Driving Mode: eliminated extreme-angle steering flips, added on-the-fly wheel re-centering button
 - DirectInput DualShock 4 emulation option instead of XInput Xbox 360 (Nintendo controllers only) for classic PC games
 - (Experimental) Support for external DirectInput steering wheels and pedal sets (see [technical info](#tech-info))
-- Clean 3-tier console launcher menu with live status monitoring and hotkey reference
-
-<table align="center">
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main1_en.png" width="150"></td>
-    <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Main2_en.png" width="150"></td>
-  </tr>
-</table>
 
 </details>
 
