@@ -78,7 +78,7 @@
 - Left-handed Gyro option: read motion sensors strictly from the Left Joy-Con in combined dual Joy-Con mode
 - Gesture recognition: map virtual buttons to a physical punch/melee gesture with adjustable G-Force trigger threshold<br>
 - 'Stick as Triggers' and 'Stick as Buttons' modes with custom hotkey mode cycling (A ⇄ B toggle or full cycle)
-- Radial Anti-Deadzone for hardware analog sticks and optional pass-through for Gyro Stick
+- Radial Anti-Deadzone for hardware analog sticks and optional for Gyro Stick
 - Response curve shaping (Linearity) for physical sticks and virtual Gyro Steering Wheel
 - Reworked Driving Mode: eliminated extreme-angle steering flips, added on-the-fly wheel re-centering button
 - DirectInput DualShock 4 emulation option instead of XInput Xbox 360 (Nintendo controllers only) for classic PC games
