@@ -956,7 +956,7 @@ __________
 3. Скачать Windows SDK 10.0.1776.x и [установить](https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/SDK_Install.png) (добавить x64 при необходимости) <br>
    Если уже установлен SDK новее, сделать Retarget Solution
 4. Открыть DSAdvance.vcxproj, выберать `Release` build type, `x86` или `x64` архитектуру и скомпелировть проект
-5. Для компиляции Config.ahk использовать Ahk2exe с base file: v2 U32  или U64. Скрипту нужны: JoyShockLibrary.dll в корне и иконки из папки `\Icon` <br>
+5. Для компиляции Config.ahk использовать Ahk2exe с base file: v2 U32  или U64. Скрипту нужны: JoyShockLibrary.dll в корне и файлы из папки `\Icons` <br>
    JCadvance, Joyshocklibrary.dll и Config.exe должны быть одинаковой разрядности
 
 ### Редактирование
