@@ -743,7 +743,7 @@ Gyro aiming requires an activation button. To avoid sacrificing in-game button f
 2. In `LongPress`, set the same button to **`MUTE`**.
 3. In the **Hotkeys** tab, bind `X` as the `Motion Aiming Button`.
 
-**Result:** A quick tap triggers the in-game action (flashlight/relaod), while holding activates Gyro Aiming Button **instantly (with zero lag, bypassing the 150 ms ratchet timer)** without triggering unwanted in-game button presses.<br>
+**Result:** A quick tap triggers the in-game action (flashlight/relaod), while holding activates Gyro Aiming Button **instantly (with zero lag, bypassing the Threshold 200 ms ratchet timer)** without triggering unwanted in-game button presses.<br>
 Full gyro activation without losing a single gamepad button!
 
 > ⚠️ *Note: Assigning any action to `LongPress` removes continuous holding capability from the `Regular` action — it always executes as a single click on release.*
