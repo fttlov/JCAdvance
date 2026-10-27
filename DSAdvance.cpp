@@ -39,12 +39,14 @@ void ClearRTSS() {
 
 	if (g_rtssSlot >= 1 && g_rtssSlot < arrSize) {
 		LPBYTE ptr = g_pRTSS + entryOffset + g_rtssSlot * entrySize;
-		((char*)ptr)[0] = '\0';
-		((char*)(ptr + 256))[0] = '\0';
-		if (entrySize >= 4608) ((char*)(ptr + 512))[0] = '\0';
+		((char*)ptr)[0] = '\0';                 // Очищаем szOSD (смещение 0)
+		((char*)(ptr + 256))[0] = '\0';         // Очищаем szOSDOwner (смещение 256)
+		if (entrySize >= 4608) {
+			((char*)(ptr + 512))[0] = '\0';     // Очищаем szOSDEx (смещение 512)
+		}
 		g_rtssSlot = 0;
 	}
-	(*(DWORD*)(g_pRTSS + 0x20))++;
+	(*(DWORD*)(g_pRTSS + 0x20))++; // Форсируем обновление экрана в RTSS
 }
 
 void CloseRTSS() {
@@ -84,13 +86,17 @@ void UpdateRTSS(const char* text) {
 	DWORD entryOffset = *(DWORD*)(g_pRTSS + 0x18);
 	DWORD arrSize = *(DWORD*)(g_pRTSS + 0x1C);
 
-	// Ищем свободный слот (не конфликтуя с OverlayEditor)
+	// Ищем наш слот или первый свободный
 	if (g_rtssSlot == 0 || g_rtssSlot >= arrSize) {
 		for (DWORD i = 1; i < arrSize; i++) {
 			LPBYTE ptr = g_pRTSS + entryOffset + i * entrySize;
-			if (((char*)ptr)[0] == '\0') {
+			char* owner = (char*)(ptr + 256); // Имя владельца строго на смещении 256!
+			if (strcmp(owner, "JCAdvance") == 0) {
 				g_rtssSlot = i;
 				break;
+			}
+			if (owner[0] == '\0' && g_rtssSlot == 0) {
+				g_rtssSlot = i;
 			}
 		}
 	}
@@ -98,10 +104,13 @@ void UpdateRTSS(const char* text) {
 
 	LPBYTE target = g_pRTSS + entryOffset + g_rtssSlot * entrySize;
 
-	// Имя владельца оставляем пустым, чтобы RTSS не лепил заголовок на экран
+	// 1. Старый буфер szOSD (смещение 0): оставляем пустым
 	((char*)target)[0] = '\0';
 
-	strncpy_s((char*)(target + 256), 256, text, _TRUNCATE);
+	// 2. Владелец szOSDOwner (смещение 256): стабильное имя приложения (лечит дублирование Raster 3D)
+	strncpy_s((char*)(target + 256), 256, "JCAdvance", _TRUNCATE);
+
+	// 3. Гипертекст szOSDEx (смещение 512): чистый текст телеметрии
 	if (entrySize >= 4608) {
 		strncpy_s((char*)(target + 512), 4096, text, _TRUNCATE);
 	}
