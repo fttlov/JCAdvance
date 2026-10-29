@@ -9,7 +9,8 @@
 #include <mmsystem.h>				// Для PlaySound
 #pragma comment(lib, "winmm.lib")	// Линковка для PlaySound
 
-//@075 Direct Shared Memory ----------------
+//@075 Блок RTSS
+//Direct Shared Memory
 static HANDLE g_hMapRTSS = NULL;
 static LPBYTE g_pRTSS = NULL;
 static ULONGLONG g_lastRTSSRetry = 0;
@@ -27,7 +28,6 @@ inline const char* GetJslDevName(int deviceIndex) {
 	}
 }
 
-//@075
 static DWORD g_rtssSlot = 0;
 
 void ClearRTSS() {
@@ -1285,22 +1285,6 @@ void LoadConfig() {	//@057 Realtime reading config (by modified file date) and a
 	
 	//@005 Двухкнопочный Binding для переключения режимов + чтение из Config, юзается новый парсинг в .h + условия активации toggle-функций в main (buttons & mask) == mask. )
 
-	/*AppStatus.AimingByPressingMode = IniFile.ReadBoolean("Motion", "AimingByPressingMode", true);	//moved into profile
-	AppStatus.AimingButtonName = IniFile.ReadString("Motion", "AimingButton", "NONE");
-	AppStatus.AimingButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingButtonName);
-	AppStatus.AimingToggleButtonName = IniFile.ReadString("Motion", "AimingToggleButton", "NONE");
-	AppStatus.AimingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingToggleButtonName);
-	AppStatus.AimingModeToggleButtonName = (IniFile.ReadString("Motion", "AimingModeToggleButton", "NONE"));
-	AppStatus.AimingModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingModeToggleButtonName);
-	AppStatus.DrivingToggleButtonName = IniFile.ReadString("Motion", "DrivingToggleButton", "NONE");
-	AppStatus.DrivingToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingToggleButtonName);	//@045
-	AppStatus.DrivingCalibrationButtonName = IniFile.ReadString("Motion", "DrivingCalibrationButton", "NONE");
-	AppStatus.DrivingCalibrationButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.DrivingCalibrationButtonName);
-	AppStatus.AimingPressModeToggleButtonName = IniFile.ReadString("Motion", "AimingPressModeToggleButton", "NONE");	//@053
-	AppStatus.AimingPressModeToggleButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.AimingPressModeToggleButtonName);
-	AppStatus.RightStickModeButtonName = IniFile.ReadString("Gamepad", "RightStickModeButton", "NONE");
-	AppStatus.RightStickModeButton = SonyNintendoKeyNameToJoyShockKeyCode(AppStatus.RightStickModeButtonName);*/	//@047
-
 	AppStatus.MeleeGForce = IniFile.ReadFloat("Motion", "MeleeGForce", 3.0f); //@043
 	AppStatus.GyroFromLeft = IniFile.ReadBoolean("Motion", "GyroFromLeft", false);		//@024 Gyro left hand
 
@@ -1330,11 +1314,6 @@ void LoadConfig() {	//@057 Realtime reading config (by modified file date) and a
 
 	PrimaryGamepad.DefaultLEDBrightness = std::clamp((int)(255 - IniFile.ReadInteger("Gamepad", "DefaultBrightness", 100) * 2.55), 0, 255);
 	PrimaryGamepad.OutState.LEDBrightness = PrimaryGamepad.DefaultLEDBrightness;
-
-	/*PrimaryGamepad.Motion.AircraftEnabled = IniFile.ReadBoolean("Motion", "AircraftEnabled", false);	//not working
-	PrimaryGamepad.Motion.AircraftPitchAngle = IniFile.ReadFloat("Motion", "AircraftPitchAngle", 45) / 2.0f;
-	PrimaryGamepad.Motion.AircraftPitchInverted = IniFile.ReadBoolean("Motion", "AircraftPitchInverted", false) ? -1 : 1;
-	PrimaryGamepad.Motion.AircraftRollSens = IniFile.ReadFloat("Motion", "AircraftRollSens", 100) * 0.11875f;*/
 
 	AppStatus.LongPressTimeOut = IniFile.ReadInteger("Gamepad", "LongPressTimeOut", 300); //@071
 	AppStatus.LockedChangeBrightness = IniFile.ReadBoolean("Gamepad", "LockChangeBrightness", false);
@@ -1402,8 +1381,29 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.Motion.GyroAccelEnd = IniFile.ReadFloat("SETTINGS", "GyroAccelEnd", 0.0f); // @073 Parametric gyro acceleration
 	PrimaryGamepad.Motion.GyroAccelCap = IniFile.ReadFloat("SETTINGS", "GyroAccelCap", 2.0f);
 
+	PrimaryGamepad.Motion.AircraftEnabled = IniFile.ReadBoolean("SETTINGS", "AircraftEnabled", false);
+	PrimaryGamepad.Motion.AircraftPitchAngle = IniFile.ReadFloat("SETTINGS", "AircraftPitchAngle", 45) / 2.0f;
+	PrimaryGamepad.Motion.AircraftPitchInverted = IniFile.ReadBoolean("SETTINGS", "AircraftPitchInverted", false) ? -1 : 1;
+	//PrimaryGamepad.Motion.AircraftRollSens = IniFile.ReadFloat("Motion", "AircraftRollSens", 100) * 0.11875f;
+
 	PrimaryGamepad.Triggers.DeadZoneLeft = IniFile.ReadFloat("SETTINGS", "DeadZoneLeftTrigger", 0) * 0.01f;
 	PrimaryGamepad.Triggers.DeadZoneRight = IniFile.ReadFloat("SETTINGS", "DeadZoneRightTrigger", 0) * 0.01f;
+	PrimaryGamepad.Triggers.AntiDeadZoneLeft = IniFile.ReadFloat("SETTINGS", "AntiDeadZoneLeftTrigger", 0.0f) * 0.01f;	//@084
+	PrimaryGamepad.Triggers.AntiDeadZoneRight = IniFile.ReadFloat("SETTINGS", "AntiDeadZoneRightTrigger", 0.0f) * 0.01f;
+
+	PrimaryGamepad.Triggers.LinearityLeft = IniFile.ReadFloat("SETTINGS", "LinearityLeftTrigger", 50.0f);	//@084
+	PrimaryGamepad.Triggers.LinearityRight = IniFile.ReadFloat("SETTINGS", "LinearityRightTrigger", 50.0f);
+
+	auto GetTriggerPower = [](float linearity) {
+		if (linearity == 50.0f) return 1.0f;
+		return powf(2.0f, (50.0f - linearity) / 25.0f);
+	};
+	PrimaryGamepad.Triggers.p_Left = GetTriggerPower(PrimaryGamepad.Triggers.LinearityLeft);
+	PrimaryGamepad.Triggers.p_Right = GetTriggerPower(PrimaryGamepad.Triggers.LinearityRight);
+
+	PrimaryGamepad.Sticks.MaxLeftStickLimit = std::clamp(IniFile.ReadInteger("SETTINGS", "MaxLeftStickLimit", 32767), 1000, 32767);	//@074
+	PrimaryGamepad.Sticks.MaxRightStickLimit = std::clamp(IniFile.ReadInteger("SETTINGS", "MaxRightStickLimit", 32767), 1000, 32767);
+
 	PrimaryGamepad.Sticks.DeadZoneLeftX = IniFile.ReadFloat("SETTINGS", "DeadZoneLeftStickX", 0) * 0.01f;	//@010
 	PrimaryGamepad.Sticks.DeadZoneLeftY = IniFile.ReadFloat("SETTINGS", "DeadZoneLeftStickY", 0) * 0.01f;
 	PrimaryGamepad.Sticks.DeadZoneRightX = IniFile.ReadFloat("SETTINGS", "DeadZoneRightStickX", 0) * 0.01f;
@@ -1412,9 +1412,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 	PrimaryGamepad.Sticks.AntiDeadZoneLeftY = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneLeftY", 0), 0, 99) * 0.01f;
 	PrimaryGamepad.Sticks.AntiDeadZoneRightX = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneRightX", 0), 0, 99) * 0.01f;
 	PrimaryGamepad.Sticks.AntiDeadZoneRightY = ClampFloat(IniFile.ReadFloat("SETTINGS", "AntiDeadZoneRightY", 0), 0, 99) * 0.01f;
-
-	PrimaryGamepad.Sticks.MaxLeftStickLimit = std::clamp(IniFile.ReadInteger("SETTINGS", "MaxLeftStickLimit", 32767), 1000, 32767);	//@074
-	PrimaryGamepad.Sticks.MaxRightStickLimit = std::clamp(IniFile.ReadInteger("SETTINGS", "MaxRightStickLimit", 32767), 1000, 32767);
 
 	PrimaryGamepad.Sticks.LinearityLeftX = IniFile.ReadFloat("SETTINGS", "LinearityLeftStickX", 50.0f); 	//@035 Linearity 1. Читаем из ini 
 	PrimaryGamepad.Sticks.LinearityLeftY = IniFile.ReadFloat("SETTINGS", "LinearityLeftStickY", 50.0f);
@@ -2195,7 +2192,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 4.0");
+	SetConsoleTitle("JCAdvance 4.1");
 	WindowToCenter();
 
 	SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE); //@075
@@ -3438,9 +3435,26 @@ int main(int argc, char **argv)
 		//	activeRSMode = 1; // Хоткей принудительно переключает в режим аналоговых триггеров
 		//}
 
+		//if (activeRSMode == 1 || activeRSMode == 2) {
+		//	report.sThumbRX = 0;
+		//	report.sThumbRY = 0;
+		//}
+
+		//@081 Стик прицельной руки (свободный под гироскопом) отдаём под курки/кнопки
+		float convStickX = AppStatus.GyroFromLeft ? lx : rx;
+		float convStickY = AppStatus.GyroFromLeft ? ly : ry;
+
+		// Глушим в виртуальном отчёте именно ту ось, которую забрали под триггеры/кнопки
 		if (activeRSMode == 1 || activeRSMode == 2) {
-			report.sThumbRX = 0;
-			report.sThumbRY = 0;
+			bool zeroLeftVirtualAxis = AppStatus.GyroFromLeft ? !CurrentXboxProfile.SwapSticksAxis : CurrentXboxProfile.SwapSticksAxis;
+			if (zeroLeftVirtualAxis) {
+				report.sThumbLX = 0;
+				report.sThumbLY = 0;
+			}
+			else {
+				report.sThumbRX = 0;
+				report.sThumbRY = 0;
+			}
 		}
 
 		// Auto stick pressing when value is exceeded
@@ -3510,8 +3524,15 @@ int main(int argc, char **argv)
 			(PrimaryGamepad.InputState.buttons & AppStatus.DrivingCalibrationButton) == AppStatus.DrivingCalibrationButton)
 		{
 			// Принудительно калибруем новый центр руля и самолета в текущем положении рук (высокоточный компенсированный метод)
-			PrimaryGamepad.Motion.OffsetAxisX = GetCompensatedAngle(MotionState.gravX, MotionState.gravZ, MotionState.gravY);
-			PrimaryGamepad.Motion.OffsetAxisY = GetCompensatedAngle(MotionState.gravY, MotionState.gravZ, MotionState.gravX);
+			//PrimaryGamepad.Motion.OffsetAxisX = GetCompensatedAngle(MotionState.gravX, MotionState.gravZ, MotionState.gravY);
+			//PrimaryGamepad.Motion.OffsetAxisY = GetCompensatedAngle(MotionState.gravY, MotionState.gravZ, MotionState.gravX);
+			
+			//@082 Снимаем ноль именно с той руки, которая назначена рулём
+			const MOTION_STATE& steerCalibState = (PrimaryGamepad.DeviceIndex2 != -1) ?
+				(AppStatus.GyroFromLeft ? msR : msL) : MotionState;
+
+			PrimaryGamepad.Motion.OffsetAxisX = GetCompensatedAngle(steerCalibState.gravX, steerCalibState.gravZ, steerCalibState.gravY);
+			PrimaryGamepad.Motion.OffsetAxisY = GetCompensatedAngle(steerCalibState.gravY, steerCalibState.gravZ, steerCalibState.gravX);
 
 			// Переключаем расчет стиков в прецизионный компенсированный режим
 			PrimaryGamepad.Motion.IsManualCalibrated = true;
@@ -3560,7 +3581,7 @@ int main(int argc, char **argv)
 		}
 
 		// 4. Перехват триггеров правым аналоговым стиком (Stick-as-Triggers)
-		if (activeRSMode == 1) {
+		/*if (activeRSMode == 1) {
 			if (ry > 0.05f) {
 				//report.bRightTrigger = (BYTE)(ry * 255);
 				report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(ry * 255.0f)), 0, 255));
@@ -3568,6 +3589,15 @@ int main(int argc, char **argv)
 			else if (ry < -0.05f) {
 				//report.bLeftTrigger = (BYTE)(-ry * 255);
 				report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(-ry * 255.0f)), 0, 255));
+			}
+		}*/
+
+		if (activeRSMode == 1) {	//@081
+			if (convStickY > 0.05f) {
+				report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(convStickY * 255.0f)), 0, 255));
+			}
+			else if (convStickY < -0.05f) {
+				report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(-convStickY * 255.0f)), 0, 255));
 			}
 		}
 
@@ -3856,7 +3886,7 @@ int main(int argc, char **argv)
 				XboxButtons |= CurrentXboxProfile.MeleeGesture;
 			}
 
-			if (activeRSMode == 2) {	//@049
+			/*if (activeRSMode == 2) {	//@049
 				float absX = fabs(rx); // Используем fabs для работы с float
 				float absY = fabs(ry);
 
@@ -3876,7 +3906,42 @@ int main(int argc, char **argv)
 						XboxButtons |= CurrentXboxProfile.RightStickLeft;
 					}
 				}
+			}*/
+			if (activeRSMode == 2) {	//@049 + @081
+				float absX = fabs(convStickX);
+				float absY = fabs(convStickY);
+
+				if (absY >= absX) { // Вертикальное отклонение доминирует
+					if (convStickY > 0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickUp;
+					}
+					else if (convStickY < -0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickDown;
+					}
+				}
+				else { // Горизонтальная ось доминирует
+					if (convStickX > 0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickRight;
+					}
+					else if (convStickX < -0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickLeft;
+					}
+				}
 			}
+			else if (activeRSMode == 1) {
+				float absX = fabs(convStickX);
+				float absY = fabs(convStickY);
+
+				if (absX > absY) {
+					if (convStickX > 0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickRight;
+					}
+					else if (convStickX < -0.5f) {
+						XboxButtons |= CurrentXboxProfile.RightStickLeft;
+					}
+				}
+			}
+
 			else if (activeRSMode == 1) {
 				// В режиме аналоговых триггеров (1) горизонтальная ось X свободна.
 				// Разрешаем использовать её для цифровых кнопок влево/вправо (RS-LEFT / RS-RIGHT)
@@ -3907,6 +3972,29 @@ int main(int argc, char **argv)
 			if (XboxButtons & XINPUT_GAMEPAD_RIGHT_STICK_LEFT) { XboxButtons &= ~XINPUT_GAMEPAD_RIGHT_STICK_LEFT; report.sThumbRX = -32767; }
 			if (XboxButtons & XINPUT_GAMEPAD_RIGHT_STICK_RIGHT) { XboxButtons &= ~XINPUT_GAMEPAD_RIGHT_STICK_RIGHT; report.sThumbRX = 32767; }
 
+			//@084 Применение Linearity и Anti-Deadzone для триггеров (после физ. курков, педалей и Stick-as-Triggers!)
+			float normLT = report.bLeftTrigger / 255.0f;
+			float normRT = report.bRightTrigger / 255.0f;
+
+			// 1. Формирование кривой отклика (Linearity)
+			if (PrimaryGamepad.Triggers.p_Left != 1.0f && normLT > 0.0f) {
+				normLT = powf(normLT, PrimaryGamepad.Triggers.p_Left);
+			}
+			if (PrimaryGamepad.Triggers.p_Right != 1.0f && normRT > 0.0f) {
+				normRT = powf(normRT, PrimaryGamepad.Triggers.p_Right);
+			}
+
+			// 2. Выталкивание из мёртвой зоны игры (Anti-Deadzone)
+			if (PrimaryGamepad.Triggers.AntiDeadZoneLeft > 0.0f && normLT > 0.001f) {
+				normLT = PrimaryGamepad.Triggers.AntiDeadZoneLeft + normLT * (1.0f - PrimaryGamepad.Triggers.AntiDeadZoneLeft);
+			}
+			if (PrimaryGamepad.Triggers.AntiDeadZoneRight > 0.0f && normRT > 0.001f) {
+				normRT = PrimaryGamepad.Triggers.AntiDeadZoneRight + normRT * (1.0f - PrimaryGamepad.Triggers.AntiDeadZoneRight);
+			}
+
+			report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(normLT * 255.0f)), 0, 255));
+			report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(normRT * 255.0f)), 0, 255));
+
 			if (CurrentXboxProfile.SwapTriggers)
 				std::swap(report.bLeftTrigger, report.bRightTrigger);
 
@@ -3927,9 +4015,21 @@ int main(int argc, char **argv)
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}*/
 
-		if (IsHotkeyTriggered(AppStatus.DrivingToggleButton, VK_MENU, '1')) {	//@072
+		/*if (IsHotkeyTriggered(AppStatus.DrivingToggleButton, VK_MENU, '1')) {	//@072
 			if (PrimaryGamepad.GamepadActionMode == 1) PrimaryGamepad.GamepadActionMode = GamepadDefaultMode;
 			else PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
+		}*/
+
+		if (IsHotkeyTriggered(AppStatus.DrivingToggleButton, VK_MENU, '1')) {	//@082
+			// Выходим из машины: возвращаем РОВНО то состояние, которое было до посадки!
+			if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
+				PrimaryGamepad.GamepadActionMode = PrimaryGamepad.PrevModeBeforeDriving;
+			}
+			// Садимся в машину: честно запоминаем текущий режим и включаем вождение
+			else {
+				PrimaryGamepad.PrevModeBeforeDriving = PrimaryGamepad.GamepadActionMode;
+				PrimaryGamepad.GamepadActionMode = MotionDrivingMode;
+			}
 		}
 
 		//@012 AimingToggleButton (Gyro on\off ) двухкнопочный bind новый парсинг и AimingByPressingMode (больше не жмем Cature 2 раза) в Config	
@@ -4201,7 +4301,7 @@ int main(int argc, char **argv)
 		}
 
 		// Motion racing  [O--]
-		if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
+		/*if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
 
 			// Steering wheel
 			if (!PrimaryGamepad.Motion.AircraftEnabled) {
@@ -4209,7 +4309,7 @@ int main(int argc, char **argv)
 				report.sThumbLX = (SHORT)(CalcMotionStick(MotionState.gravX, MotionState.gravZ, MotionState.gravY, PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX, PrimaryGamepad.Motion.PrevAngleRad, PrimaryGamepad.Motion.CumulativeOffsetRad, PrimaryGamepad.Motion.AngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, PrimaryGamepad.Motion.LinearityWheel) * 32767);
 			}
 			// Aircraft
-			/*else {	//not working
+			else {	//not working
 				const float InputSize = sqrtf(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
 				float tighteningFactor = 1.0f;
 
@@ -4223,12 +4323,70 @@ int main(int argc, char **argv)
 
 				report.sThumbLX = std::clamp((int)(ClampFloat(-(effVelY * PrimaryGamepad.Motion.AircraftRollSens * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX), -1.0f, 1.0f) * 32767 + report.sThumbLX), -32767, 32767);
 				report.sThumbLY = (SHORT)(CalcMotionStick(MotionState.gravY, MotionState.gravZ, MotionState.gravX, PrimaryGamepad.Motion.AircraftPitchAngle, PrimaryGamepad.Motion.OffsetAxisY, PrimaryGamepad.Motion.PitchPrevAngleRad, PrimaryGamepad.Motion.PitchCumulativeOffsetRad, PrimaryGamepad.Motion.PitchAngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, 50.0f) * 32767) * PrimaryGamepad.Motion.AircraftPitchInverted;
-			}*/
+			}
 
 		}
 		
 		//@039 Always меняем на button not pressed
-		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) || (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {
+		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) || (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {*/
+
+		//@082	обновлённый driving mode 
+		// 1. Расчёт виртуального руля / самолёта (Motion Driving)
+		if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
+			// Рулит свободная от прицела рука (на Joy-Con), либо монолитный контроллер целиком
+			const MOTION_STATE& steerMotion = (PrimaryGamepad.DeviceIndex2 != -1) ?
+				(AppStatus.GyroFromLeft ? msR : msL) : MotionState;
+
+			SHORT& steerThumbX = CurrentXboxProfile.SwapSticksAxis ? report.sThumbRX : report.sThumbLX;
+			SHORT& steerThumbY = CurrentXboxProfile.SwapSticksAxis ? report.sThumbRY : report.sThumbLY;
+			int maxSteerLimit = CurrentXboxProfile.SwapSticksAxis ? PrimaryGamepad.Sticks.MaxRightStickLimit : PrimaryGamepad.Sticks.MaxLeftStickLimit;
+
+			// Автомобильный руль (поворот колес влево/вправо)
+			if (!PrimaryGamepad.Motion.AircraftEnabled) {
+				steerThumbX = (SHORT)(CalcMotionStick(steerMotion.gravX, steerMotion.gravZ, steerMotion.gravY,
+					PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX,
+					PrimaryGamepad.Motion.PrevAngleRad, PrimaryGamepad.Motion.CumulativeOffsetRad,
+					PrimaryGamepad.Motion.AngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated,
+					PrimaryGamepad.Motion.LinearityWheel) * 32767);
+			}
+			else {	//@083 обновлённый Aircraft: крен на оси X, тангаж на оси Y — обе оси центрируются сами
+				// Крен (Roll: наклон крыльев влево/вправо с возвратом в центр)
+				float rollAngleLimit = (PrimaryGamepad.Motion.SteeringWheelAngle > 0.0f) ? PrimaryGamepad.Motion.SteeringWheelAngle : 45.0f;
+				float rollVal = CalcMotionStick(steerMotion.gravX, steerMotion.gravZ, steerMotion.gravY,
+					rollAngleLimit, PrimaryGamepad.Motion.OffsetAxisX,
+					PrimaryGamepad.Motion.PrevAngleRad, PrimaryGamepad.Motion.CumulativeOffsetRad,
+					PrimaryGamepad.Motion.AngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated,
+					PrimaryGamepad.Motion.LinearityWheel);
+
+				steerThumbX = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rollVal * 32767.0f)), -maxSteerLimit, maxSteerLimit));
+
+				// Тангаж (Pitch: руль высоты в вертикальном хвате)
+				float pitchAngleLimit = (PrimaryGamepad.Motion.AircraftPitchAngle > 0.0f) ? PrimaryGamepad.Motion.AircraftPitchAngle : 45.0f;
+				float pitchVal = CalcMotionStick(steerMotion.gravY, steerMotion.gravZ, steerMotion.gravX,
+					pitchAngleLimit, PrimaryGamepad.Motion.OffsetAxisY,
+					PrimaryGamepad.Motion.PitchPrevAngleRad, PrimaryGamepad.Motion.PitchCumulativeOffsetRad,
+					PrimaryGamepad.Motion.PitchAngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, 50.0f);
+
+				// Честная инверсия тангажа (-1 или 1)
+				float finalPitch = (PrimaryGamepad.Motion.AircraftPitchInverted == -1) ? -pitchVal : pitchVal;
+				steerThumbY = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(finalPitch * 32767.0f)), -maxSteerLimit, maxSteerLimit));
+			}
+		}
+
+		// 2. Проверка активности прицеливания
+		bool isDriving = (PrimaryGamepad.GamepadActionMode == MotionDrivingMode);
+		// На монолитных падах прицел в машине выключен всегда, на Joy-Con — разрешён
+		bool canAim = !isDriving || (PrimaryGamepad.DeviceIndex2 != -1);
+
+		// Если мы в машине, ориентируемся на режим, который был включен до посадки (PrevModeBeforeDriving)
+		int effectiveAimMode = isDriving ? PrimaryGamepad.PrevModeBeforeDriving : PrimaryGamepad.GamepadActionMode;
+
+		bool isAimActive = canAim && (
+			(effectiveAimMode == MotionAimingMode && !isAimingButtonPressed) ||
+			(effectiveAimMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)
+			);
+
+		if (isAimActive) {
 
 			// Snippet by JibbSmart https://gist.github.com/JibbSmart/8cbaba568c1c2e1193771459aa5385df
 

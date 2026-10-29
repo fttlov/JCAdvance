@@ -379,6 +379,7 @@ struct AdvancedGamepad {
 	unsigned char LastLEDBrightness = 0; // For battery show
 	int GamepadActionMode = 0;
 	int LastMotionAIMMode = MotionAimingMode;
+	int PrevModeBeforeDriving = GamepadDefaultMode; //@??? Back to exactly MotionAiming mode, after driving mode on/off
 	bool TouchSticksOn = false;
 	bool SwitchedToDesktopMode = false;
 
@@ -436,6 +437,12 @@ struct AdvancedGamepad {
 	{
 		float DeadZoneLeft = 0;
 		float DeadZoneRight = 0;
+		float AntiDeadZoneLeft = 0.0f;	//@142 
+		float AntiDeadZoneRight = 0.0f;
+		float LinearityLeft = 50.0f;
+		float LinearityRight = 50.0f;
+		float p_Left = 1.0f;  // Предрассчитанная степень кривой отклика
+		float p_Right = 1.0f;
 	};
 	_Triggers Triggers;
 

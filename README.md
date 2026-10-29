@@ -329,6 +329,7 @@ Two OSD output engines are available in `Config.exe`:<br>
 * **Sticks**: 16-bit signed deflection (-32768 to 32768).<br>
 
 Telemetry parameters for tracking thermal drift and sensor auto-calibration (see "Software Calibration" below):<br>
+
 <table align="center">
   <tr>
     <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/OSD%20(2).png" width="150"></td>
@@ -807,6 +808,34 @@ Many games assign sprint to a button. JCAdvance can map this action to left stic
 </details>
 
 <details>
+    <summary><h3>Driving Mode + Aircraft</h3></summary>
+
+Rewrote the `CalcMotionStick` function (in `DSAdvance.h`) to eliminate sudden steering snaps/reversals to the opposite extreme when exceeding maximum turn angles:
+
+* **Steering Linearity:** Added a smooth response curve adjustment (`LinearityWheel`).
+
+* **Manual Re-Centering Hotkey (`DrivingCalibrationButton`):**
+
+  * a) Instantly recovers the wheel from sticking at 32768 if the gamepad was tilted past invalid angles (e.g., laid flat horizontally).
+  * b) Allows re-calibrating a new, custom wheel "center" on the fly for any comfortable resting hand posture.
+
+* **Smart State Recall (`PrevModeBeforeDriving`):**  
+  The engine memorizes the exact aiming state prior to vehicle entry and seamlessly restores it upon exit.
+
+* **Concurrent Operation with Gyro Aiming:**
+
+  * **Single / Two-Handed Gamepads (DualSense / DS4 / Switch Pro):** Gyro camera aiming is automatically muted while driving (preventing monolithic controller steering tilts from shaking the camera) and automatically wakes back up upon exiting the vehicle.
+  * **Split Joy-Con Pairs:** Total freedom! The non-aiming hand steers the car like a yoke, the aiming hand independently looks around the cabin and aims out the window, while the analog stick smoothly meters throttle and brake (`Stick-as-Triggers`). If aiming was disabled before entering the car, it remains off.
+
+* **Restored Aircraft Flight Mode:**  
+  An extension of driving mode (`AircraftEnabled = 1`) that turns the controller into a virtual two-axis flight yoke with automatic spring-centering upon leveling the horizon:
+
+  * **Wing Roll (X-axis):** Bank left/right like a steering wheel; working angle is controlled by `SteeringWheelAngle`.
+  * **Pitch / Elevators (Y-axis):** Tilt towards yourself (pull up) or push away (dive); angle is controlled by `AircraftPitchAngle` (default 90°). Supports dedicated hardware inversion via `AircraftPitchInverted = 0/1`.
+
+  </details>
+
+<details>
   <summary><h3>Other Features & Capabilities</h3></summary>
 
 - **In-Game Sensitivity Tuning**
@@ -838,8 +867,6 @@ Many games assign sprint to a button. JCAdvance can map this action to left stic
 - **Joy-Con Split Mode:** Horizontal individual Joy-Con grip mode with SL/SR/HOME/CAPTURE mapping. Experimental and limited due to lack of inputs.
 
 - **DualShock 4 DirectInput Emulation:** Creates a DirectInput Wireless Controller rather than XInput Xbox 360  for classic PC games like *F.E.A.R.* or *Need for Speed*. (Nintendo controllers only)
-
-- **Reworked Driving Mode:** Overhauled `CalcMotionStick` logic preventing steering flips at extreme angles. Includes on-the-fly wheel re-centering button.
 
 ### External Pedals
 
