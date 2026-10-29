@@ -826,7 +826,8 @@ Rewrote the `CalcMotionStick` function (in `DSAdvance.h`) to eliminate sudden st
 
   * **Single / Two-Handed Gamepads (DualSense / DS4 / Switch Pro):** Gyro camera aiming is automatically muted while driving to preventing monolithic controller steering tilts from shaking the camera.
   * **Split Joy-Con Pairs:** Total freedom! As Example: the non-aiming hand steers the car like a yoke, the aiming hand independently looks around the cabin, while the analog stick smoothly meters throttle and brake if (`Stick-as-Triggers`) is active. <br>
- Note: If  gyro aiming was turned off before entering driving mode, it will not turn on automatically after driving mode is turned off for both type of controllers.
+  
+ ❕ If  gyro aiming was turned off before entering driving mode, it will not turn on automatically after driving mode is turned off for both type of controllers.
 
 * **Restored Aircraft Flight Mode:**  
   An extension of driving mode (`AircraftEnabled = 1`) that turns the controller into a virtual two-axis flight yoke with automatic spring-centering upon leveling the horizon:
