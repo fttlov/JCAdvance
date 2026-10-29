@@ -381,8 +381,8 @@ Bluetooth radio transmission is quantized into discrete hardware time intervals:
 
 | Device                             | Connection | Expected OSD Rate | Notes                                           |
 |:---------------------------------- |:---------- |:----------------- |:----------------------------------------------- |
-| **Sony DualShock 4**               | Bluetooth  | **~250 Hz**       | Native Sony Bluetooth protocol polls every 4 ms |
 | **Sony DualSense**                 | Bluetooth  | **500+ Hz**       | Confirmed. Hardware capable up to 1000 Hz       |
+| **Sony DualShock 4**               | Bluetooth  | **~250 Hz**       | Native Sony Bluetooth protocol polls every 4 ms |
 | **Mobapad M6s / M6 HD**            | Bluetooth  | **133 – 160 Hz**  | Varies by PC Bluetooth host controller chip     |
 | **Official Joy-Con (L / R)**       | Bluetooth  | **~66.7 Hz**      | 15 ms packet containing 3 internal IMU samples  |
 | **Nintendo Switch Pro Controller** | Bluetooth  | **~66.7 Hz**      | Standard Nintendo Switch protocol interval      |
