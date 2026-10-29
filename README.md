@@ -30,7 +30,7 @@
 - **[Adaptive Gyro Motion](#gyro-info)**: independent gyroscope tuning tailored across different controller types
 - **Enhanced auto-calibration** pipeline for Joy-Con to mitigate IMU 'Thermal Drift' (see [details](#calibration))
 - **Parametric Gyro Motion acceleration** engine with an interactive real-time graph and tooltips (see [details](#parametric))
-- '**Stick as Triggers**' mode: brings full analog trigger functionality to Joy-Cons, bypassing their digital-only limitation
+- '**[Stick as Triggers](#stick)**' mode: brings full analog trigger functionality to Joy-Cons, bypassing their digital-only limitation
 - **Fully customizable hotkeys** with multi-button chord/combo support (e.g., `R + HOME`)
 - '**Action Layers for buttons**': bind two distinct in-game actions to a single physical button (short tap vs hold)
 - **'MUTE mode'** in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [details](#action))
@@ -746,7 +746,7 @@ Full gyro activation without losing a single gamepad button!
 </details>
 
 <details>
-  <summary><h3>Right Stick Modes (for Joy-Con)</h3></summary>
+  <summary><h3 id="stick">Right Stick Modes (for Joy-Con)</h3></summary>
 
 The right analog stick supports three distinct operating modes:
 
