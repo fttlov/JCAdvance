@@ -820,12 +820,13 @@ Rewrote the `CalcMotionStick` function (in `DSAdvance.h`) to eliminate sudden st
   * b) Allows re-calibrating a new, custom wheel "center" on the fly for any comfortable resting hand posture.
 
 * **Smart State Recall (`PrevModeBeforeDriving`):**  
-  The engine memorizes the exact aiming state prior to vehicle entry and seamlessly restores it upon exit.
+  The emulator saves the gyro aiming state before driving mode is enabled and restores it when driving mode is disabled.
 
 * **Concurrent Operation with Gyro Aiming:**
 
-  * **Single / Two-Handed Gamepads (DualSense / DS4 / Switch Pro):** Gyro camera aiming is automatically muted while driving (preventing monolithic controller steering tilts from shaking the camera) and automatically wakes back up upon exiting the vehicle.
-  * **Split Joy-Con Pairs:** Total freedom! The non-aiming hand steers the car like a yoke, the aiming hand independently looks around the cabin and aims out the window, while the analog stick smoothly meters throttle and brake (`Stick-as-Triggers`). If aiming was disabled before entering the car, it remains off.
+  * **Single / Two-Handed Gamepads (DualSense / DS4 / Switch Pro):** Gyro camera aiming is automatically muted while driving to preventing monolithic controller steering tilts from shaking the camera.
+  * **Split Joy-Con Pairs:** Total freedom! As Example: the non-aiming hand steers the car like a yoke, the aiming hand independently looks around the cabin, while the analog stick smoothly meters throttle and brake if (`Stick-as-Triggers`) is active. <br>
+ Note: If  gyro aiming was turned off before entering driving mode, it will not turn on automatically after driving mode is turned off for both type of controllers.
 
 * **Restored Aircraft Flight Mode:**  
   An extension of driving mode (`AircraftEnabled = 1`) that turns the controller into a virtual two-axis flight yoke with automatic spring-centering upon leveling the horizon:
