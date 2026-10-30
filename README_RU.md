@@ -972,7 +972,7 @@ __________
 * [dekuNukem](https://github.com/dekuNukem) & Daniel J. Ogorchock — For the foundational [Nintendo Switch Reverse Engineering](https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering) repository and the `hid-nintendo` Linux kernel driver.
 * [Valkirie](https://github.com/Valkirie/JoyShockLibrary/commits/HDRumble) for adaptive triggers over Bluetooth.
 * [AutoHotkey](https://www.autohotkey.com/) — For powering the versatile Graphical Configuration tool (GUI) and the standalone OSD overlay script.
-* [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller .svg interactive image.
+* [AL2009man](https://github.com/AL2009man/Gamepad-Asset-Pack) for Xbox 360 controller interactive .svg image.
 * [Chart.js](https://www.chartjs.org/) — Flexible, open-source HTML5 charting library for designers & developers.  Copyright (c) Chart.js Contributors. Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 <details>
