@@ -1458,35 +1458,39 @@ Tabs.UseTab("Analog")
 
 ; --- Группа 1: LEFT HAND (Левая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x30 y50 w380 h290 Center Section", T("LEFT"))
+MainGui.Add("GroupBox", "x33 y50 w380 h310 Center Section", T("LEFT"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("Trigger DeadZone :"), , "xs+108 ys+35", 112, 42, true)
+AddInput(XboxIni, "SETTINGS", "DeadZoneLeftTrigger", T("Trigger DeadZone :"), , "xs+108 ys+20", 112, 42, true)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneLeftTrigger", T("Trigger AntiDeadZone :"), , "xs+85 y+6", 135, 42, true)
+AddInput(XboxIni, "SETTINGS", "LinearityLeftTrigger", T("Trigger Linearity¹ :"), , "xs+114 y+6", 106, 42, true)
 AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickX", T("Stick X DeadZone :"), , "xs+110 y+6", 110, 42, true)
 AddInput(XboxIni, "SETTINGS", "DeadZoneLeftStickY", T("Stick Y DeadZone :"), , "xs+110 y+6", 110, 42)
 AddInput(XboxIni, "SETTINGS", "AntiDeadZoneLeftX", T("Stick X AntiDeadZone :"), , "xs+85 y+6", 135, 42)
 AddInput(XboxIni, "SETTINGS", "AntiDeadZoneLeftY", T("Stick Y AntiDeadZone :"), , "xs+85 y+6", 135, 42)
 AddInput(XboxIni, "SETTINGS", "LinearityLeftStickX", T("Stick X Linearity¹ :"), "50", "xs+115 y+6", 105, 42)
 AddInput(XboxIni, "SETTINGS", "LinearityLeftStickY", T("Stick Y Linearity¹ :"), "50", "xs+115 y+6", 105, 42)
-AddToggle(XboxIni, "SETTINGS", "InvertLeftStickX", T("Invert Stick X"), "xs+80 y290")
-AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Stick Y"), "xs+181 y290")
+AddToggle(XboxIni, "SETTINGS", "InvertLeftStickX", T("Invert Stick X"), "xs+80 y330")
+AddToggle(XboxIni, "SETTINGS", "InvertLeftStickY", T("Invert Stick Y"), "xs+181 y330")
 
 ; --- Группа 2: RIGHT HAND (Правая колонка сверху) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x435 y50 w380 h290 Center Section", T("RIGHT"))
+MainGui.Add("GroupBox", "x432 y50 w380 h310 Center Section", T("RIGHT"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; Включаем левый спиннер (true в самом конце)
 
-AddInput(XboxIni, "SETTINGS", "DeadZoneRightTrigger", " " T(": Trigger DeadZone"), , "xs+100 ys+35", 195, 42, true, "0-100", 1)
+AddInput(XboxIni, "SETTINGS", "DeadZoneRightTrigger", " " T(": Trigger DeadZone"), , "xs+100 ys+20", 195, 42, true, "0-100", 1)
+AddInput(XboxIni, "SETTINGS", "AntiDeadZoneRightTrigger", " " T(": Trigger AntiDeadZone"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
+AddInput(XboxIni, "SETTINGS", "LinearityRightTrigger", " " T(": Trigger Linearity¹"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickX", " " T(": Stick X DeadZone"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "DeadZoneRightStickY", " " T(": Stick Y DeadZone"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "AntiDeadZoneRightX", " " T(": Stick X AntiDeadZone"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "AntiDeadZoneRightY", " " T(": Stick Y AntiDeadZone"), , "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "LinearityRightStickX", " " T(": Stick X Linearity¹"), "50", "xs+100 y+11", 195, 42, true, "0-100", 1)
 AddInput(XboxIni, "SETTINGS", "LinearityRightStickY", " " T(": Stick Y Linearity¹"), "50", "xs+100 y+11", 195, 42, true, "0-100", 1)
-AddToggle(XboxIni, "SETTINGS", "InvertRightStickX", T("Invert Stick X"), "xs+100 y290")
-AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Stick Y"), "xs+203 y290")
+AddToggle(XboxIni, "SETTINGS", "InvertRightStickX", T("Invert Stick X"), "xs+100 y330")
+AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Stick Y"), "xs+203 y330")
 
 
 /*AddInput(XboxIni, "SETTINGS", "DeadZoneRightTrigger", T("Trigger DeadZone :"), , "xs+108 ys+20", 122, 42, true)
@@ -1502,10 +1506,10 @@ AddToggle(XboxIni, "SETTINGS", "InvertRightStickY", T("Invert Stick Y"), "xs+191
 
 ; --- Группа 3: HARDWARE SWAPS (Центрирована, построчно) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x185 y+45 w480 h213 Center Section", T("Hardware Swaps"))
+MainGui.Add("GroupBox", "x185 y+20 w480 h193 Center Section", T("Hardware Swaps"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+135 ys+33")
+AddToggle(XboxIni, "SETTINGS", "SWAP-STICKS", T("Swap Left and Right Sticks"), "xs+135 ys+23")
 AddToggle(XboxIni, "SETTINGS", "SWAP-TRIGGERS", T("Swap Left and Right Triggers"), "xs+135 y+8")
 AddToggle(XboxIni, "SETTINGS", "GyroApplyAntiDeadZone", T("Apply AntiDeadZone to Gyro Stick"), "xs+120 y+8")
 ;AddToggle(XboxIni, "SETTINGS", "GyroApplyLinearity", T("Apply Response Сurve to Gyro Stick"), "xs+120 y+8")
@@ -1634,7 +1638,7 @@ ddlRSNext.OnEvent("Change", (*) => UpdateRSModes(false))
 UpdateRSModes(true)
 
 ; --- Сноски и примечания (внизу вкладки) ---
-MainGui.Add("Text", "x15 y559 w120 cRed", T("¹ Linearity"))
+MainGui.Add("Text", "x15 y557 w120 cRed", T("¹ Linearity"))
 MainGui.Add("Text", "x25 y+0 w490", T("Stick Response Curve:"))
 MainGui.Add("Text", "x25 y+1 w490", T("0: Lower sensitivity near the center for precise aiming"))
 MainGui.Add("Text", "x25 y+1 w490", T("50: Perfectly linear response 1:1 (Default)"))
@@ -1650,24 +1654,26 @@ MainGui.Add("Picture", "x415 y575 w260 h75", A_ScriptDir "\Icons\linearity.png")
 ; =========================================
 Tabs.UseTab("Driving")
 
-
-
 ; --- ГРУППА 1: Wheel settings (Driving mode) ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y65 w480 h220 Center Section", T("Driving mode"))
+MainGui.Add("GroupBox", "x175 y50 w480 h280 Center Section", T("Driving mode"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddInput(XboxIni, "SETTINGS", "SteeringWheelAngle", T("Steering Wheel Angle:"), , "xs+135 ys+40", 160, 50, true, "0-360")
+AddInput(XboxIni, "SETTINGS", "SteeringWheelAngle", T("Steering Wheel Angle:"), , "xs+135 ys+35", 160, 50, true, "0-360")
 AddInput(XboxIni, "SETTINGS", "LinearityWheel", T("Steering Wheel Linearity:"), , "xs+135 y+10", 160, 50)
 
-MainGui.Add("Picture", "x290 y+20 w260 h75", A_ScriptDir "\Icons\linearity.png")
+MainGui.Add("Picture", "x298 y+10 w245 h70", A_ScriptDir "\Icons\linearity.png")
+
+AddMappedDropdown(XboxIni, "SETTINGS", "AircraftEnabled", T("Aircraft Mode¹:"), [T("Off"), T("On")], Map(T("Off"), "0", T("On"), "1"), "xs+135 y+10", 160, 50)
+AddMappedDropdown(XboxIni, "SETTINGS", "AircraftPitchInverted", T("Invert Pitch Axis:"), [T("No"), T("Yes")], Map(T("No"), "0", T("Yes"), "1"), "xs+135 y+10", 160, 50)
+AddInput(XboxIni, "SETTINGS", "AircraftPitchAngle", T("Pitch Axis Angle:"), , "xs+135 y+10", 160, 50, true, "0-180")
 
 ; --- ГРУППА 2: External Pedals Settings ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y+50 w480 h225 Center Section", T("External Pedals¹ Settings"))
+MainGui.Add("GroupBox", "x175 y+35 w480 h205 Center Section", T("External Pedals² Settings"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
-AddMappedDropdown(ConfigIni, "ExternalPedals", "DInput", T("DirectInput Search:"), [T("On"), T("Off")], Map(T("On"), "1", T("Off"), "0"), "xs+135 ys+40", 160, 55)
+AddMappedDropdown(ConfigIni, "ExternalPedals", "DInput", T("DirectInput Search:"), [T("On"), T("Off")], Map(T("On"), "1", T("Off"), "0"), "xs+135 ys+30", 160, 55)
 
 ; Список поддерживаемых осей педалей
 AxesList := ["X", "Y", "Z", "R", "U", "V", "Z-ROTATION", "X-ROTATION", "Y-ROTATION", "DIAL"]
@@ -1684,7 +1690,9 @@ AddMappedDropdown(ConfigIni, "ExternalPedals", "Pedal2Axis", T("Pedal 2 Axis:"),
 MainGui.Add("Text", "xs+135 y+15 w120", T("Device Name:"))
 AddInput(ConfigIni, "ExternalPedals", "DeviceName", T(""), "AUTO", "xs+125 y+15", 0, 225, false)
 
-MainGui.Add("Text", "x15 y585 w820 cRed", T("¹ External Pedals:"))
+MainGui.Add("Text", "x15 y543 w150 cRed", T("¹ Aircraft Mode:"))
+MainGui.Add("Text", "x25 y+3 w820", T("Driving mode extension: turns the controller into a flight yoke (steering left/right controls roll, tilting forward/back controls pitch)"))
+MainGui.Add("Text", "x15 y+3 w150 cRed", T("² External Pedals:"))
 MainGui.Add("Text", "x25 y+3 w820", T("Use pedals as analog triggers. Note: This is an experimental feature; proper functioning is not guaranteed."))
 MainGui.Add("Text", "x25 y+5 w820", T("Connect your wheel/pedals, set DirectInput search to On and launch JCAdvance. If you see message: `n'[Pedals Search] ID 0: Found device 'Your wheel/pedlas name' -> APPROVED!', configure the correct pedal axes and you've golden."))
 MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, replace AUTO with your device's name exactly as it appears in joy.cpl"))
