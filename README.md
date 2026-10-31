@@ -61,9 +61,9 @@
   <summary><h4>Full list of new features</h4></summary>
 
 - All physical gamepad buttons can now emulate Xbox, keyboard, and mouse inputs within a single unified profile
-- One-click binding: bind inputs interactively via Xbox image, with the "Bind" button, or manually via dropdown menus
+- One-click binding: bind inputs interactively via Xbox image, the "Bind" button, or manually via dropdown menus
 - Action Layers: assign two distinct in-game actions to a single button (tap vs long press)
-- Action Layer 'MUTE' mode: activate motion controls on hold with 0 ms lag while keeping regular button tap functions intact
+- 'MUTE mode' in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [details](#action))
 - Profile Manager: create, duplicate, switch, and delete layout profiles in a dedicated GUI tab<br>
 - Fully customizable hotkeys for runtime modes with combo/chord support (e.g., `R + HOME`)
 - Dedicated 'Gyro Activation Button' supporting both Hold to Aim and Hold to Pause behaviors
