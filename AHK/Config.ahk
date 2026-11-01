@@ -28,8 +28,8 @@ Global KbmKeys := [
     "TAB", "CAPS-LOCK", "SHIFT", "LSHIFT", "RSHIFT", "CTRL", "LCTRL", "RCTRL",
     "WIN", "ALT", "LALT", "RALT", "SPACE", "ENTER", "BACKSPACE",
     "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]",
-    "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "APOSTROPHE", "\",
-    "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?",
+    "A", "S", "D", "F", "G", "H", "J", "K", "L", "SEMICOLON", "APOSTROPHE", "BACKSLASH",
+    "Z", "X", "C", "V", "B", "N", "M", "COMMA", "PERIOD", "SLASH",
     "PRINTSCREEN", "SCROLL-LOCK", "PAUSE", "INSERT", "HOME", "DELETE", "END", "PAGE-UP", "PAGE-DOWN",
     "UP", "DOWN", "LEFT", "RIGHT",
     "NUM-LOCK", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9",
@@ -463,7 +463,19 @@ for key in XboxMapRight {
     
     MainGui.SetFont("Bold")
     ;MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
-	CtrlXboxLabels[key] := MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
+	;CtrlXboxLabels[key] := MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", ":" key)
+	dispText := ":" key
+    if (Layout == "Sony") {
+        switch key {
+            case "TRIANGLE": dispText := ": " Chr(0x25B2)
+            case "CIRCLE":   dispText := ": " Chr(0x2B24)
+			;case "CIRCLE":   dispText := ": " Chr(0x25EF)
+            ;case "CROSS":    dispText := ": " Chr(0x2715)
+			case "CROSS":    dispText := ": X"
+            case "SQUARE":   dispText := ": " Chr(0x25A0)
+        }
+    }
+    CtrlXboxLabels[key] := MainGui.Add("Text", "x735 y" (yPosRight+1) " w80", dispText)
     MainGui.SetFont("Norm")
     
     yPosRight += 42
@@ -824,7 +836,17 @@ if (Layout == "Sony") {
         btn.OnEvent("Click", BindKbm.Bind(ddl))
         
         MainGui.SetFont("Bold")
-        MainGui.Add("Text", "x740 y" (yPosSonyR+4) " w50", key)
+        ;MainGui.Add("Text", "x740 y" (yPosSonyR+4) " w50", ":" key)
+		dispText := ":" key
+        switch key {
+            case "TRIANGLE": dispText := ": " Chr(0x25B2)
+            case "CIRCLE":   dispText := ": " Chr(0x2B24)
+            case "CROSS":    dispText := ": " "X"
+            case "SQUARE":   dispText := ": " Chr(0x25A0)
+        }
+
+        MainGui.SetFont("Bold")
+        MainGui.Add("Text", "x740 y" (yPosSonyR+4) " w50", dispText)
         MainGui.SetFont("Norm")
 		
         yPosSonyR += 38
@@ -1212,9 +1234,9 @@ MainGui.Add("Text", "xs+25 ys+23 w450", T("Look/Aim"))
 MainGui.SetFont("Norm " GuiFontSize)
 
 ; Хоткеи подгруппы Aiming (позиционируются автоматически друг под другом)
-AddHotkey(XboxIni, "SETTINGS", "AimingToggleButton", T("Gyro Controls (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+8", 240)
-AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Motion Aiming Button:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
-AddHotkey(XboxIni, "SETTINGS", "AimingPressModeToggleButton", T("Toggle Aiming Button Behavior:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingToggleButton", T("Gyro Aiming (On/Off):"), LayoutKeys, BindGamepad, "xs+25 y+8", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingButton", T("Gyro Control Button:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
+AddHotkey(XboxIni, "SETTINGS", "AimingPressModeToggleButton", T("Toggle Control Button Behavior:"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
 AddHotkey(XboxIni, "SETTINGS", "AimingModeToggleButton", T("Switch Gyro Emulation (Mouse/Stick):"), LayoutKeys, BindGamepad, "xs+25 y+10", 240)
 
 ; тонкая горизонтальная линия-разделитель
@@ -1264,12 +1286,12 @@ Tabs.UseTab("Gyro")
 
 ; --- Группа 1: Поведение и общие настройки ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x205 y50 w430 h275 Center Section", T("Behavior and Settings"))
+MainGui.Add("GroupBox", "x215 y50 w410 h275 Center Section", T("Behavior and Settings"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; 8-й параметр (210) = ширина текста, 9-й параметр (140) = ширина выпадающего списка
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingMode", T("Default Gyro Emulation:"), [T("Stick"), T("Mouse")], Map(T("Stick"), "0", T("Mouse"), "1"), "xs+25 ys+45", 220, 60)
-AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Motion Aiming Button Behavior:"), [T("Hold to Pause"), T("Hold to Aim")], Map(T("Hold to Pause"), "0", T("Hold to Aim"), "1"), "xs+25 y+11", 220, 145)
+AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Hold Control Button to:"), [T("Pause Aim"), T("Aim")], Map(T("Pause Aim"), "0", T("Aim"), "1"), "xs+25 y+11", 220, 125)
 AddMappedDropdown(ConfigIni, "Motion", "GyroFromLeft", T("Gyro data in combined mode from:"), [T("Right Joy-Con"), T("Left Joy-Con")], Map(T("Right Joy-Con"), "0", T("Left Joy-Con"), "1"), "xs+25 y+11", 220, 125)
 AddMappedDropdown(ConfigIni, "SETTINGS", "SleepTimeOut", T("Polling rate (33.3 Hz for example):"), ["33.3 Hz", "66.7 Hz", "125 Hz", "250 Hz", "500 Hz"], Map("33.3 Hz", "30", "66.7 Hz", "15", "125 Hz", "8", "250 Hz", "4", "500 Hz", "2"), "xs+25 y+11", 220, 65)
 
@@ -1290,7 +1312,7 @@ edtTight.OnEvent("Change", (edt, *) => (IsNumber(edt.Value) ? udTight.Value := R
 
 CtrlSettings[ConfigIni "_Motion_Tightening"] := {type: "edt", ctrl: edtTight, file: ConfigIni, sec: "Motion", key: "Tightening"}
 
-AddInput(ConfigIni, "Motion", "RatchetDelayTime", T("Gyro Activation Delay³ :"), "150", "xs+25 y+8", 220, 50, true, "0-999")
+AddInput(ConfigIni, "Motion", "RatchetDelayTime", T("Control Button Release Delay³ :"), "150", "xs+25 y+8", 220, 50, true, "0-999")
 MainGui.Add("Text", "xs+315 yp+3 w40", T("(ms)"))
 
 ; --- Сноски и примечания (внизу вкладки) ---
@@ -1325,8 +1347,8 @@ MainGui.Add("Text", "x15 y+10 cRed", T("² Tightening"))
 MainGui.Add("Text", "x+0 w820", T(":  Is a zero-latency, velocity-based threshold filter (by Jibb Smart) that attenuates micro-movements to eliminate"))
 MainGui.Add("Text", "x25 y+0 w820", T("hand tremors, pulse twitches and hardware sensor noise. 0 - disabled; 1 - 2 for Sony gamepads, 2 - 5 for Joy-Cons"))
 
-MainGui.Add("Text", "x15 y+10 cRed", T("³ Gyro Activation Delay"))
-MainGui.Add("Text", "x+0 w820", T(":  Prevents camera twitch on button release after ratcheting. Only active in 'Hold to Pause' mode"))
+MainGui.Add("Text", "x15 y+10 cRed", T("³ Release Delay"))
+MainGui.Add("Text", "x+0 w820", T(": Discards hand motion upon releasing the Control Button to prevent camera jitter (Hold to Pause mode only)"))
 
 ; =========================================
 ; TAB: GYRO 2 (Interactive Acceleration Graph)
@@ -1702,27 +1724,27 @@ MainGui.Add("Text", "x25 y+5 w820", T("If you can't see your wheel/pedals name, 
 ; =========================================
 Tabs.UseTab("Profiles")
 
-
-MainGui.Add("Text", "x20 y65 w810 Center", T("Profile Manager"))
-
+; --- ГРУППА 1: Управление и загрузка профилей ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x125 y120 w610 h140 Center cBlue", T("Load Delete Profile"))
+MainGui.Add("GroupBox", "x125 y120 w610 h200 Center Section cBlue", T("Manage Profiles"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-MainGui.Add("Text", "x140 y160 w450", T("Current Active Profile: ") ActiveProfile)
+;MainGui.Add("Text", "xs+95 ys+60 w560", T("Current Active Profile: ") ActiveProfile)
+MainGui.Add("Text", "xs+25 ys+60", T("Current Active Profile: "))
+MainGui.Add("Text", "x+5 yp w400", ActiveProfile).SetFont("Bold")
+MainGui.Add("Text", "xs+25 y+20 w560", T("Select Profile:"))
 
 ProfileList := []
 Loop Files, A_ScriptDir "\XboxProfiles\*.ini", "F" {
     ProfileList.Push(A_LoopFileName)
 }
-MainGui.Add("Text", "x140 y203 w130", T("Select Profile:"))
-ProfileDdl := MainGui.Add("DropDownList", "x270 y202 w180 Choose1", ProfileList)
+ProfileDdl := MainGui.Add("DropDownList", "xs+25 y+6 w240 Choose1", ProfileList)
 ProfileDdl.Text := ActiveProfile
 
-LoadProfileBtn := MainGui.Add("Button", "x470 y198 w120 h26", T("Load Profile"))
+LoadProfileBtn := MainGui.Add("Button", "x+20 yp-1 w145 h26", T("Load Profile"))
 LoadProfileBtn.OnEvent("Click", (*) => LoadProfileEvent(ProfileDdl.Text))
 
-DeleteProfileBtn := MainGui.Add("Button", "x600 y198 w120 h26", T("Delete Profile"))
+DeleteProfileBtn := MainGui.Add("Button", "x+10 yp w145 h26", T("Delete Profile"))
 DeleteProfileBtn.OnEvent("Click", (*) => DeleteProfileEvent(ProfileDdl.Text))
 
 LoadProfileEvent(selectedProfile) {
@@ -1732,17 +1754,23 @@ LoadProfileEvent(selectedProfile) {
     Reload()
 }
 
+; --- ГРУППА 2: Создание и клонирование профилей ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x125 y280 w610 h140 Center cBlue", T("Create New Profile:"))
+MainGui.Add("GroupBox", "xs y+95 w610 h175 Center Section cBlue", T("Create Profile:"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-MainGui.Add("Text", "x140 y330 w400", T("Enter Name for the New Profile:"))
+MainGui.Add("Text", "xs+25 ys+60 w560", T("Enter Name for the New Profile:"))
 
-NewProfileEdit := MainGui.Add("Edit", "x140 y365 w310")
-CreateProfileBtn := MainGui.Add("Button", "x470 y363 w175 h26", T("Create and Load Profile"))
-CreateProfileBtn.OnEvent("Click", (*) => CreateProfileEvent(NewProfileEdit.Text))
+NewProfileEdit := MainGui.Add("Edit", "xs+25 y+6 w240")
 
-CreateProfileEvent(profileName) {
+CreateCleanBtn := MainGui.Add("Button", "x+20 yp-1 w145 h26", T("Create Clean"))
+CreateCleanBtn.OnEvent("Click", (*) => HandleProfileCreate("clean", NewProfileEdit.Text))
+
+CloneCurrentBtn := MainGui.Add("Button", "x+10 yp w145 h26", T("Clone Current"))
+CloneCurrentBtn.OnEvent("Click", (*) => HandleProfileCreate("clone", NewProfileEdit.Text))
+
+HandleProfileCreate(mode, profileName) {
+    global ActiveProfile, ConfigIni, JslKeys
     profileName := Trim(profileName)
     if (profileName == "") {
         MsgBox(T("Please enter a valid profile name!"), T("Error"), "Icon!")
@@ -1760,29 +1788,32 @@ CreateProfileEvent(profileName) {
     }
     
     try {
-        FileCopy(A_ScriptDir "\XboxProfiles\default.ini", targetFile, 1)
+        sourceFile := (mode == "clone") ? (A_ScriptDir "\XboxProfiles\" ActiveProfile) : (A_ScriptDir "\XboxProfiles\default.ini")
+        FileCopy(sourceFile, targetFile, 1)
         
-        For key in JslKeys {
-            if (key != "NONE") {
-                if (key == "SL" || key == "SR" || key == "HOME" || key == "CAPTURE") {
-                    SmartIniWrite("NONE", targetFile, "JOYCONS", key)
-                } else if (key == "L4" || key == "R4") {
-                    SmartIniWrite("NONE", targetFile, "DUALSENSE-EDGE", key)
-                } else {
-                    SmartIniWrite("NONE", targetFile, "Xbox", key)
+        if (mode == "clean") {
+            For key in JslKeys {
+                if (key != "NONE") {
+                    if (key == "SL" || key == "SR" || key == "HOME" || key == "CAPTURE") {
+                        SmartIniWrite("NONE", targetFile, "JOYCONS", key)
+                    } else if (key == "L4" || key == "R4") {
+                        SmartIniWrite("NONE", targetFile, "DUALSENSE-EDGE", key)
+                    } else {
+                        SmartIniWrite("NONE", targetFile, "Xbox", key)
+                    }
+                    SmartIniWrite("NONE", targetFile, "KEYBOARD-MOUSE", key)
                 }
-                SmartIniWrite("NONE", targetFile, "KEYBOARD-MOUSE", key)
             }
         }
         
         SmartIniWrite(profileName, A_ScriptDir "\" ConfigIni, "ConfigGUI", "LayoutProfile")
-        MsgBox(T("Profile '") profileName T("' created successfully!"), T("Success"), "Iconi")
+        msgText := (mode == "clone") ? T("Profile cloned successfully!") : T("Profile created successfully!")
+        MsgBox(msgText, T("Success"), "Iconi")
         Reload()
     } catch as err {
         MsgBox(T("Failed to create profile!`nDetails: ") err.Message, T("Error"), "IconX")
     }
 }
-
 
 ; =========================================
 ; TAB 10: SECOND (Secondary Gamepad)
@@ -1856,11 +1887,18 @@ SetLayout(value, *) {
     } else if (value == "Nintendo" && currentGS == "2") {
         SmartIniWrite("3", A_ScriptDir "\" ConfigIni, "Motion", "GyroSpace")
     }
-    
+    if (value == "Sony")
+        SmartIniWrite("XBOX", A_ScriptDir "\" ConfigIni, "Gamepad", "EmulatedController")
     Reload()
 }
 
 AddMappedDropdown(ConfigIni, "Gamepad", "EmulatedController", T("Emulated Controller¹:"), ["XBOX", "DS4"], Map("XBOX", "XBOX", "DS4", "DS4"), "xs+125 ys+68", 150, 55)
+
+if (Layout == "Sony") {
+    ctrlEmu := CtrlSettings[ConfigIni "_Gamepad_EmulatedController"].ctrl
+    ctrlEmu.Text := "XBOX"
+    ctrlEmu.Enabled := false
+}
 
 LanguagesList := ["English"]
 Loop Files, A_ScriptDir "\Language\*.ini", "F" {
@@ -2333,18 +2371,18 @@ TranslateAhkKey(k) {
         return "["
     if (k == "OEM_6")
         return "]"
-    if (k == "OEM_1")
-        return ":"
-    if (k == "OEM_7")
+    if (k == "OEM_1" || k == ";" || k == ":")
+        return "SEMICOLON"
+    if (k == "OEM_7" || k == "'" || k == '"')
         return "APOSTROPHE"
-    if (k == "OEM_5")
-        return "\"
-    if (k == "OEM_COMMA")
-        return "<"
-    if (k == "OEM_PERIOD")
-        return ">"
-    if (k == "OEM_2")
-        return "?"
+    if (k == "OEM_5" || k == "\" || k == "|")
+        return "BACKSLASH"
+    if (k == "OEM_COMMA" || k == "," || k == "<")
+        return "COMMA"
+    if (k == "OEM_PERIOD" || k == "." || k == ">")
+        return "PERIOD"
+    if (k == "OEM_2" || k == "/" || k == "?")
+        return "SLASH"
     if (k == "PRIOR")
         return "PAGE-UP"
     if (k == "NEXT")
