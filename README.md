@@ -186,7 +186,7 @@ __________
   <summary><h1 id="tech-info">Technical information and instructions</h1></summary>
 
 <details>
-    <summary><h3>Interface, Settings, and Profiles</h3></summary>
+    <summary><h3>Interface, Hotkeys, Settings, and Profiles</h3></summary>
 
 The original DSAdvance menu was overly cluttered. A modernized 3-tier menu has been implemented:<br>
 
