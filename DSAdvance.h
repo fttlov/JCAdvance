@@ -1067,7 +1067,7 @@ inline bool IsHotkeyTriggered(int gamepadHotkey, WORD kbdMod, WORD kbdKey) {	//@
 	}
 
 	// 2. Проверка геймпада (срабатывает строго в момент первого касания!)
-	bool gamepadPressed = false;
+	/*bool gamepadPressed = false;
 	if (gamepadHotkey != 0 && AppStatus.JoyconChangeModesWithButton == 0) {
 		// Все кнопки хоткея должны быть зажаты:
 		if ((PrimaryGamepad.InputState.buttons & gamepadHotkey) == (unsigned int)gamepadHotkey) {
@@ -1078,6 +1078,31 @@ inline bool IsHotkeyTriggered(int gamepadHotkey, WORD kbdMod, WORD kbdKey) {	//@
 				bool isSingleModifier = (gamepadHotkey == JSMASK_CAPTURE || gamepadHotkey == JSMASK_HOME || gamepadHotkey == JSMASK_PS);
 				if (!isSingleModifier || (PrimaryGamepad.InputState.buttons & ~(JSMASK_CAPTURE | JSMASK_HOME | JSMASK_PS)) == 0) {
 					gamepadPressed = true;
+				}
+			}
+		}
+	}*/
+
+	//@??? 2. Проверка геймпада (с поддержкой AND [+] и OR [/ \ |])
+	bool gamepadPressed = false;
+	if (gamepadHotkey != 0 && AppStatus.JoyconChangeModesWithButton == 0) {
+		bool isOrMode = (gamepadHotkey & 0x80000000) != 0;
+		unsigned int rawMask = gamepadHotkey & ~0x80000000;
+
+		if (isOrMode) {
+			// Режим "ИЛИ" (/ \ |): сработает при нажатии ЛЮБОЙ из кнопок именно в этом кадре
+			if ((AppStatus.JustPressedButtons & rawMask) != 0) {
+				gamepadPressed = true;
+			}
+		}
+		else {
+			// Режим "И" (+): ВСЕ кнопки хоткея должны быть зажаты одновременно
+			if ((PrimaryGamepad.InputState.buttons & rawMask) == rawMask) {
+				if ((AppStatus.JustPressedButtons & rawMask) != 0) {
+					bool isSingleModifier = (rawMask == JSMASK_CAPTURE || rawMask == JSMASK_HOME || rawMask == JSMASK_PS);
+					if (!isSingleModifier || (PrimaryGamepad.InputState.buttons & ~(JSMASK_CAPTURE | JSMASK_HOME | JSMASK_PS)) == 0) {
+						gamepadPressed = true;
+					}
 				}
 			}
 		}
@@ -1433,9 +1458,10 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	else
 		return 0;
 }*/
-	//@104 Новый парсинг для биндингов: "R1+HOME", "B/ZL", "B\ZL", "B|ZL"
-	size_t delimPos = KeyName.find_first_of("+/\\|");
+	//@104 Новый парсинг для биндингов: "R1+HOME" - комбинация, "B/ZL - или"
+	size_t delimPos = KeyName.find_first_of("+/");
 	if (delimPos != std::string::npos) {
+		char delim = KeyName[delimPos]; //@??? - fix for /
 		std::string key1 = KeyName.substr(0, delimPos);
 		std::string key2 = KeyName.substr(delimPos + 1);
 
@@ -1445,6 +1471,11 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 
 		int code1 = (KeyMap.find(key1) != KeyMap.end()) ? KeyMap[key1] : 0;
 		int code2 = (KeyMap.find(key2) != KeyMap.end()) ? KeyMap[key2] : 0;
+
+		//@??? Если разделитель не "+", помечаем 31-й бит как флаг "ИЛИ" (OR)
+		if (delim != '+') {
+			return (code1 | code2) | 0x80000000;
+		}
 		return code1 | code2;
 	}
 	else {

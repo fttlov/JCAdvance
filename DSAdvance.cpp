@@ -3808,7 +3808,7 @@ int main(int argc, char **argv)
 				}
 				else if (!comboFired) {
 					chordTimer += sleepMs;
-					if (chordTimer >= 50) return true; // 50 мс прошло, комбо нет -> разрешаем одиночное действие!
+					if (chordTimer >= 75) return true; // 50 мс прошло, комбо нет -> разрешаем одиночное действие!
 				}
 			}
 			else {
@@ -3891,8 +3891,17 @@ int main(int argc, char **argv)
 				ProcessSmartButton((mappedButtons & JSMASK_ZR) != 0, CurrentXboxProfile.ZR, 0, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.R, sleepMs, AppStatus.LongPressTimeOut);
 				//ProcessSmartButton((mappedButtons & JSMASK_HOME) != 0, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
 				//ProcessSmartButton((mappedButtons & JSMASK_CAPTURE) != 0, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton(allowHomeSolo, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
-				ProcessSmartButton(allowCaptureSolo, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
+				//ProcessSmartButton(allowHomeSolo, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
+				//ProcessSmartButton(allowCaptureSolo, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
+				// Если на HOME назначен бинд Xbox — отдаем чистый инпут 0 мс!
+				bool isHomePressed = (CurrentXboxProfile.HOME != 0) ?
+					((PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0) : allowHomeSolo;
+				ProcessSmartButton(isHomePressed, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
+
+				// Если на CAPTURE назначен бинд Xbox — отдаем чистый инпут 0 мс!
+				bool isCapPressed = (CurrentXboxProfile.CAPTURE != 0) ?
+					((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0) : allowCaptureSolo;
+				ProcessSmartButton(isCapPressed, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
 			}
 
 			if (PrimaryGamepad.Motion.GestureXTimer > 0 && CurrentXboxProfile.MeleeGesture != 0) {
@@ -4646,10 +4655,10 @@ int main(int argc, char **argv)
 		bool DontResetInputState = !( // Reset clicks when activating some actions / Сброс нажатий при активации некоторых действий
 			(PrimaryGamepad.InputState.buttons & JSMASK_PS) && !(PrimaryGamepad.InputState.buttons & JSMASK_HOME) || //@013 иначе на HOME не эмулируются кнопки KM в XboxProfile.	
 			IsSharePressed ||
-			//IsRecordPressed);
-			IsRecordPressed ||
-			IsKeyPressed(VK_MENU)
-			);
+			IsRecordPressed);
+			//IsRecordPressed ||
+			//IsKeyPressed(VK_MENU)
+			//);
 
 		if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled) { //@014  add для эмуляции KM в XboxProfiles
 
@@ -4803,8 +4812,14 @@ int main(int argc, char **argv)
 				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_SR) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.JCSR, DontResetInputState, PrimaryGamepad.Trackers.JCSR, sleepMs, AppStatus.LongPressTimeOut);
 				//ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
 				//ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton(allowHomeSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
-				ProcessSmartButton(allowCaptureSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
+				//ProcessSmartButton(allowHomeSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
+				//ProcessSmartButton(allowCaptureSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
+				// Клавиатурный маппинг HOME и CAPTURE: чистый сырой инпут без задержек комбо
+				bool isHomePhysPressed = (PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0;
+				bool isCapPhysPressed = (PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0;
+
+				ProcessSmartButton(isHomePhysPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
+				ProcessSmartButton(isCapPhysPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
 			}
 
 			KMStickMode(PrimaryGamepad, DontResetInputState, true, DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX), DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY), PrimaryGamepad.KMEmu.LeftStickMode);
@@ -4957,13 +4972,25 @@ int main(int argc, char **argv)
 
 		// After releasing all the buttons you can click on screenshots, so it's here / После отпускания всех кнопок можно нажимать скриншоты, поэтому это здесь
 		// Microphone (custom key)
-		if (AppStatus.ScreenshotMode == ScreenShotCustomKeyMode)
+		/*if (AppStatus.ScreenshotMode == ScreenShotCustomKeyMode)
 			KeyPress(AppStatus.ScreenShotKey, IsSharePressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
 
 		// Microphone (screenshots / record)
 		else {
 			KeyPress(AppStatus.ScreenShotKey, IsScreenshotPressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
 			KeyPress(VK_GAMEBAR_RECORD, IsRecordPressed, &PrimaryGamepad.ButtonsStates.Record, false);
+		}*/
+
+		// Скриншоты вызываются ТОЛЬКО если на Capture НЕ назначен пользовательский маппинг клавиатуры/мыши!
+		bool hasCustomCaptureMapping = (PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode != 0);
+
+		if (!hasCustomCaptureMapping) {
+			if (AppStatus.ScreenshotMode == ScreenShotCustomKeyMode)
+				KeyPress(AppStatus.ScreenShotKey, IsSharePressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
+			else {
+				KeyPress(AppStatus.ScreenShotKey, IsScreenshotPressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
+				KeyPress(VK_GAMEBAR_RECORD, IsRecordPressed, &PrimaryGamepad.ButtonsStates.Record, false);
+			}
 		}
 
 #pragma warning(push)
