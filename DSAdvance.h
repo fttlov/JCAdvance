@@ -1229,9 +1229,19 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 		{"J", 'J'},
 		{"K", 'K'},
 		{"L", 'L'},
+
+		// Клавиша Ж / ; (VK_OEM_1 = 186)
 		{":", 186},
+		{";", 186},
+		{"SEMICOLON", 186},
+
+		// Клавиша Э / ' (VK_OEM_7 = 222)
+		{"'", 222},
 		{"APOSTROPHE", 222},
+		{"QUOTE", 222},
+
 		{"\\", 220},
+		{"BACKSLASH", 220},
 		{"Z", 'Z'},
 		{"X", 'X'},
 		{"C", 'C'},
@@ -1239,9 +1249,22 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 		{"B", 'B'},
 		{"N", 'N'},
 		{"M", 'M'},
+
+		// Клавиша Б / , (VK_OEM_COMMA = 188)
 		{"<", 188},
+		{",", 188},
+		{"COMMA", 188},
+
+		// Клавиша Ю / . (VK_OEM_PERIOD = 190)
 		{">", 190},
+		{".", 190},
+		{"PERIOD", 190},
+		{"DOT", 190},
+
+		// Клавиша / и ? (VK_OEM_2 = 191)
 		{"?", 191},
+		{"/", 191},
+		{"SLASH", 191},
 
 		{"PRINTSCREEN", VK_SNAPSHOT},
 		{"SCROLL-LOCK", VK_SCROLL},

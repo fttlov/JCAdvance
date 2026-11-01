@@ -1652,7 +1652,7 @@ void DefaultMainText() {
 		return;
 	}
 
-	if (!AppStatus.ShowFullMenu) {	//	Layer1 Light menu for novice
+	if (!AppStatus.ShowFullMenu) {	//	Layer1
 		u8printf(T("Layer1_Connected", "\n Connected controllers: ").c_str());
 		switch (PrimaryGamepad.ControllerType) {
 		case SONY_DUALSENSE:
@@ -1701,7 +1701,7 @@ void DefaultMainText() {
 		} else if (AppStatus.ControllerCount > 1 && SecondaryGamepad.DeviceIndex != -1) printf(", the second gamepad is disabled in the config");
 		printf("\n");
 
-		u8printf(T("Layer1_Reset", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mCTRL + R\033[0m\" to reset/search for controllers, \"\033[1mALT + V\033[0m\" to swap the 1st and 2nd ones\n").c_str(), AppStatus.HotKeys.ResetKeyName.c_str());
+		u8printf(T("Layer1_Reset", "\n Reset/search controllers: press \"\033[1m%s\033[0m\" or \"\033[1mCTRL + R\033[0m\". To swap the 1st and 2nd ones press \"\033[1mALT + V\033[0m\"\n").c_str(), AppStatus.HotKeys.ResetKeyName.c_str());
 
 		if (AppStatus.ControllerCount > 0 && AppStatus.ShowBatteryStatus) {
 			printf(" Controller 1");
@@ -1735,31 +1735,36 @@ void DefaultMainText() {
 		u8printf(T("Layer1_About", "\n JCAdvance is an Xbox gamepad emulator with advanced Gyro features. You can map most of any button on your \n"
 		" gamepad to emulate any of Xbox, Keyboard or Mouse keys. Gyro modes are controlled in real time using hotkeys.\n" 
 		" For setup primary setting use Config.exe. To manage all settings see config.ini and XboxProfile\\*.ini\n").c_str());
-		
-		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
-		u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface, wait for the beep, or press \"\033[1m%s\033[0m\" to do it manually\n").c_str(), AppStatus.HotKeys.GyroCalibrateKeyName.c_str());
-		//u8printf(T("Layer1_Calibrate", "\n Auto-calibration: place the device on a flat surface and wait for the beep\n").c_str());
-		u8printf(T("Layer1_Sense", "\n Press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to change aiming sensitivity, \"Capture/PS + R3\" to reset\n").c_str());
-		u8printf(T("Layer1_Gyro_On", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\" to unlock Gyro Motion (on/off)\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
 
-		if (AppStatus.AimMode == AimMouseMode) u8printf(T("Layer1_Mode_Mouse", "\n \033[1mControls\033[0m: \033[33mGyro Mouse\033[0m").c_str());
-		else u8printf(T("Layer1_Mode_Stick", "\n \033[1mControls\033[0m: \033[36mGyro Stick\033[0m").c_str());
-		u8printf(T("Layer1_Mode_Switch", ", to switch mode press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\"\n").c_str(), AppStatus.AimingModeToggleButtonName.c_str());
-		u8printf(T("Layer1_Move_Button", "\n \033[1mControl Button\033[0m: \"\033[93m%s\033[0m\", %s. Press \"\033[93m%s\033[0m\" to change the behavior\n").c_str(),
+		u8printf(T("Layer1_Info", "\n \033[4mGyro info\033[0m: ").c_str());
+		u8printf(T("Layer1_Calibrate", "\n Auto-Calibration: place device on a flat surface and wait for beep. Press \"\033[1m%s\033[0m\" to calibrate manually\n").c_str(), AppStatus.HotKeys.GyroCalibrateKeyName.c_str());
+		u8printf(T("Layer1_Gyro_On", "\n Gyro Aiming (on/off): press \"\033[1m%s\033[0m\" or \"\033[1mALT + 2\033[0m\"\n").c_str(), AppStatus.AimingToggleButtonName.c_str());
+
+		if (AppStatus.AimMode == AimMouseMode)
+			u8printf(T("Layer1_Mode_Mouse", "\n Emulation Mode: \033[33mGyro Mouse\033[0m").c_str());
+		else
+			u8printf(T("Layer1_Mode_Stick", "\n Emulation Mode: \033[36mGyro Stick\033[0m").c_str());
+		u8printf(T("Layer1_Mode_Switch", ". Press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\" to switch\n").c_str(), AppStatus.AimingModeToggleButtonName.c_str());
+
+		u8printf(T("Layer1_Move_Button", "\n Control Button: hold \"\033[93m%s\033[0m\" %s. Press \"\033[1m%s\033[0m\" or \"\033[1mALT + F\033[0m\ to change behavior\n").c_str(),
 			AppStatus.AimingButtonName.c_str(),
 			AppStatus.AimingByPressingMode ?
-			T("Layer1_START_MOVE", "hold to \033[4mstart\033[0m motion").c_str() :
-			T("Layer1_STOP_MOVE", "hold to \033[4mstop\033[0m motion").c_str(),
+			T("Layer1_START_MOVE", "to \033[4maim\033[0m").c_str() :
+			T("Layer1_STOP_MOVE", "to \033[4mpause\033[0m aim").c_str(),
 			AppStatus.AimingPressModeToggleButtonName.c_str());
 
-		u8printf(T("Layer1_Driving", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\" to activate Driving Mode (on/off), \"\033[1m%s\033[0m\" to recentering wheel\n").c_str(), AppStatus.DrivingToggleButtonName.c_str(), AppStatus.DrivingCalibrationButtonName.c_str());
-		
+		u8printf(T("Layer1_Sense", "\n Aiming Sensitivity: press \"\033[1mCapture + X/B\033[0m\" or \"\033[1mPS + \xE2\x96\xB3/x\033[0m\" to adjust, \"\033[1mCapture/PS + R3\033[0m\" to reset\n").c_str());
+
+		u8printf(T("Layer1_Driving", "\n Driving Mode (on/off): press \"\033[1m%s\033[0m\" or \"\033[1mALT + 1\033[0m\". To recenter wheel press \"\033[1m%s\033[0m\" \n").c_str(),
+			AppStatus.DrivingToggleButtonName.c_str(),
+			AppStatus.DrivingCalibrationButtonName.c_str());
+
 		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:").c_str());
-		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\", press \"\033[1mHome/PS + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to change\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
-		u8printf(T("Layer1_StickAsTrigger", "\n Press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" to switch Right Stick modes\n").c_str(), AppStatus.RightStickModeButtonName.c_str());
-		u8printf(T("Layer1_Battery", "\n Press \"\033[1mALT + I\033[0m\" to view battery status, \"\033[1mALT + Z\033[0m\" to see other hotkeys, \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
-		//u8printf(T("Layer1_Full_Menu", "\n Press \"\033[1mALT + Z\033[0m\" to open full menu\n").c_str());
-		//u8printf(T("Layer1_Exit", "\n Press \"\033[1mALT + Esc\033[0m\" to Exit\n").c_str());
+		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\". Press \"\033[1mHome/PS + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to switch\n").c_str(),
+			XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
+		u8printf(T("Layer1_StickAsTrigger", "\n Right Stick modes: press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" to switch\n").c_str(),
+			AppStatus.RightStickModeButtonName.c_str());
+		u8printf(T("Layer1_Battery", "\n Battery Status: \"\033[1mALT + I\033[0m\" | Hotkeys Menu: \"\033[1mALT + Z\033[0m\" | Exit: \"\033[1mALT + Esc\033[0m\"\n").c_str());
 
 		return;
 	}
@@ -2192,7 +2197,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 4.1");
+	SetConsoleTitle("JCAdvance 4.2");
 	WindowToCenter();
 
 	SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE); //@075
@@ -3336,6 +3341,10 @@ int main(int argc, char **argv)
 		float rx = DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX);
 		float ry = DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY);
 
+		//@085 Чистый физический сигнал для цифровых кнопок (ДО искажения Линейностью и Anti-Deadzone!)
+		float btnStickX = AppStatus.GyroFromLeft ? lx : rx;
+		float btnStickY = AppStatus.GyroFromLeft ? ly : ry;
+
 		//@035 Linearity Stick  Применяем искривление линейности (Response Curve)
 		/*lx = ApplyLinearity(lx, PrimaryGamepad.Sticks.LinearityLeftX);
 		ly = ApplyLinearity(ly, PrimaryGamepad.Sticks.LinearityLeftY);
@@ -3592,12 +3601,20 @@ int main(int argc, char **argv)
 			}
 		}*/
 
-		if (activeRSMode == 1) {	//@081
-			if (convStickY > 0.05f) {
-				report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(convStickY * 255.0f)), 0, 255));
+		// 4. Перехват триггеров стиком прицельной руки (Stick-as-Triggers)
+		// Обходим все три стиковые функции (DeadZone, Linearity, ADZ) и подчиняем стик цепочке триггеров!
+		if (activeRSMode == 1) {
+			float rawSensorY = AppStatus.GyroFromLeft ? PrimaryGamepad.InputState.stickLY : PrimaryGamepad.InputState.stickRY;
+
+			// Газ (RT / Right Trigger)
+			if (rawSensorY > 0.0f) {
+				float gas = DeadZoneAxis(rawSensorY, PrimaryGamepad.Triggers.DeadZoneRight);
+				report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(gas * 255.0f)), 0, 255));
 			}
-			else if (convStickY < -0.05f) {
-				report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(-convStickY * 255.0f)), 0, 255));
+			// Тормоз (LT / Left Trigger)
+			else if (rawSensorY < 0.0f) {
+				float brake = DeadZoneAxis(-rawSensorY, PrimaryGamepad.Triggers.DeadZoneLeft);
+				report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(brake * 255.0f)), 0, 255));
 			}
 		}
 
@@ -3907,52 +3924,41 @@ int main(int argc, char **argv)
 					}
 				}
 			}*/
-			if (activeRSMode == 2) {	//@049 + @081
-				float absX = fabs(convStickX);
-				float absY = fabs(convStickY);
+			
+			//@049 + @081 + @085
+			// Проверка цифровых кнопок стика (полная изоляция от ADZ и кривых линейности!)
+			if (activeRSMode == 2) {	//@049
+				float absX = fabs(btnStickX);
+				float absY = fabs(btnStickY);
 
 				if (absY >= absX) { // Вертикальное отклонение доминирует
-					if (convStickY > 0.5f) {
+					if (btnStickY > 0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickUp;
 					}
-					else if (convStickY < -0.5f) {
+					else if (btnStickY < -0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickDown;
 					}
 				}
 				else { // Горизонтальная ось доминирует
-					if (convStickX > 0.5f) {
+					if (btnStickX > 0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickRight;
 					}
-					else if (convStickX < -0.5f) {
+					else if (btnStickX < -0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickLeft;
 					}
 				}
 			}
-			else if (activeRSMode == 1) {
-				float absX = fabs(convStickX);
-				float absY = fabs(convStickY);
-
-				if (absX > absY) {
-					if (convStickX > 0.5f) {
-						XboxButtons |= CurrentXboxProfile.RightStickRight;
-					}
-					else if (convStickX < -0.5f) {
-						XboxButtons |= CurrentXboxProfile.RightStickLeft;
-					}
-				}
-			}
-
 			else if (activeRSMode == 1) {
 				// В режиме аналоговых триггеров (1) горизонтальная ось X свободна.
 				// Разрешаем использовать её для цифровых кнопок влево/вправо (RS-LEFT / RS-RIGHT)
-				float absX = fabs(rx); // Используем fabs для работы с float
-				float absY = fabs(ry);
+				float absX = fabs(btnStickX);	// Используем fabs для работы с float
+				float absY = fabs(btnStickY);
 
-				if (absX > absY) { // Горизонтальное отклонение доминирует над триггерами (осью Y)
-					if (rx > 0.5f) {
+				if (absX > absY) {	// Горизонтальное отклонение доминирует над триггерами (осью Y)
+					if (btnStickX > 0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickRight;
 					}
-					else if (rx < -0.5f) {
+					else if (btnStickX < -0.33f) {
 						XboxButtons |= CurrentXboxProfile.RightStickLeft;
 					}
 				}
@@ -5352,14 +5358,14 @@ int main(int argc, char **argv)
 						"<C=00FF00>%-9s: %3.0fHz | Bat: %3.0f%%%s",
 						AppStatus.OsdPosX, AppStatus.OsdPosY,
 						report.bLeftTrigger, report.bRightTrigger,
-						report.sThumbLX, report.sThumbLY,
-						report.sThumbRX, report.sThumbRY,
+						report.sThumbLX, report.sThumbRX,
+						report.sThumbLY, report.sThumbRY,
 						autoCal.confidence * 100.0f,
 						autoCal.isSteady ? "YES" : "NO ",
 						bx, by,
 						angularVelocity, peakAngularVel,
 						shakiness, minDeltaAccel,
-						GetJslDevName(PrimaryGamepad.DeviceIndex),
+						GetJslDevName(PrimaryGamepad.ControllerType),
 						pTelemetry ? pTelemetry[4] : JslGetPollRate(PrimaryGamepad.DeviceIndex),
 						pTelemetry ? pTelemetry[6] : JslGetBattery(PrimaryGamepad.DeviceIndex),
 						dev2Buf
