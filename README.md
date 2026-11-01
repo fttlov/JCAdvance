@@ -307,6 +307,10 @@ The original DSAdvance menu was overly cluttered. A modernized 3-tier menu has b
 
   </details>
 
+  > 📌 **Note on CAPTURE & HOME Buttons:**  
+  > By default, `CAPTURE` and `HOME` act as system modifier keys (used for profile switching, on-the-fly sensitivity adjustment, and hotkey chords) protected by a 75 ms leak-prevention buffer.  
+  > If you explicitly bind an in-game action (Xbox button or Keyboard key) to `CAPTURE` or `HOME`, the buffer is bypassed, and the button functions as a standard, instant 0 ms input. Hotkey combinations will still trigger, but the primary button action may register in the game prior to the combo activation.
+
   **Settings**: All profile-specific settings have been relocated from the global `config.ini` into the `[SETTINGS]` section of individual `XboxProfiles\*.ini` files.
 
   **Profiles**: In original DSAdvance, there was a strict separation between Xbox profiles (in `XboxProfile`) and Keyboard/Mouse profiles (`KMProfile`), making hybrid emulation impossible. JCAdvance consolidates everything into unified profiles under `XboxProfiles` with full management inside `Config.exe`. You can still hot-swap profiles on the fly via hotkeys (profile switch persists for the active session).
