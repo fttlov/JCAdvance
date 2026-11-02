@@ -365,7 +365,7 @@ For example, the Magic Wheel feature previously dropped virtual button inputs at
 
 Default rate is now **250 Hz** (`sleepTimeout=4` in `config.ini`).
 
-⚠️ A 500 Hz mode has been added for DualSense users
+⚠️ A 500 Hz mode has been added for DS4, DualSense users
 
 <details>
   <summary>Why exactly 250 Hz</summary>
@@ -416,7 +416,7 @@ Rule of thumb: **Emulator processing frequency should equal or exceed physical p
 * **Running at 250 Hz (4 ms loop):**
   The emulator immediately flushes every packet the moment it hits the OS buffer, delivering minimal input lag.
 
-⚠️ According to the rule, the DualSense would require 1000 Hz, but even at 500 Hz there’s more than enough data — no one can tell the difference between 1 ms and 2 ms. However, you can still manually set SleepTimeOu = 1 ( in config.ini)
+⚠️ According to the rule, DS4 and DualSense would require 1000 Hz, but even at 500 Hz there’s more than enough data — no one can tell the difference between 1 ms and 2 ms. However, you can still manually set SleepTimeOu = 1 ( in config.ini)
 
 </details>
 
