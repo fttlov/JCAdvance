@@ -911,10 +911,10 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
   * `ScaleFactor` — Текущий размер. Минимальное значение: 0.40
   * `PosX` / `PosY` — Текущие координаты 
 
+   <div align="center">Управление по умолчанию:<br></div>
+
   <table align="center">
     <tr>
-      Управление по умолчанию:<br>
-      
       <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="525" alt="Кнопки по умолчанию"></td>
     </tr>
   </table>
