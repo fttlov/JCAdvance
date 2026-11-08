@@ -69,14 +69,14 @@
 - Dedicated 'Gyro Activation Button' supporting both Hold to Aim and Hold to Pause behaviors
 - Gyro Activation Delay: prevents camera twitches when releasing the gyro button during ratcheting
 - Gyro Space selection: fine-tune coordinate frame projection for specific controllers (see [technical info](#tech-info))<br>
-- Gyro Tightening: zero-latency velocity-based filter eliminating hand tremor and sensor noise at near-zero velocities
+- Tightening: zero-latency velocity-based filter eliminating hand tremor and sensor noise at near-zero velocities
 - Audio feedback (beep) on successful baseline gyro calibration + hotkeys for manual recalibration
 - In-game runtime sensitivity tuning via controller hotkeys with console change logging (see [technical info](#tech-info))<br>
 - Interactive Parametric Gyro Acceleration graph (Gain Curve / Raw Accel style) with dynamic tooltips
 - Real-time OSD displaying stick/trigger deflection, gyro angular velocity, and IMU stability ([technical info](#tech-info))
 - Configurable internal emulator polling rate (up to 500 Hz) for smooth tracking<br>
 - Left-handed Gyro option: read motion sensors strictly from the Left Joy-Con in combined dual Joy-Con mode
-- Gesture recognition: map virtual buttons to a physical punch/melee gesture with adjustable G-Force trigger threshold<br>
+- Gesture recognition: map virtual buttons to a melee gesture with adjustable G-Force trigger threshold<br>
 - 'Stick as Triggers' and 'Stick as Buttons' modes with custom hotkey mode cycling (A ⇄ B toggle or full cycle)
 - Radial Anti-Deadzone for hardware analog sticks/triggers and optional for Gyro Stick
 - Response curve shaping (Linearity) for physical sticks/triggers and virtual Steering Wheel in Driving mode
