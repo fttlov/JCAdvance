@@ -391,13 +391,13 @@ Bluetooth radio transmission is quantized into discrete hardware time intervals:
 
 ### 2. Expected OSD Polling Rates (Ideal Conditions)
 
-| Device                       | Connection | Expected Rate | Notes                                         |
-|:-----------------------------:------------|:--------------|:----------------------------------------------|
-| **Sony DualSense**           | Bluetooth  | **500+ Hz**   | Confirmed. Hardware capable up to 1000 Hz     |
-| **Sony DualShock 4**         | Bluetooth  | **500+ Hz**   | Confirmed ( in the documentation: 250 Hz )    |
-| **Mobapad M6s / M6 HD**      | Bluetooth  | **133–160 Hz**| Varies by PC Bluetooth host controller chip   |
-| **Official Joy-Con (L / R)** | Bluetooth  | **~66.7 Hz**  | Standard Nintendo Switch protocol interval    |
-| **Nintendo Pro Controller**  | Bluetooth  | **~66.7 Hz**  | Standard Nintendo Switch protocol interval    |
+| Device                       | Connection | Expected Rate  | Notes                                         |
+|:-----------------------------|:-----------|:---------------|:----------------------------------------------|
+| **Sony DualSense**           | Bluetooth  | **500+ Hz**    | Confirmed. Hardware capable up to 1000 Hz     |
+| **Sony DualShock 4**         | Bluetooth  | **500+ Hz**    | Confirmed ( in the documentation: 250 Hz )    |
+| **Mobapad M6s / M6 HD**      | Bluetooth  | **133–160 Hz** | Varies by PC Bluetooth host controller chip   |
+| **Official Joy-Con (L / R)** | Bluetooth  | **~66.7 Hz**   | Standard Nintendo Switch protocol interval    |
+| **Nintendo Pro Controller**  | Bluetooth  | **~66.7 Hz**   | Standard Nintendo Switch protocol interval    |
 
 *Note: The official Joy-Con IMU runs internally at 200 Hz; each 66.7 Hz Bluetooth packet carries 3 discrete sensor frames processed by JoyShockLibrary.*
 
