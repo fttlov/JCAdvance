@@ -893,7 +893,7 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
   </details>
 
    <details>
-    <summary><h3 id="osd">Режим управления ПК (Desktop Mode)</h3></summary>
+    <summary><h3>Режим управления ПК (Desktop Mode)</h3></summary>
 
 В эмулятор добавлен полноценный режим **Desktop Mode** (профиль `Desktop.ini`), превращающий геймпад в удобный диванный пульт управления компьютером без физической мыши и клавиатуры.
 
@@ -908,7 +908,7 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
 
   <table align="center">
     <tr>
-      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="333" alt="Кнопки по умолчанию"></td>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="525" alt="Кнопки по умолчанию"></td>
     </tr>
   </table>
 
