@@ -863,6 +863,12 @@ A dedicated **Desktop Mode** (via the `Desktop.ini` profile) has been added to t
 * **Special Commands & Aliases:** For convenient PC navigation, special commands and macro aliases can be mapped to gamepad buttons under the Joy-Con and Sony tabs in the configurator.
 * **JC Keyboard:** A custom-built on-screen virtual keyboard designed specifically for JCAdvance and Desktop Mode — an alternative to Windows TabTip. All keyboard parameters are stored in `config.ini` under the `[KEYBOARD]` section, with primary settings exposed in the Settings tab of the configurator.
 
+  <table align="center">
+    <tr>
+      <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="450" alt="Default Buttons Mapping"></td>
+    </tr>
+  </table>
+
 List of all available commands and aliases:<br>
 
 #### 🖥️ Window & System Management:
