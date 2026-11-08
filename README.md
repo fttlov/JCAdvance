@@ -531,7 +531,7 @@ JCAdvance supports all 3 standard JSL Gyro Space modes:
 
 #### Practical Mode Guide:
 
-* **Two-handed controllers.** For standard grip:
+* **Two-handed controllers.** For standard grip the difference only affects horizontal (X-axis) aiming. To move the cursor/stick left or right:
   * **0**: Turn controller like a steering wheel (Roll)  (gyro only mode)
   * **2**: Turn controller like tank steering levers (Yaw) (gyro+accelerometer)
 
