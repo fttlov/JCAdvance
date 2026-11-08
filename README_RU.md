@@ -906,6 +906,8 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
 * **Спецкоманды и алиасы*:* Для удобства управления ПК на кнопки геймпада можно назначить специальные команды и алиасы. Привязать кнопки можно во вкладках конфигуратора Joy-Con / Sony.
 * **JC Keyboard:** Специально для JCADvance и режима Desktop была написана виртуальная клавиатура - аналог Windows TabTip. Все настройки клавиатуры в config.ini в разделе [KEYBOARD]. Часть настроек можно найти в конфигураторе во вкладке Settings.
 
+Управление по умолчанию:<br>
+
   <table align="center">
     <tr>
       <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="525" alt="Кнопки по умолчанию"></td>
