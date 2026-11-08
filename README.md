@@ -651,8 +651,6 @@ Thanks to integration over real elapsed time (`loopDeltaTime`), the total count 
 
   </details>
 
-⚠️ The graph visualizer is built on the Raw Accel principle.
-
 ### 4. Gyro Stick Mode (Right Stick)
 
 ⚠️ Gyro stick speed is completely decoupled from the emulator polling rate.
