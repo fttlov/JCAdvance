@@ -9,6 +9,10 @@
 #include <mmsystem.h>				// Для PlaySound
 #pragma comment(lib, "winmm.lib")	// Линковка для PlaySound
 
+static bool g_isDesktopMode = false;	//@088 Desktop Mode
+static int g_savedGameProfileIndex = 0;
+static int g_savedActionMode = GamepadDefaultMode; // Память режима гироскопа до входа в Desktop Mode
+
 //@075 Блок RTSS
 //Direct Shared Memory
 static HANDLE g_hMapRTSS = NULL;
@@ -55,13 +59,19 @@ void CloseRTSS() {
 	if (g_hMapRTSS) { CloseHandle(g_hMapRTSS); g_hMapRTSS = NULL; }
 }
 
-
 // Перехватчик закрытия консоли Windows (нажатие на [X] или Ctrl+C)
 BOOL WINAPI ConsoleCtrlHandler(DWORD ctrlType) {
-	if (ctrlType == CTRL_CLOSE_EVENT || ctrlType == CTRL_C_EVENT || ctrlType == CTRL_SHUTDOWN_EVENT) {
+	// 1. Игнорируем Ctrl+C и Ctrl+Break, чтобы эмулятор не падал при копировании текста!
+	if (ctrlType == CTRL_C_EVENT || ctrlType == CTRL_BREAK_EVENT) {
+		return TRUE; // Сообщаем Windows: "событие обработано, процесс не закрывать!"
+	}
+
+	// 2. Штатное закрытие по крестику [X] или выключению ПК
+	if (ctrlType == CTRL_CLOSE_EVENT || ctrlType == CTRL_SHUTDOWN_EVENT) {
 		if (AppStatus.OsdType == 1) {
 			CloseRTSS();
 		}
+		ReleaseAllKbmKeys(PrimaryGamepad);
 	}
 	return FALSE;
 }
@@ -952,7 +962,8 @@ void ShowBatteryLevels() {
 		SecondaryGamepad.OutState.PlayersCount = SecondaryGamepad.LEDBatteryLevel;
 }
 
-std::string GetJoystickOEMName(int joyId, const char* szRegKey) {	//@034 New externalPedals"
+//@034 New externalPedals"
+std::string GetJoystickOEMName(int joyId, const char* szRegKey) {
 	if (szRegKey == nullptr || strlen(szRegKey) == 0) return "";
 
 	HKEY hKey = NULL;
@@ -1075,7 +1086,7 @@ void ExternalPedalsDInputSearch() {
 	Sleep(2000);// Держим экран чтобы прочитать логи
 }
 
-void ExternalPedalsArduinoRead()
+void ExternalPedalsArduinoRead()	//Old DSAdvance custom pedals code
 {
 	DWORD bytesRead;
 
@@ -1206,7 +1217,7 @@ VOID CALLBACK notification(
 	m.unlock();
 }
 
-float accumulatedX = 0, accumulatedY = 0;
+/*float accumulatedX = 0, accumulatedY = 0;
 void MouseMove(float x, float y) { // Implementation from https://github.com/JibbSmart/JoyShockMapper/blob/master/JoyShockMapper/src/win32/InputHelpers.cpp
 	accumulatedX += x;
 	accumulatedY += y;
@@ -1225,57 +1236,106 @@ void MouseMove(float x, float y) { // Implementation from https://github.com/Jib
 	input.mi.dy = applicableY;
 	input.mi.dwFlags = MOUSEEVENTF_MOVE;
 	SendInput(1, &input, sizeof(input));
+}*/
+
+//@086 - Optimized Gyro mouse
+float accumulatedX = 0, accumulatedY = 0;
+void MouseMove(float x, float y) {
+	accumulatedX += x;
+	accumulatedY += y;
+
+	int applicableX = (int)accumulatedX;
+	int applicableY = (int)accumulatedY;
+
+	// Если за кадр не накопилось хотя бы 1 целого пикселя — не мучаем ядро Windows!
+	if (applicableX == 0 && applicableY == 0) return;
+
+	accumulatedX -= applicableX;
+	accumulatedY -= applicableY;
+
+	INPUT input;
+	input.type = INPUT_MOUSE;
+	input.mi.mouseData = 0;
+	input.mi.time = 0;
+	input.mi.dx = applicableX;
+	input.mi.dy = applicableY;
+	input.mi.dwFlags = MOUSEEVENTF_MOVE;
+	SendInput(1, &input, sizeof(input));
 }
 
-void KMStickMode(AdvancedGamepad &Gamepad, bool DontResetInputState, bool StickIsLeft, float StickX, float StickY, int Mode) {
-	// Порог отклонения стика (если 0 — ставим безопасные 50%)
+//@087 New KB+M
+void KMStickMode(AdvancedGamepad &Gamepad, bool StickIsLeft, float StickX, float StickY, int Mode, float deltaTime) {
 	float threshold = (Gamepad.KMEmu.StickValuePressKey > 0.05f) ? Gamepad.KMEmu.StickValuePressKey : 0.5f;
 
-	// РАЗДЕЛЕНИЕ ПАМЯТИ: Левый и правый стик используют РАЗНЫЕ структуры состояния, чтобы не спамить!
 	Button* upBtn = StickIsLeft ? &Gamepad.ButtonsStates.Up : &Gamepad.ButtonsStates.RightStickUp;
 	Button* downBtn = StickIsLeft ? &Gamepad.ButtonsStates.Down : &Gamepad.ButtonsStates.RightStickDown;
 	Button* leftBtn = StickIsLeft ? &Gamepad.ButtonsStates.Left : &Gamepad.ButtonsStates.RightStickLeft;
 	Button* rightBtn = StickIsLeft ? &Gamepad.ButtonsStates.Right : &Gamepad.ButtonsStates.RightStickRight;
 
 	if (Mode == WASDStickMode) {
-		KeyPress('W', DontResetInputState && StickY > threshold, upBtn, true);
-		KeyPress('S', DontResetInputState && StickY < -threshold, downBtn, true);
-		KeyPress('A', DontResetInputState && StickX < -threshold, leftBtn, true);
-		KeyPress('D', DontResetInputState && StickX > threshold, rightBtn, true);
+		KeyPress('W', StickY > threshold, upBtn);
+		KeyPress('S', StickY < -threshold, downBtn);
+		KeyPress('A', StickX < -threshold, leftBtn);
+		KeyPress('D', StickX > threshold, rightBtn);
 	}
 	else if (Mode == ArrowsStickMode) {
-		KeyPress(VK_UP, DontResetInputState && StickY > threshold, upBtn, true);
-		KeyPress(VK_DOWN, DontResetInputState && StickY < -threshold, downBtn, true);
-		KeyPress(VK_LEFT, DontResetInputState && StickX < -threshold, leftBtn, true);
-		KeyPress(VK_RIGHT, DontResetInputState && StickX > threshold, rightBtn, true);
+		KeyPress(VK_UP, StickY > threshold, upBtn);
+		KeyPress(VK_DOWN, StickY < -threshold, downBtn);
+		KeyPress(VK_LEFT, StickX < -threshold, leftBtn);
+		KeyPress(VK_RIGHT, StickX > threshold, rightBtn);
 	}
 	else if (Mode == MouseLookStickMode) {
-		// ОЖИВЛЯЕМ МЫШЬ: Если чувствительность равна 0, берем нормальную базовую скорость 15.0f
 		float sensX = (Gamepad.KMEmu.JoySensX > 0.0f) ? Gamepad.KMEmu.JoySensX : 15.0f;
 		float sensY = (Gamepad.KMEmu.JoySensY > 0.0f) ? Gamepad.KMEmu.JoySensY : 15.0f;
-		MouseMove(StickX * sensX, -StickY * sensY);
+		float mult = 60.0f * deltaTime; // Изоляция скорости курсора от тиков и SleepTimeOut
+		MouseMove(StickX * sensX * mult, -StickY * sensY * mult);
 	}
 	else if (Mode == MouseWheelStickMode) {
-		mouse_event(MOUSEEVENTF_WHEEL, 0, 0, static_cast<DWORD>(static_cast<int>(StickY * 50.0f)), 0);
+		static float wheelAccum = 0.0f;
+		static bool initialStepFired = false;
+
+		if (fabs(StickY) > 0.08f) {
+			// 1. МГНОВЕННЫЙ ПЕРВЫЙ ШАГ (0 мс задержки при выходе из центра)
+			if (!initialStepFired) {
+				int dir = (StickY > 0.0f) ? 1 : -1;
+				mouse_event(MOUSEEVENTF_WHEEL, 0, 0, static_cast<DWORD>(dir * 120), 0);
+				initialStepFired = true;
+				wheelAccum = 0.0f;
+			}
+
+			// 2. Непрерывный разгон при удержании стика
+			float curvedY = StickY * fabsf(StickY);
+			wheelAccum += curvedY * 33.3f * deltaTime;
+			int steps = (int)wheelAccum;
+			if (steps != 0) {
+				mouse_event(MOUSEEVENTF_WHEEL, 0, 0, static_cast<DWORD>(steps * 120), 0);
+				wheelAccum -= (float)steps;
+			}
+		}
+		else {
+			// Стик вернулся в мертвую зону — полный сброс
+			wheelAccum = 0.0f;
+			initialStepFired = false;
+		}
 	}
 	else if (Mode == NumpadsStickMode) {
-		KeyPress(VK_NUMPAD8, DontResetInputState && StickY > threshold, upBtn, true);
-		KeyPress(VK_NUMPAD2, DontResetInputState && StickY < -threshold, downBtn, true);
-		KeyPress(VK_NUMPAD4, DontResetInputState && StickX < -threshold, leftBtn, true);
-		KeyPress(VK_NUMPAD6, DontResetInputState && StickX > threshold, rightBtn, true);
+		KeyPress(VK_NUMPAD8, StickY > threshold, upBtn);
+		KeyPress(VK_NUMPAD2, StickY < -threshold, downBtn);
+		KeyPress(VK_NUMPAD4, StickX < -threshold, leftBtn);
+		KeyPress(VK_NUMPAD6, StickX > threshold, rightBtn);
 	}
 	else if (Mode == CustomStickMode) {
 		if (StickIsLeft) {
-			KeyPress(Gamepad.ButtonsStates.LeftStickUp.KeyCode, DontResetInputState && StickY > threshold, &Gamepad.ButtonsStates.LeftStickUp, true);
-			KeyPress(Gamepad.ButtonsStates.LeftStickDown.KeyCode, DontResetInputState && StickY < -threshold, &Gamepad.ButtonsStates.LeftStickDown, true);
-			KeyPress(Gamepad.ButtonsStates.LeftStickLeft.KeyCode, DontResetInputState && StickX < -threshold, &Gamepad.ButtonsStates.LeftStickLeft, true);
-			KeyPress(Gamepad.ButtonsStates.LeftStickRight.KeyCode, DontResetInputState && StickX > threshold, &Gamepad.ButtonsStates.LeftStickRight, true);
+			KeyPress(Gamepad.ButtonsStates.LeftStickUp.KeyCode, StickY > threshold, &Gamepad.ButtonsStates.LeftStickUp);
+			KeyPress(Gamepad.ButtonsStates.LeftStickDown.KeyCode, StickY < -threshold, &Gamepad.ButtonsStates.LeftStickDown);
+			KeyPress(Gamepad.ButtonsStates.LeftStickLeft.KeyCode, StickX < -threshold, &Gamepad.ButtonsStates.LeftStickLeft);
+			KeyPress(Gamepad.ButtonsStates.LeftStickRight.KeyCode, StickX > threshold, &Gamepad.ButtonsStates.LeftStickRight);
 		}
 		else {
-			KeyPress(Gamepad.ButtonsStates.RightStickUp.KeyCode, DontResetInputState && StickY > threshold, &Gamepad.ButtonsStates.RightStickUp, true);
-			KeyPress(Gamepad.ButtonsStates.RightStickDown.KeyCode, DontResetInputState && StickY < -threshold, &Gamepad.ButtonsStates.RightStickDown, true);
-			KeyPress(Gamepad.ButtonsStates.RightStickLeft.KeyCode, DontResetInputState && StickX < -threshold, &Gamepad.ButtonsStates.RightStickLeft, true);
-			KeyPress(Gamepad.ButtonsStates.RightStickRight.KeyCode, DontResetInputState && StickX > threshold, &Gamepad.ButtonsStates.RightStickRight, true);
+			KeyPress(Gamepad.ButtonsStates.RightStickUp.KeyCode, StickY > threshold, &Gamepad.ButtonsStates.RightStickUp);
+			KeyPress(Gamepad.ButtonsStates.RightStickDown.KeyCode, StickY < -threshold, &Gamepad.ButtonsStates.RightStickDown);
+			KeyPress(Gamepad.ButtonsStates.RightStickLeft.KeyCode, StickX < -threshold, &Gamepad.ButtonsStates.RightStickLeft);
+			KeyPress(Gamepad.ButtonsStates.RightStickRight.KeyCode, StickX > threshold, &Gamepad.ButtonsStates.RightStickRight);
 		}
 	}
 }
@@ -1366,7 +1426,7 @@ void LoadConfig() {	//@057 Realtime reading config (by modified file date) and a
 void LoadXboxProfile(std::string ProfileFile) {
 	CIniReader IniFile("XboxProfiles\\" + ProfileFile);
 
-	//Read settings from XboxProfile\*.ini
+	//Reading settings from XboxProfile\*.ini
 	PrimaryGamepad.Motion.SensX = IniFile.ReadFloat("SETTINGS", "MouseSensX", 100) * 0.009f;		//@046
 	PrimaryGamepad.Motion.SensY = IniFile.ReadFloat("SETTINGS", "MouseSensY", 100) * 0.009f;
 	PrimaryGamepad.Motion.SensAvg = (PrimaryGamepad.Motion.SensX + PrimaryGamepad.Motion.SensY) * 0.5f;
@@ -1477,7 +1537,10 @@ void LoadXboxProfile(std::string ProfileFile) {
 	std::string modesStr = IniFile.ReadString("SETTINGS", "RightStickAvailableModes", "0, 1, 2"); // Читаем список режимов для переключения (например, "2, 0" или "0, 1" или "0, 2, 1")
 	CurrentXboxProfile.RightStickCycleModes.clear();
 
-	for (char c : modesStr) {	// Простейший и пуленепробиваемый парсер: собирает любые цифры от 0 до 2, игнорируя запятые и пробелы!
+	CurrentXboxProfile.RunExePath = IniFile.ReadString("SETTINGS", "RunExe", ""); //@087
+	CurrentXboxProfile.KillExeName = IniFile.ReadString("SETTINGS", "KillExe", "");
+
+	for (char c : modesStr) {	// парсер: собирает любые цифры от 0 до 2, игнорируя запятые и пробелы!
 		if (c >= '0' && c <= '2') {
 			CurrentXboxProfile.RightStickCycleModes.push_back(c - '0');
 		}
@@ -1540,7 +1603,6 @@ void LoadXboxProfile(std::string ProfileFile) {
 		outKbm.KeyCode = ReadKbm(n, s, x, false);
 		outKbm.LongKeyCode = ReadKbm(n, s, x, true);
 	};
-
 
 	//Virtual buttons. Читаем всё сразу (Xbox + KBM + LongPress):
 	BindButton("L", "L1", "LB", "LB", CurrentXboxProfile.LeftBumper, CurrentXboxProfile.LeftBumperLong, PrimaryGamepad.ButtonsStates.LeftBumper);
@@ -1746,7 +1808,7 @@ void DefaultMainText() {
 			u8printf(T("Layer1_Mode_Stick", "\n Emulation Mode: \033[36mGyro Stick\033[0m").c_str());
 		u8printf(T("Layer1_Mode_Switch", ". Press \"\033[1m%s\033[0m\" or \"\033[1mALT + A\033[0m\" to switch\n").c_str(), AppStatus.AimingModeToggleButtonName.c_str());
 
-		u8printf(T("Layer1_Move_Button", "\n Control Button: hold \"\033[93m%s\033[0m\" %s. Press \"\033[1m%s\033[0m\" or \"\033[1mALT + F\033[0m\ to change behavior\n").c_str(),
+		u8printf(T("Layer1_Move_Button", "\n Control Button: hold \"\033[93m%s\033[0m\" %s. Press \"\033[1m%s\033[0m\" or \"\033[1mALT + F\033[0m\"\ to change behavior\n").c_str(),
 			AppStatus.AimingButtonName.c_str(),
 			AppStatus.AimingByPressingMode ?
 			T("Layer1_START_MOVE", "to \033[4maim\033[0m").c_str() :
@@ -1760,10 +1822,15 @@ void DefaultMainText() {
 			AppStatus.DrivingCalibrationButtonName.c_str());
 
 		u8printf(T("Layer1_Misc", "\n \033[4mMiscellaneous\033[0m:").c_str());
-		u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\". Press \"\033[1mHome/PS + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to switch\n").c_str(),
-			XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
-		u8printf(T("Layer1_StickAsTrigger", "\n Right Stick modes: press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" to switch\n").c_str(),
-			AppStatus.RightStickModeButtonName.c_str());
+		//u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\". Press \"\033[1mHome/PS + DPAD Up/Down\033[0m\" or \"\033[1mALT + Up/Down\033[0m\" to switch\n").c_str(), XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
+		if (g_isDesktopMode) {
+			u8printf(T("Layer1_ProfileDesktop", "\n Profile: \"\033[33;1mDESKTOP MODE\033[0m\". Press \"\033[1mHome/PS + Left/Right\033[0m\" or \"\033[1mALT + Left/Right\033[0m\" to exit\n").c_str());
+		}
+		else {
+			u8printf(T("Layer1_Profile", "\n Profile: \"\033[1m%s\033[0m\". Press \"\033[1mHome/PS + Up/Down\033[0m\" to switch | Desktop Mode: press \"\033[1mHome/PS + Left/Right\033[0m\"\n").c_str(),
+				XboxProfiles[XboxProfileIndex].substr(0, XboxProfiles[XboxProfileIndex].size() - 4).c_str());
+		}
+		u8printf(T("Layer1_StickAsTrigger", "\n Right Stick modes: press \"\033[1m%s\033[0m\" or \"\033[1mALT + D\033[0m\" to switch\n").c_str(), AppStatus.RightStickModeButtonName.c_str());
 		u8printf(T("Layer1_Battery", "\n Battery Status: \"\033[1mALT + I\033[0m\" | Hotkeys Menu: \"\033[1mALT + Z\033[0m\" | Exit: \"\033[1mALT + Esc\033[0m\"\n").c_str());
 
 		return;
@@ -1820,11 +1887,11 @@ void SwapGamepads()
 	GamepadSetState(SecondaryGamepad);
 	MainTextUpdate();
 
-	//@069 Перезагружаем профиль кнопок теперь, когда ControllerType точно известен!
-	LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
+	ReleaseAllKbmKeys(PrimaryGamepad);	//@087
+	LoadXboxProfile(XboxProfiles[XboxProfileIndex]);	//@069 Перезагружаем профиль кнопок теперь, когда ControllerType точно известен!
 }
 
-void OpenGamepadByJSL(AdvancedGamepad &Gamepad) {	//@021 RumbleFix3 -возможное устранение "вибрации не на том Joycon", брать точный системный путь устройства из библиотеки JoyShockLibrary
+void OpenGamepadByJSL(AdvancedGamepad &Gamepad) {	//@021 RumbleFix3 - брать точный системный путь устройства из JoyShockLibrary
 	if (Gamepad.DeviceIndex == -1) return;
 
 	int type = JslGetControllerType(Gamepad.DeviceIndex);
@@ -1903,41 +1970,6 @@ void OpenGamepadByJSL(AdvancedGamepad &Gamepad) {	//@021 RumbleFix3 -возмо�
 	}
 	hid_free_enumeration(devs);
 }
-
-//@068 Функция считает контрольную сумму ТОЛЬКО реальных геймпадов
-/*int GetRealControllersSignature() {
-	int signature = 0;
-	struct hid_device_info *devs = hid_enumerate(0x0, 0x0);
-	struct hid_device_info *cur = devs;
-	while (cur) {
-		// 1. Nintendo (Joy-Con L, Joy-Con R, Switch Pro)
-		if (cur->vendor_id == NINTENDO_VENDOR) {
-			if (cur->product_id == NINTENDO_JOYCON_L || cur->product_id == NINTENDO_JOYCON_R || cur->product_id == NINTENDO_SWITCH_PRO) {
-				signature += (cur->vendor_id + cur->product_id);
-			}
-		}
-		// 2. Sony (DualSense, DS4, Brook)
-		else if (cur->vendor_id == SONY_VENDOR) {
-			// Если включена эмуляция DS4, виртуальный геймпад ViGEm имеет PID SONY_DS4_USB (0x05C4)!
-			// Мы игнорируем его, чтобы не ловить ложные срабатывания от самого себя:
-			if (AppStatus.EmulateDS4 && (cur->product_id == SONY_DS4_USB || cur->product_id == SONY_DS4_V2_USB)) {
-				// Пропускаем виртуальный контроллер ViGEm
-			}
-			else if (cur->product_id == SONY_DS4_USB || cur->product_id == SONY_DS4_V2_USB ||
-				cur->product_id == SONY_DS4_BT || cur->product_id == SONY_DS4_DONGLE ||
-				cur->product_id == SONY_DS5 || cur->product_id == SONY_DS5_EDGE) {
-				signature += (cur->vendor_id + cur->product_id);
-			}
-		}
-		// 3. Brook адаптеры
-		else if (cur->vendor_id == BROOK_DS4_VENDOR && cur->product_id == BROOK_DS4_USB) {
-			signature += (cur->vendor_id + cur->product_id);
-		}
-		cur = cur->next;
-	}
-	hid_free_enumeration(devs);
-	return signature;
-}*/
 
 //@068 Структура для детального анализа подключенного железа
 struct ControllersPresence {
@@ -2034,6 +2066,7 @@ int GetActiveControllersSignature() {
 //std::mutex gamepadMutex;
 void RefreshDevices() {
 	//std::lock_guard<std::mutex> lock(gamepadMutex);
+	ReleaseAllKbmKeys(PrimaryGamepad);	//@087
 	std::lock_guard<std::mutex> lock(m); //@068 ConnectFix блокируем параллельный поток вибрации Vigem на время переподключения
 	if (PrimaryGamepad.HidHandle) hid_close(PrimaryGamepad.HidHandle);
 	if (PrimaryGamepad.HidHandle2) hid_close(PrimaryGamepad.HidHandle2);
@@ -2066,7 +2099,7 @@ void RefreshDevices() {
 
 		// Calibrate only for real devices
 		//JslSetAutomaticCalibration(handle, true);
-		JslSetAutomaticCalibration(handle, AppStatus.AutoCalibrationEnabled); //@050 -  нет сартовой автокалибровки при "0"
+		JslSetAutomaticCalibration(handle, AppStatus.AutoCalibrationEnabled); //@050 -  нет стартовой автокалибровки при "0"
 		JslSetGyroSpace(handle, AppStatus.GyroSpace);	//@032 После bugfix в joyshocklib при "1" оси больше не меняются при скручивании кисти (до 90 градусов)
 
 		// Распределяем по слотам
@@ -2197,7 +2230,7 @@ uint64_t GetFileModifiedTime(const std::string& filePath) {
 
 int main(int argc, char **argv)
 {
-	SetConsoleTitle("JCAdvance 4.2");
+	SetConsoleTitle("JCAdvance 4.3");
 	WindowToCenter();
 
 	SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE); //@075
@@ -2365,7 +2398,8 @@ int main(int argc, char **argv)
 	XboxProfiles.push_back("Default.ini");
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
-			if (strcmp(ffd.cFileName, "Default.ini"))
+			//if (strcmp(ffd.cFileName, "Default.ini"))
+			if (strcmp(ffd.cFileName, "Default.ini") && _stricmp(ffd.cFileName, "Desktop.ini") != 0)	//@088
 				XboxProfiles.push_back(ffd.cFileName);
 		} while (FindNextFile(hFind, &ffd) != 0);
 		FindClose(hFind);
@@ -2469,12 +2503,7 @@ int main(int argc, char **argv)
 	float* pTelemetry = nullptr;
 	if (hMapFile) pTelemetry = (float*)MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, 256);
 
-	// Shared Memory for RTSS (AIDA64 Hack)	//disable old code for new @139
-	/*HANDLE hMapFileAIDA = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 65536, "AIDA64_SensorValues");
-	char* pTelemetryAIDA = nullptr;
-	if (hMapFileAIDA) pTelemetryAIDA = (char*)MapViewOfFile(hMapFileAIDA, FILE_MAP_ALL_ACCESS, 0, 0, 65536);*/
-
-	while (!(GetAsyncKeyState(VK_LMENU) & 0x8000 && GetAsyncKeyState(VK_ESCAPE) & 0x8000))
+	while (!(GetAsyncKeyState(VK_LMENU) & 0x8000 && GetAsyncKeyState(VK_ESCAPE) & 0x8000))	// главный цикл
 	{
 		if (PeekMessage(&WindowMsgs, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&WindowMsgs);
@@ -2515,6 +2544,7 @@ int main(int argc, char **argv)
 		else {
 			// Reset timer to 10 sec.
 			HotReloadTimer = 5000 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);*/
+		
 		if (GetTickCount64() >= nextHotReloadTime) {	//@077
 			nextHotReloadTime = GetTickCount64() + 10000;
 
@@ -2540,6 +2570,7 @@ int main(int argc, char **argv)
 				unsigned int oldAimingButton = AppStatus.AimingButton;
 
 				// Loading (new values applying here)
+				ReleaseAllKbmKeys(PrimaryGamepad); //@087
 				LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
 
 				// check to see if the modes displayed in the console header have changed
@@ -2565,11 +2596,11 @@ int main(int argc, char **argv)
 
 		if (AppStatus.ControllerCount < 1) { // We don't process anything during idle time
 			if (AppStatus.OsdType == 1) ClearRTSS(); //@075 Мгновенно гасим OSD в игре, если геймпад отключился
-			report.sThumbLX = 1; // helps with crash, maybe power saving turns off the controller
+			//report.sThumbLX = 1; // helps with crash, maybe power saving turns off the controller
 			ret = vigem_target_x360_update(client, x360, report); // Vigem always mode only
 
 			if (AppStatus.SecondaryGamepadEnabled) {
-				report2.sThumbLX = 1;
+				//report2.sThumbLX = 1;
 				ret = vigem_target_x360_update(client2, x3602, report2);
 			}
 
@@ -2664,7 +2695,7 @@ int main(int argc, char **argv)
 			float punchLimit = AppStatus.MeleeGForce * 0.70f;
 			float sweepLimit = AppStatus.MeleeGForce * 0.90f;
 
-			if (PrimaryGamepad.DeviceIndex2 == -1) {
+			/*if (PrimaryGamepad.DeviceIndex2 == -1) {
 				// Одиночный геймпад (Pro Controller / DualSense)
 				float absX = abs(msL.accelX);
 				float absY = abs(msL.accelY);
@@ -2694,6 +2725,28 @@ int main(int argc, char **argv)
 
 				// Жест срабатывает, если удар нанесен ЛЮБОЙ рукой
 				isGestureTriggered = isPunchL || isHookL || isDownStrikeL || isPunchR || isHookR || isDownStrikeR;
+			}*/
+
+			//Melee Update: Для двуручных убрал всё кроме удара сверху вниз, для joy-con - только с неприцельной руки регистрируется удар
+			if (PrimaryGamepad.DeviceIndex2 == -1) {
+				// 1. Монолитный геймпад: строго резкий кивок вниз (DownStrike)
+				float absY = fabsf(msL.accelY);
+				isGestureTriggered = (gyroLX < -32.0f) && (absY > sweepLimit);
+			}
+			else {
+				// 2. Раздельные Joy-Con: жест слушает ТОЛЬКО свободную (не прицельную) руку!
+				const MOTION_STATE& msOff = AppStatus.GyroFromLeft ? msR : msL;
+				float gX = AppStatus.GyroFromLeft ? gyroRX : gyroLX;
+				float gY = AppStatus.GyroFromLeft ? gyroRY : gyroLY;
+
+				float absX = fabsf(msOff.accelX);
+				float absY = fabsf(msOff.accelY);
+
+				bool isPunch = (msOff.accelZ > punchLimit) && (absX < 2.2f) && (absY < 2.2f);
+				bool isHook = (absX > sweepLimit) && (fabsf(gY) > 32.0f);
+				bool isDownStrike = (gX < -32.0f) && (absY > sweepLimit);
+
+				isGestureTriggered = isPunch || isHook || isDownStrike;
 			}
 
 			// Если кулдаун равен нулю и распознан один из ударов
@@ -2730,7 +2783,7 @@ int main(int argc, char **argv)
 			}
 		}
 
-		//@050 Auto-calibration on/off + indication //@076 переносим вниз в сервисный блок
+		//@050 Auto-calibration on/off + indication								//@076 переносим вниз в сервисный блок
 		/*int aimingHandle = PrimaryGamepad.DeviceIndex;
 		if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
 			aimingHandle = PrimaryGamepad.DeviceIndex2;
@@ -2849,10 +2902,10 @@ int main(int argc, char **argv)
 				JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex);
 				if (PrimaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(PrimaryGamepad.DeviceIndex2);
 			}
-			if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
-				JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex);
-				if (SecondaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex2);
-			}
+			//if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
+			//	JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex);
+			//	if (SecondaryGamepad.DeviceIndex2 != -1) JslResetAccelerometerCalibration(SecondaryGamepad.DeviceIndex2);
+			//}
 
 			// Асинхронный звуковой сигнал успеха (двойной короткий писк)
 			std::thread([]() {
@@ -2905,23 +2958,6 @@ int main(int argc, char **argv)
 			if (AppStatus.DeadZoneMode == false) MainTextUpdate(); else { system("cls"); printf("\n"); }
 			AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 		}
-		/*if (AppStatus.DeadZoneMode) {	//@076 переносим вниз в сервисный блок
-			if (AppStatus.Lang == LANG_RUSSIAN) {
-				printf(" Левый стик X=%.2f, ", abs(PrimaryGamepad.InputState.stickLX));
-				printf("Y=%.2f | ", abs(PrimaryGamepad.InputState.stickLY));
-				printf("Правый стик X=%.2f, ", abs(PrimaryGamepad.InputState.stickRX));
-				printf("Y=%.2f | ", abs(PrimaryGamepad.InputState.stickRY));
-				printf("Левый триггер=%.2f | ", abs(PrimaryGamepad.InputState.lTrigger));
-				printf("Правый триггер=%.2f\n", abs(PrimaryGamepad.InputState.rTrigger));
-			} else {
-				printf(" Left stick X=%.2f, ", abs(PrimaryGamepad.InputState.stickLX));
-				printf("Y=%.2f | ", abs(PrimaryGamepad.InputState.stickLY));
-				printf("Right stick X=%.2f, ", abs(PrimaryGamepad.InputState.stickRX));
-				printf("Y=%.2f | ", abs(PrimaryGamepad.InputState.stickRY));
-				printf("Left trigger=%.2f | ", abs(PrimaryGamepad.InputState.lTrigger));
-				printf("Right trigger=%.2f \n", abs(PrimaryGamepad.InputState.rTrigger));
-			}
-		}*/
 
 		//@007 AimingMode (mouse/stick)
 		/*if (AppStatus.SkipPollCount == 0 && ((AppStatus.AimingModeToggleButton != 0 && (PrimaryGamepad.InputState.buttons & AppStatus.AimingModeToggleButton) == AppStatus.AimingModeToggleButton) || (IsKeyPressed(VK_MENU) && IsKeyPressed('A')))) {
@@ -3031,30 +3067,92 @@ int main(int argc, char **argv)
 		}
 
 		// Switch profile
-		if (AppStatus.SkipPollCount == 0 && (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled))
+		/*if (AppStatus.SkipPollCount == 0 && (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled))
 			if ((PrimaryGamepad.InputState.buttons & JSMASK_PS && (PrimaryGamepad.InputState.buttons & JSMASK_UP || PrimaryGamepad.InputState.buttons & JSMASK_DOWN)) ||
 				((IsKeyPressed(VK_MENU) && (IsKeyPressed(VK_UP) || IsKeyPressed(VK_DOWN))) && GetConsoleWindow() == GetForegroundWindow()))
 			{
 				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
 				if (AppStatus.GamepadEmulationMode == EmuGamepadEnabled) {
-					//if (IsKeyPressed(VK_UP) || PrimaryGamepad.InputState.buttons & JSMASK_UP) if (XboxProfileIndex > 0) XboxProfileIndex--; else XboxProfileIndex = XboxProfiles.size() - 1;
-					//if (IsKeyPressed(VK_DOWN) || PrimaryGamepad.InputState.buttons & JSMASK_DOWN) if (XboxProfileIndex < XboxProfiles.size() - 1) XboxProfileIndex++; else XboxProfileIndex = 0;
 					if (IsKeyPressed(VK_UP) || PrimaryGamepad.InputState.buttons & JSMASK_UP) if (XboxProfileIndex > 0) XboxProfileIndex--; else XboxProfileIndex = static_cast<int>(XboxProfiles.size()) - 1;
 					if (IsKeyPressed(VK_DOWN) || PrimaryGamepad.InputState.buttons & JSMASK_DOWN) if (XboxProfileIndex < static_cast<int>(XboxProfiles.size()) - 1) XboxProfileIndex++; else XboxProfileIndex = 0;
 					LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
+					ReleaseAllKbmKeys(PrimaryGamepad); //@!!!
 
-				/*} else {	//dsiable KMProfiles
-					if (!AppStatus.IsDesktopMode) { // EmuKeyboardAndMouse game mode
-						if (IsKeyPressed(VK_UP) || PrimaryGamepad.InputState.buttons & JSMASK_UP) if (KMProfileIndex > 0) KMProfileIndex--; else KMProfileIndex = KMProfiles.size() - 1;
-						if (IsKeyPressed(VK_DOWN) || PrimaryGamepad.InputState.buttons & JSMASK_DOWN) if (KMProfileIndex < KMProfiles.size() - 1) KMProfileIndex++; else KMProfileIndex = 0;
-					}
-					LoadKMProfile(KMProfiles[KMProfileIndex]);
-					KMGameProfileIndex = KMProfileIndex;*/
-				}
+				//} else {	//dsiable KMProfiles
+				//	if (!AppStatus.IsDesktopMode) { // EmuKeyboardAndMouse game mode
+				//		if (IsKeyPressed(VK_UP) || PrimaryGamepad.InputState.buttons & JSMASK_UP) if (KMProfileIndex > 0) KMProfileIndex--; else KMProfileIndex = KMProfiles.size() - 1;
+				//		if (IsKeyPressed(VK_DOWN) || PrimaryGamepad.InputState.buttons & JSMASK_DOWN) if (KMProfileIndex < KMProfiles.size() - 1) KMProfileIndex++; else KMProfileIndex = 0;
+				//	}
+				//	LoadKMProfile(KMProfiles[KMProfileIndex]);
+				//	KMGameProfileIndex = KMProfileIndex;
+				//}
 				
 				MainTextUpdate();
 				PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
+			}*/
+
+		//@088 Хоткей-тумблер Desktop Mode (Влево/Вправо) + подправленный код
+		if (AppStatus.SkipPollCount == 0 && (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled)) {
+			bool isModPressed = (PrimaryGamepad.InputState.buttons & (JSMASK_PS | JSMASK_CAPTURE | JSMASK_HOME)) != 0;
+			bool isAltConsole = IsKeyPressed(VK_MENU) && (GetConsoleWindow() == GetForegroundWindow());
+
+			// 1. Карусель игровых профилей (Up / Down)
+			if ((isModPressed && (PrimaryGamepad.InputState.buttons & (JSMASK_UP | JSMASK_DOWN))) ||
+				(isAltConsole && (IsKeyPressed(VK_UP) || IsKeyPressed(VK_DOWN))))
+			{
+				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+				if (g_isDesktopMode) {
+					// Выход из Desktop Mode при попытке сменить профиль
+					g_isDesktopMode = false;
+					XboxProfileIndex = g_savedGameProfileIndex;
+					PrimaryGamepad.GamepadActionMode = g_savedActionMode;
+				}
+
+				if (IsKeyPressed(VK_UP) || (PrimaryGamepad.InputState.buttons & JSMASK_UP)) {
+					if (XboxProfileIndex > 0) XboxProfileIndex--; else XboxProfileIndex = static_cast<int>(XboxProfiles.size()) - 1;
+				}
+				else if (IsKeyPressed(VK_DOWN) || (PrimaryGamepad.InputState.buttons & JSMASK_DOWN)) {
+					if (XboxProfileIndex < static_cast<int>(XboxProfiles.size()) - 1) XboxProfileIndex++; else XboxProfileIndex = 0;
+				}
+
+				ReleaseAllKbmKeys(PrimaryGamepad);
+				LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
+
+				MainTextUpdate();
+				PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
 			}
+
+			// 2. Тумблер Desktop Mode (Left / Right)
+			else if ((isModPressed && (PrimaryGamepad.InputState.buttons & (JSMASK_LEFT | JSMASK_RIGHT))) ||
+				(isAltConsole && (IsKeyPressed(VK_LEFT) || IsKeyPressed(VK_RIGHT))))
+			{
+				AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+				g_isDesktopMode = !g_isDesktopMode;
+				ReleaseAllKbmKeys(PrimaryGamepad);
+
+				if (g_isDesktopMode) {
+					// ВХОД В DESKTOP MODE
+					g_savedGameProfileIndex = XboxProfileIndex;
+					g_savedActionMode = PrimaryGamepad.GamepadActionMode; // Запоминаем, спал гироскоп в игре или работал
+
+					LoadXboxProfile("Desktop.ini");
+
+					// вкл. гироскоп в Desktop Mode без нажатия Alt+2
+					PrimaryGamepad.GamepadActionMode = AppStatus.AimingByPressingMode ? MotionAimingModeOnlyPressed : MotionAimingMode;
+				}
+				else {
+					// ВЫХОД В ИГРУ
+					XboxProfileIndex = g_savedGameProfileIndex;
+					LoadXboxProfile(XboxProfiles[XboxProfileIndex]);
+
+					// Возвращаем состояние гироскопа, которое было до
+					PrimaryGamepad.GamepadActionMode = g_savedActionMode;
+				}
+
+				MainTextUpdate();
+				PlaySound(ChangeEmuModeWav, NULL, SND_ASYNC);
+			}
+		}
 
 		// Switch external pedals mode
 		if (AppStatus.SkipPollCount == 0 && ((IsKeyPressed(VK_MENU) != 0 && IsKeyPressed('E'))))
@@ -3330,12 +3428,6 @@ int main(int argc, char **argv)
 			MainTextUpdate();
 		}
 
-		//printf("%5.2f\t%5.2f\r\n", PrimaryGamepad.InputState.stickLX, DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX));
-		/*report.sThumbLX = PrimaryGamepad.Sticks.InvertLeftX == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX) * 32767;
-		report.sThumbLY = PrimaryGamepad.Sticks.InvertLeftX == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY) * 32767;
-		report.sThumbRX = PrimaryGamepad.Sticks.InvertRightX == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX) * 32767;
-		report.sThumbRY = PrimaryGamepad.Sticks.InvertRightY == false ? DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY) * 32767 : DeadZoneAxis(-PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY) * 32767;*/
-
 		float lx = DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX);
 		float ly = DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY);
 		float rx = DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX);
@@ -3346,11 +3438,6 @@ int main(int argc, char **argv)
 		float btnStickY = AppStatus.GyroFromLeft ? ly : ry;
 
 		//@035 Linearity Stick  Применяем искривление линейности (Response Curve)
-		/*lx = ApplyLinearity(lx, PrimaryGamepad.Sticks.LinearityLeftX);
-		ly = ApplyLinearity(ly, PrimaryGamepad.Sticks.LinearityLeftY);
-		rx = ApplyLinearity(rx, PrimaryGamepad.Sticks.LinearityRightX);
-		ry = ApplyLinearity(ry, PrimaryGamepad.Sticks.LinearityRightY);*/
-
 		lx = ApplyLinearityFast(lx, PrimaryGamepad.Sticks.p_LeftX);
 		ly = ApplyLinearityFast(ly, PrimaryGamepad.Sticks.p_LeftY);
 		rx = ApplyLinearityFast(rx, PrimaryGamepad.Sticks.p_RightX);
@@ -3391,7 +3478,7 @@ int main(int argc, char **argv)
 			}
 		}*/
 
-		//@078 исправленный @065, были перепутаны l и r. Новая логира работы ADZ при совместной работе стика и гиро стика
+		//@078 исправленный @065, были перепутаны l и r. Новая логика работы ADZ при совместной работе стика и гиро стика
 		if (PrimaryGamepad.Sticks.AntiDeadZoneRightX > 0.0f || PrimaryGamepad.Sticks.AntiDeadZoneRightY > 0.0f) {
 			float mag = sqrtf(rx * rx + ry * ry);
 			if (mag > 0.0001f) {
@@ -3414,20 +3501,10 @@ int main(int argc, char **argv)
 		}
 
 		// Передаем значения виртуальному Xbox с учетом инверсии осей
-		/*report.sThumbLX = PrimaryGamepad.Sticks.InvertLeftX == false ? lx * 32767 : -lx * 32767;
-		report.sThumbLY = PrimaryGamepad.Sticks.InvertLeftY == false ? ly * 32767 : -ly * 32767;
-		report.sThumbRX = PrimaryGamepad.Sticks.InvertRightX == false ? rx * 32767 : -rx * 32767;
-		report.sThumbRY = PrimaryGamepad.Sticks.InvertRightY == false ? ry * 32767 : -ry * 32767;*/
-
 		float rawLX = PrimaryGamepad.Sticks.InvertLeftX == false ? lx * 32767.0f : -lx * 32767.0f;
 		float rawLY = PrimaryGamepad.Sticks.InvertLeftY == false ? ly * 32767.0f : -ly * 32767.0f;
 		float rawRX = PrimaryGamepad.Sticks.InvertRightX == false ? rx * 32767.0f : -rx * 32767.0f;
 		float rawRY = PrimaryGamepad.Sticks.InvertRightY == false ? ry * 32767.0f : -ry * 32767.0f;
-
-		/*report.sThumbLX = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawLX)), -32768, 32767));
-		report.sThumbLY = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawLY)), -32768, 32767));
-		report.sThumbRX = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawRX)), -32768, 32767));
-		report.sThumbRY = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawRY)), -32768, 32767));*/
 
 		report.sThumbLX = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawLX)), -PrimaryGamepad.Sticks.MaxLeftStickLimit, PrimaryGamepad.Sticks.MaxLeftStickLimit));	//@074
 		report.sThumbLY = static_cast<SHORT>(std::clamp(static_cast<int>(roundf(rawLY)), -PrimaryGamepad.Sticks.MaxLeftStickLimit, PrimaryGamepad.Sticks.MaxLeftStickLimit));
@@ -3449,7 +3526,7 @@ int main(int argc, char **argv)
 		//	report.sThumbRY = 0;
 		//}
 
-		//@081 Стик прицельной руки (свободный под гироскопом) отдаём под курки/кнопки
+		//@081 Стик прицельной руки отдаём под курки/кнопки
 		float convStickX = AppStatus.GyroFromLeft ? lx : rx;
 		float convStickY = AppStatus.GyroFromLeft ? ly : ry;
 
@@ -3466,24 +3543,6 @@ int main(int argc, char **argv)
 			}
 		}
 
-		// Auto stick pressing when value is exceeded
-		/*if (PrimaryGamepad.GamepadActionMode != MotionDrivingMode) { // Exclude driving mode
-			if (AppStatus.LeftStickMode != LeftStickDefaultMode && (sqrt(PrimaryGamepad.InputState.stickLX * PrimaryGamepad.InputState.stickLX + PrimaryGamepad.InputState.stickLY * PrimaryGamepad.InputState.stickLY) >= PrimaryGamepad.AutoPressStickValue)) {
-				if (AppStatus.LeftStickMode == LeftStickAutoPressMode)
-					//report.wButtons |= JSMASK_LCLICK;
-					report.wButtons |= CurrentXboxProfile.AutoSprintButton; // <-- ИЗМЕНЕНО: Нажимаем кастомную кнопку спринта (Hold)
-				else { // LeftStickPressOnceMode
-					if (AppStatus.LeftStickPressOnce == false) {
-						//report.wButtons |= JSMASK_LCLICK;
-						report.wButtons |= CurrentXboxProfile.AutoSprintButton; // <-- ИЗМЕНЕНО: Нажимаем кастомную кнопку спринта (Click)
-						AppStatus.LeftStickPressOnce = true;
-						//printf(" LeftStickPressOnce\n");
-					}
-				}
-			} else
-				AppStatus.LeftStickPressOnce = false;
-		}*/
-		
 		bool isAutoSprintTriggered = false; //@055 new Auto stick pressing для клавиатуры и Xbox
 
 		if (PrimaryGamepad.GamepadActionMode != MotionDrivingMode) {
@@ -3569,10 +3628,6 @@ int main(int argc, char **argv)
 			}
 		}
 
-		//report.bLeftTrigger = DeadZoneAxis(PrimaryGamepad.InputState.lTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255;
-		//report.bRightTrigger = DeadZoneAxis(PrimaryGamepad.InputState.rTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255;
-		//report.bLeftTrigger = DeadZoneAxis(physLTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255;
-		//report.bRightTrigger = DeadZoneAxis(physRTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255;
 		float rawLT = DeadZoneAxis(physLTrigger, PrimaryGamepad.Triggers.DeadZoneLeft) * 255.0f;
 		float rawRT = DeadZoneAxis(physRTrigger, PrimaryGamepad.Triggers.DeadZoneRight) * 255.0f;
 
@@ -3588,18 +3643,6 @@ int main(int argc, char **argv)
 			//report.bRightTrigger = GetAxisValue(AppStatus.ExternalPedalsJoyInfo, AppStatus.Pedal2Axis) / 256;
 			report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(GetAxisValue(AppStatus.ExternalPedalsJoyInfo, AppStatus.Pedal2Axis) / 256), 0, 255));
 		}
-
-		// 4. Перехват триггеров правым аналоговым стиком (Stick-as-Triggers)
-		/*if (activeRSMode == 1) {
-			if (ry > 0.05f) {
-				//report.bRightTrigger = (BYTE)(ry * 255);
-				report.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(ry * 255.0f)), 0, 255));
-			}
-			else if (ry < -0.05f) {
-				//report.bLeftTrigger = (BYTE)(-ry * 255);
-				report.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(roundf(-ry * 255.0f)), 0, 255));
-			}
-		}*/
 
 		// 4. Перехват триггеров стиком прицельной руки (Stick-as-Triggers)
 		// Обходим все три стиковые функции (DeadZone, Linearity, ADZ) и подчиняем стик цепочке триггеров!
@@ -3717,7 +3760,7 @@ int main(int argc, char **argv)
 					}
 				}
 
-				// Press buttons
+				//Pedal buttons 
 				for (int i = 0; i < 16; ++i)
 					if (AppStatus.ExternalPedalsJoyInfo.dwButtons & (1 << (i))) { //JOY_BUTTON1-32
 
@@ -3752,28 +3795,10 @@ int main(int argc, char **argv)
 
 #pragma warning(pop)
 
-		//@064 Создаем 32-битный контейнер ЗАРАНЕЕ, чтобы 17-й и 18-й биты (LT/RT) не обрезались для Minus Plus
-		DWORD XboxButtons = report.wButtons;
+		DWORD XboxButtons = report.wButtons; //@064 Создаем 32-битный контейнер ЗАРАНЕЕ, чтобы 17-й и 18-й биты (LT/RT) не обрезались для Minus Plus
 
-		/*if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_DS || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_DS4) {
-			if (!(PrimaryGamepad.InputState.buttons & JSMASK_PS)) {
-				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SHARE ? CurrentXboxProfile.Back : 0;	//@064
-				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS ? CurrentXboxProfile.Start : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_SHARE ? CurrentXboxProfile.Back : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS ? CurrentXboxProfile.Start : 0;
-			}
-		}
-		else if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
-			if (!(PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && !(PrimaryGamepad.InputState.buttons & JSMASK_HOME)) { // Защита от протекания кнопок в игру при использовании хоткеев (CAPTURE / HOME)
-				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;	//@064
-				//report.wButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_MINUS ? CurrentXboxProfile.Back : 0;
-				XboxButtons |= PrimaryGamepad.InputState.buttons & JSMASK_PLUS ? CurrentXboxProfile.Start : 0;
-			}
-		}*/
-
-		//int sleepMs = AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut;	//@071
-		int sleepMs = (int)roundf(loopDeltaTime * 1000.0f);	//@077
+		//int sleepMs = AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut;
+		int sleepMs = (int)roundf(loopDeltaTime * 1000.0f);	////@071 + @077
 		if (sleepMs < 1) sleepMs = 1;
 
 		bool isBackPressed = false;
@@ -3792,12 +3817,13 @@ int main(int argc, char **argv)
 			}
 		}
 
-		ProcessSmartButton(isBackPressed, CurrentXboxProfile.Back, CurrentXboxProfile.BackLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.Back, sleepMs, AppStatus.LongPressTimeOut);
-		ProcessSmartButton(isStartPressed, CurrentXboxProfile.Start, CurrentXboxProfile.StartLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.Start, sleepMs, AppStatus.LongPressTimeOut);
+		bool kbmAllowed = (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled);
+
+		//@087 New XBOX + KBM Системные кнопки BACK и START
+		ProcessSmartButton(isBackPressed, CurrentXboxProfile.Back, CurrentXboxProfile.BackLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.Back : nullptr, PrimaryGamepad.Trackers.Back, sleepMs, AppStatus.LongPressTimeOut);
+		ProcessSmartButton(isStartPressed, CurrentXboxProfile.Start, CurrentXboxProfile.StartLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.Start : nullptr, PrimaryGamepad.Trackers.Start, sleepMs, AppStatus.LongPressTimeOut);
 
 		//@072 ДЕТЕКТОР ОКНА КОМБО (CHORD WINDOW 50 MS) для Capture/Home
-		sleepMs = AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut;
-
 		// Проверяем: нажата ли любая ДРУГАЯ кнопка, кроме системных (X, Y, B, A, D-Pad, бамперы и т.д.)?
 		bool hasOtherButtonsPressed = (PrimaryGamepad.InputState.buttons & ~(JSMASK_CAPTURE | JSMASK_HOME)) != 0;
 
@@ -3808,7 +3834,7 @@ int main(int argc, char **argv)
 				}
 				else if (!comboFired) {
 					chordTimer += sleepMs;
-					if (chordTimer >= 75) return true; // 50 мс прошло, комбо нет -> разрешаем одиночное действие!
+					if (chordTimer >= 50) return true; // 50 мс таймер
 				}
 			}
 			else {
@@ -3835,73 +3861,45 @@ int main(int argc, char **argv)
 			mappedButtons &= ~hotkeyMask; // Стираем кнопки хоткеев из маски для игры
 		}
 
-		{ // Mapping standard game buttons using the safe masked layout
-			//DWORD XboxButtons = report.wButtons;
-			/*XboxButtons |= mappedButtons & JSMASK_L ? CurrentXboxProfile.LeftBumper : 0;
-			XboxButtons |= mappedButtons & JSMASK_R ? CurrentXboxProfile.RightBumper : 0;
-			XboxButtons |= mappedButtons & JSMASK_LCLICK ? CurrentXboxProfile.LeftStick : 0;
-			XboxButtons |= mappedButtons & JSMASK_RCLICK ? CurrentXboxProfile.RightStick : 0;
-			XboxButtons |= mappedButtons & JSMASK_UP ? CurrentXboxProfile.DPADUp : 0;
-			XboxButtons |= mappedButtons & JSMASK_DOWN ? CurrentXboxProfile.DPADDown : 0;
-			XboxButtons |= mappedButtons & JSMASK_LEFT ? CurrentXboxProfile.DPADLeft : 0;
-			XboxButtons |= mappedButtons & JSMASK_RIGHT ? CurrentXboxProfile.DPADRight : 0;
-			XboxButtons |= mappedButtons & JSMASK_N ? CurrentXboxProfile.Y : 0;
-			XboxButtons |= mappedButtons & JSMASK_W ? CurrentXboxProfile.X : 0;
-			XboxButtons |= mappedButtons & JSMASK_S ? CurrentXboxProfile.A : 0;
-			XboxButtons |= mappedButtons & JSMASK_E ? CurrentXboxProfile.B : 0;*/
+		{ 	//@071 + @!!! 
+			//Базовые игровые кнопки
+			ProcessSmartButton((mappedButtons & JSMASK_L) != 0, CurrentXboxProfile.LeftBumper, CurrentXboxProfile.LeftBumperLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.LeftBumper : nullptr, PrimaryGamepad.Trackers.L, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_R) != 0, CurrentXboxProfile.RightBumper, CurrentXboxProfile.RightBumperLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.RightBumper : nullptr, PrimaryGamepad.Trackers.R, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_LCLICK) != 0, CurrentXboxProfile.LeftStick, CurrentXboxProfile.LeftStickLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.LeftStick : nullptr, PrimaryGamepad.Trackers.L3, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_RCLICK) != 0, CurrentXboxProfile.RightStick, CurrentXboxProfile.RightStickLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.RightStick : nullptr, PrimaryGamepad.Trackers.R3, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_UP) != 0, CurrentXboxProfile.DPADUp, CurrentXboxProfile.DPADUpLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DPADUp : nullptr, PrimaryGamepad.Trackers.DPADUp, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_DOWN) != 0, CurrentXboxProfile.DPADDown, CurrentXboxProfile.DPADDownLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DPADDown : nullptr, PrimaryGamepad.Trackers.DPADDown, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_LEFT) != 0, CurrentXboxProfile.DPADLeft, CurrentXboxProfile.DPADLeftLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DPADLeft : nullptr, PrimaryGamepad.Trackers.DPADLeft, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_RIGHT) != 0, CurrentXboxProfile.DPADRight, CurrentXboxProfile.DPADRightLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DPADRight : nullptr, PrimaryGamepad.Trackers.DPADRight, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_N) != 0, CurrentXboxProfile.Y, CurrentXboxProfile.YLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.Y : nullptr, PrimaryGamepad.Trackers.Y, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_W) != 0, CurrentXboxProfile.X, CurrentXboxProfile.XLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.X : nullptr, PrimaryGamepad.Trackers.X, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_S) != 0, CurrentXboxProfile.A, CurrentXboxProfile.ALong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.A : nullptr, PrimaryGamepad.Trackers.A, sleepMs, AppStatus.LongPressTimeOut);
+			ProcessSmartButton((mappedButtons & JSMASK_E) != 0, CurrentXboxProfile.B, CurrentXboxProfile.BLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.B : nullptr, PrimaryGamepad.Trackers.B, sleepMs, AppStatus.LongPressTimeOut);
 
-			//@071
-			ProcessSmartButton((mappedButtons & JSMASK_L) != 0, CurrentXboxProfile.LeftBumper, CurrentXboxProfile.LeftBumperLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.L, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_R) != 0, CurrentXboxProfile.RightBumper, CurrentXboxProfile.RightBumperLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.R, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_LCLICK) != 0, CurrentXboxProfile.LeftStick, CurrentXboxProfile.LeftStickLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.L3, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_RCLICK) != 0, CurrentXboxProfile.RightStick, CurrentXboxProfile.RightStickLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.R3, sleepMs, AppStatus.LongPressTimeOut);
-
-			ProcessSmartButton((mappedButtons & JSMASK_UP) != 0, CurrentXboxProfile.DPADUp, CurrentXboxProfile.DPADUpLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DPADUp, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_DOWN) != 0, CurrentXboxProfile.DPADDown, CurrentXboxProfile.DPADDownLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DPADDown, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_LEFT) != 0, CurrentXboxProfile.DPADLeft, CurrentXboxProfile.DPADLeftLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DPADLeft, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_RIGHT) != 0, CurrentXboxProfile.DPADRight, CurrentXboxProfile.DPADRightLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DPADRight, sleepMs, AppStatus.LongPressTimeOut);
-
-			ProcessSmartButton((mappedButtons & JSMASK_N) != 0, CurrentXboxProfile.Y, CurrentXboxProfile.YLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.Y, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_W) != 0, CurrentXboxProfile.X, CurrentXboxProfile.XLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.X, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_S) != 0, CurrentXboxProfile.A, CurrentXboxProfile.ALong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.A, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((mappedButtons & JSMASK_E) != 0, CurrentXboxProfile.B, CurrentXboxProfile.BLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.B, sleepMs, AppStatus.LongPressTimeOut);
-
-			// Additional buttons
-			/*if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
-				XboxButtons |= mappedButtons & JSMASK_FNL ? CurrentXboxProfile.DSEdgeL4 : 0;
-				XboxButtons |= mappedButtons & JSMASK_FNR ? CurrentXboxProfile.DSEdgeR4 : 0;
+			// Спец-кнопки
+			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) {
+				ProcessSmartButton((mappedButtons & JSMASK_FNL) != 0, CurrentXboxProfile.DSEdgeL4, CurrentXboxProfile.DSEdgeL4Long, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DSEdgeL4 : nullptr, PrimaryGamepad.Trackers.DSEdgeL4, sleepMs, AppStatus.LongPressTimeOut);
+				ProcessSmartButton((mappedButtons & JSMASK_FNR) != 0, CurrentXboxProfile.DSEdgeR4, CurrentXboxProfile.DSEdgeR4Long, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.DSEdgeR4 : nullptr, PrimaryGamepad.Trackers.DSEdgeR4, sleepMs, AppStatus.LongPressTimeOut);
 			}
 			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
-				XboxButtons |= mappedButtons & JSMASK_SL ? CurrentXboxProfile.JCSL : 0;
-				XboxButtons |= mappedButtons & JSMASK_SR ? CurrentXboxProfile.JCSR : 0;
-				XboxButtons |= (mappedButtons & JSMASK_ZL) ? CurrentXboxProfile.ZL : 0;	//@009
-				XboxButtons |= (mappedButtons & JSMASK_ZR) ? CurrentXboxProfile.ZR : 0;
-				XboxButtons |= mappedButtons & JSMASK_HOME ? CurrentXboxProfile.HOME : 0;
-				XboxButtons |= mappedButtons & JSMASK_CAPTURE ? CurrentXboxProfile.CAPTURE : 0;
-			}*/
+				ProcessSmartButton((mappedButtons & JSMASK_SL) != 0, CurrentXboxProfile.JCSL, CurrentXboxProfile.JCSLLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.JCSL : nullptr, PrimaryGamepad.Trackers.JCSL, sleepMs, AppStatus.LongPressTimeOut);
+				ProcessSmartButton((mappedButtons & JSMASK_SR) != 0, CurrentXboxProfile.JCSR, CurrentXboxProfile.JCSRLong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.JCSR : nullptr, PrimaryGamepad.Trackers.JCSR, sleepMs, AppStatus.LongPressTimeOut);
 
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
-				ProcessSmartButton((mappedButtons & JSMASK_FNL) != 0, CurrentXboxProfile.DSEdgeL4, CurrentXboxProfile.DSEdgeL4Long, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DSEdgeL4, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((mappedButtons & JSMASK_FNR) != 0, CurrentXboxProfile.DSEdgeR4, CurrentXboxProfile.DSEdgeR4Long, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.DSEdgeR4, sleepMs, AppStatus.LongPressTimeOut);
-			}
-			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
-				ProcessSmartButton((mappedButtons & JSMASK_SL) != 0, CurrentXboxProfile.JCSL, CurrentXboxProfile.JCSLLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.JCSL, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((mappedButtons & JSMASK_SR) != 0, CurrentXboxProfile.JCSR, CurrentXboxProfile.JCSRLong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.JCSR, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((mappedButtons & JSMASK_ZL) != 0, CurrentXboxProfile.ZL, 0, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.L, sleepMs, AppStatus.LongPressTimeOut);	// ZL/ZR оставляем как есть, для них нет лонг пресса
-				ProcessSmartButton((mappedButtons & JSMASK_ZR) != 0, CurrentXboxProfile.ZR, 0, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.R, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton((mappedButtons & JSMASK_HOME) != 0, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton((mappedButtons & JSMASK_CAPTURE) != 0, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton(allowHomeSolo, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
-				//ProcessSmartButton(allowCaptureSolo, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				// Если на HOME назначен бинд Xbox — отдаем чистый инпут 0 мс!
-				bool isHomePressed = (CurrentXboxProfile.HOME != 0) ?
-					((PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0) : allowHomeSolo;
-				ProcessSmartButton(isHomePressed, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
+				bool isLeftTriggerPressed = (PrimaryGamepad.InputState.lTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey) || ((mappedButtons & JSMASK_ZL) != 0);
+				bool isRightTriggerPressed = (PrimaryGamepad.InputState.rTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey) || ((mappedButtons & JSMASK_ZR) != 0);
 
-				// Если на CAPTURE назначен бинд Xbox — отдаем чистый инпут 0 мс!
-				bool isCapPressed = (CurrentXboxProfile.CAPTURE != 0) ?
-					((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0) : allowCaptureSolo;
-				ProcessSmartButton(isCapPressed, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, nullptr, false, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
+				ProcessSmartButton(isLeftTriggerPressed, CurrentXboxProfile.ZL, 0, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.LeftTrigger : nullptr, PrimaryGamepad.Trackers.ZL, sleepMs, AppStatus.LongPressTimeOut);
+				ProcessSmartButton(isRightTriggerPressed, CurrentXboxProfile.ZR, 0, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.RightTrigger : nullptr, PrimaryGamepad.Trackers.ZR, sleepMs, AppStatus.LongPressTimeOut);
+
+				// Если на HOME назначен бинд (Xbox или KBM) — отдаем мгновенный сырой ввод 0 мс!
+				bool hasHomeBind = (CurrentXboxProfile.HOME != 0) || (PrimaryGamepad.ButtonsStates.HOME.KeyCode != 0);
+				bool isHomeTriggered = hasHomeBind ? ((PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0) : allowHomeSolo;
+				ProcessSmartButton(isHomeTriggered, CurrentXboxProfile.HOME, CurrentXboxProfile.HOMELong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.HOME : nullptr, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
+
+				// Если на CAPTURE назначен бинд (Xbox или KBM) — отдаем мгновенный сырой ввод 0 мс!
+				bool hasCapBind = (CurrentXboxProfile.CAPTURE != 0) || (PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode != 0);
+				bool isCapTriggered = hasCapBind ? ((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0) : allowCaptureSolo;
+				ProcessSmartButton(isCapTriggered, CurrentXboxProfile.CAPTURE, CurrentXboxProfile.CAPTURELong, &XboxButtons, kbmAllowed ? &PrimaryGamepad.ButtonsStates.CAPTURE : nullptr, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
 			}
 
 			if (PrimaryGamepad.Motion.GestureXTimer > 0 && CurrentXboxProfile.MeleeGesture != 0) {
@@ -4182,7 +4180,7 @@ int main(int argc, char **argv)
 			if (PrimaryGamepad.PSReleasedCount > 0) PrimaryGamepad.PSReleasedCount--;
 		}
 		// Gamebar
-		KeyPress(VK_GAMEBAR, (PrimaryGamepad.PSOnlyCheckCount == 1 && PrimaryGamepad.PSOnlyPressed) || (PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE && PrimaryGamepad.InputState.buttons & JSMASK_HOME), &PrimaryGamepad.ButtonsStates.PS, false);
+		/*KeyPress(VK_GAMEBAR, (PrimaryGamepad.PSOnlyCheckCount == 1 && PrimaryGamepad.PSOnlyPressed) || (PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE && PrimaryGamepad.InputState.buttons & JSMASK_HOME), &PrimaryGamepad.ButtonsStates.PS, false);
 
 		// Volume
 		if (JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(PrimaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
@@ -4236,6 +4234,33 @@ int main(int argc, char **argv)
 
 			if (!IsSharePressed && PrimaryGamepad.ShareHandled && PrimaryGamepad.ShareOnlyCheckCount == 0)
 				PrimaryGamepad.ShareHandled = false;
+		}*/
+
+		//@087
+		// 1. Вызов Gamebar оверлея (CAPTURE + HOME на Joy-Con или одиночный клик PS на Sony)
+		bool isGamebar = (PrimaryGamepad.PSOnlyCheckCount == 1 && PrimaryGamepad.PSOnlyPressed) ||
+			((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) && (PrimaryGamepad.InputState.buttons & JSMASK_HOME));
+		KeyPress(VK_GAMEBAR, isGamebar, &PrimaryGamepad.ButtonsStates.PS);
+
+		// 2. Системная громкость Windows (CAPTURE + W/E на Joy-Con, PS + W/E на Sony)
+		bool isSony = (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4);
+		unsigned int volMod = isSony ? JSMASK_PS : JSMASK_CAPTURE;
+		bool volDown = (PrimaryGamepad.InputState.buttons & volMod) && (PrimaryGamepad.InputState.buttons & JSMASK_W);
+		bool volUp = (PrimaryGamepad.InputState.buttons & volMod) && (PrimaryGamepad.InputState.buttons & JSMASK_E);
+
+		KeyPress(VK_VOLUME_DOWN2, volDown, &PrimaryGamepad.ButtonsStates.VolumeDown);
+		KeyPress(VK_VOLUME_UP2, volUp, &PrimaryGamepad.ButtonsStates.VolumeUp);
+
+		// 3. Скриншоты и видеозапись для Sony (Кнопка микрофона DualSense или PS + R на DualShock 4)
+		if (isSony) {
+			bool isSharePhys = (PrimaryGamepad.InputState.buttons & JSMASK_MIC) ||
+				((PrimaryGamepad.InputState.buttons & JSMASK_PS) && (PrimaryGamepad.InputState.buttons & JSMASK_R));
+
+			PrimaryGamepad.ButtonsStates.Screenshot.KeyCode = AppStatus.ScreenShotKey;
+			PrimaryGamepad.ButtonsStates.Screenshot.LongKeyCode = (AppStatus.ScreenshotMode == ScreenShotCustomKeyMode) ? 0 : VK_GAMEBAR_RECORD;
+
+			static SmartButtonTracker sonyShareTracker;
+			ProcessSmartButton(isSharePhys, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Screenshot, sonyShareTracker, sleepMs, 300);
 		}
 
 		//@051 Custom sens (±5 steps with averages recalculation). Removed all "* PrimaryGamepad.Motion.CustomMulSens" from snippet below
@@ -4314,36 +4339,9 @@ int main(int argc, char **argv)
 		if (!isGyroAimingActive) {
 			PrimaryGamepad.Motion.WasGyroActive = false;
 		}
-
-		// Motion racing  [O--]
-		/*if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
-
-			// Steering wheel
-			if (!PrimaryGamepad.Motion.AircraftEnabled) {
-				//report.sThumbLX = (SHORT)(CalcMotionStick(MotionState.gravX, MotionState.gravZ, PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX) * 32767);	//@045
-				report.sThumbLX = (SHORT)(CalcMotionStick(MotionState.gravX, MotionState.gravZ, MotionState.gravY, PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX, PrimaryGamepad.Motion.PrevAngleRad, PrimaryGamepad.Motion.CumulativeOffsetRad, PrimaryGamepad.Motion.AngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, PrimaryGamepad.Motion.LinearityWheel) * 32767);
-			}
-			// Aircraft
-			else {	//not working
-				const float InputSize = sqrtf(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
-				float tighteningFactor = 1.0f;
-
-				// Вычисляем коэффициент вязкости
-				if (PrimaryGamepad.Motion.Tightening > 0.0f && InputSize < PrimaryGamepad.Motion.Tightening) {
-					tighteningFactor = InputSize / PrimaryGamepad.Motion.Tightening;
-				}
-
-				// Применяем вязкость к оси Y
-				float effVelY = velocityY * tighteningFactor;
-
-				report.sThumbLX = std::clamp((int)(ClampFloat(-(effVelY * PrimaryGamepad.Motion.AircraftRollSens * AppStatus.FrameTime * PrimaryGamepad.Motion.JoySensX), -1.0f, 1.0f) * 32767 + report.sThumbLX), -32767, 32767);
-				report.sThumbLY = (SHORT)(CalcMotionStick(MotionState.gravY, MotionState.gravZ, MotionState.gravX, PrimaryGamepad.Motion.AircraftPitchAngle, PrimaryGamepad.Motion.OffsetAxisY, PrimaryGamepad.Motion.PitchPrevAngleRad, PrimaryGamepad.Motion.PitchCumulativeOffsetRad, PrimaryGamepad.Motion.PitchAngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, 50.0f) * 32767) * PrimaryGamepad.Motion.AircraftPitchInverted;
-			}
-
-		}
 		
 		//@039 Always меняем на button not pressed
-		else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) || (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {*/
+		//else if ((PrimaryGamepad.GamepadActionMode == MotionAimingMode && !isAimingButtonPressed) || (PrimaryGamepad.GamepadActionMode == MotionAimingModeOnlyPressed && isAimingButtonPressed)) {
 
 		//@082	обновлённый driving mode 
 		// 1. Расчёт виртуального руля / самолёта (Motion Driving)
@@ -4477,7 +4475,7 @@ int main(int argc, char **argv)
 			} //end of EMA
 
 			//Это уже град/сек!
-			const float InputSize = sqrtf(effGyroX * effGyroX + effGyroY * effGyroY + effGyroZ * effGyroZ);
+			/*const float InputSize = sqrtf(effGyroX * effGyroX + effGyroY * effGyroY + effGyroZ * effGyroZ);
 			float tighteningFactor = 1.0f;
 
 			//Вычисляем Tightening по JibbSmart
@@ -4494,7 +4492,26 @@ int main(int argc, char **argv)
 
 				float gyroSpeed = sqrtf(effGyroX * effGyroX + effGyroY * effGyroY);
 
-				if (gyroSpeed > PrimaryGamepad.Motion.GyroAccelStart) {
+				if (gyroSpeed > PrimaryGamepad.Motion.GyroAccelStart) {*/
+
+			//@086 1. Оптимизированный Tightening (проверка квадратов без корня в 85% кадров)
+			if (PrimaryGamepad.Motion.Tightening > 0.0f) {
+				float inputSizeSq = effGyroX * effGyroX + effGyroY * effGyroY + effGyroZ * effGyroZ;
+				float tightSq = PrimaryGamepad.Motion.Tightening * PrimaryGamepad.Motion.Tightening;
+				if (inputSizeSq < tightSq && inputSizeSq > 0.000001f) {
+					float tighteningFactor = sqrtf(inputSizeSq) / PrimaryGamepad.Motion.Tightening;
+					effGyroX *= tighteningFactor;
+					effGyroY *= tighteningFactor;
+				}
+			}
+
+			//@086 2. Оптимизированная параметрическая акселерация (проверка квадратов)
+			if (PrimaryGamepad.Motion.GyroAccelEnd > PrimaryGamepad.Motion.GyroAccelStart) {
+				float speedSq = effGyroX * effGyroX + effGyroY * effGyroY;
+				float startSq = PrimaryGamepad.Motion.GyroAccelStart * PrimaryGamepad.Motion.GyroAccelStart;
+
+				if (speedSq > startSq) {
+					float gyroSpeed = sqrtf(speedSq);
 					// Нормализуем прогресс скорости в диапазоне от 0.0 до 1.0
 					float progress = std::clamp((gyroSpeed - PrimaryGamepad.Motion.GyroAccelStart) / (PrimaryGamepad.Motion.GyroAccelEnd - PrimaryGamepad.Motion.GyroAccelStart), 0.0f, 1.0f);
 					float accelMult = 1.0f;
@@ -4651,323 +4668,145 @@ int main(int argc, char **argv)
 
 #pragma warning(pop)
 
-		// Keyboard and mouse mode
-		bool DontResetInputState = !( // Reset clicks when activating some actions / Сброс нажатий при активации некоторых действий
-			(PrimaryGamepad.InputState.buttons & JSMASK_PS) && !(PrimaryGamepad.InputState.buttons & JSMASK_HOME) || //@013 иначе на HOME не эмулируются кнопки KM в XboxProfile.	
-			IsSharePressed ||
-			IsRecordPressed);
-			//IsRecordPressed ||
-			//IsKeyPressed(VK_MENU)
-			//);
+		//@017 Updated БЛОК GYRO WHEEL для Xbox и KBM (@!!! + Мгновенный отклик 0 мс)
+		int currentWheelActivationBtn = (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) ? PrimaryGamepad.ButtonsStates.WheelActivationGamepadButton.KeyCode : CurrentXboxProfile.WheelActivationButton;
 
-		if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse || AppStatus.GamepadEmulationMode == EmuGamepadEnabled) { //@014  add для эмуляции KM в XboxProfiles
+		static Button* activeWheelKbmBtn = nullptr;
+		static int wheelKbmHoldTimer = 0;
 
-			if (PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
+		// 1. Зажатие кнопки активации: сброс накопителя и старт замера жеста
+		if (currentWheelActivationBtn != 0 && (PrimaryGamepad.InputState.buttons & currentWheelActivationBtn)) {
+			if (!PrimaryGamepad.Motion.WheelActive) {
+				PrimaryGamepad.Motion.WheelActive = true;
+				PrimaryGamepad.Motion.WheelAccumX = 0.0f;
+				PrimaryGamepad.Motion.WheelAccumY = 0.0f;
+			}
+			if (AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
+				report.wButtons &= ~CurrentXboxProfile.WheelDefault;
+			}
+		}
 
-				//float MotionAxisX = CalcMotionStick(MotionState.gravX, MotionState.gravZ, PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX);	//@045
-				float MotionAxisX = CalcMotionStick(MotionState.gravX, MotionState.gravZ, MotionState.gravY, PrimaryGamepad.Motion.SteeringWheelAngle, PrimaryGamepad.Motion.OffsetAxisX, PrimaryGamepad.Motion.PrevAngleRad, PrimaryGamepad.Motion.CumulativeOffsetRad, PrimaryGamepad.Motion.AngleInitialized, PrimaryGamepad.Motion.IsManualCalibrated, PrimaryGamepad.Motion.LinearityWheel);
+		// 2. Накопление угла поворота гироскопа во время удержания
+		if (PrimaryGamepad.Motion.WheelActive) {
+			PrimaryGamepad.Motion.WheelAccumX += velocityX * loopDeltaTime;
+			PrimaryGamepad.Motion.WheelAccumY += velocityY * loopDeltaTime;
+		}
 
-				if (PrimaryGamepad.InputState.buttons & JSMASK_LEFT) PrimaryGamepad.InputState.buttons &= ~JSMASK_LEFT;
-				if (PrimaryGamepad.InputState.buttons & JSMASK_LEFT) PrimaryGamepad.InputState.buttons &= ~JSMASK_LEFT;
-				if (PrimaryGamepad.InputState.buttons & JSMASK_RIGHT) PrimaryGamepad.InputState.buttons &= ~JSMASK_RIGHT;
+		// 3. МГНОВЕННОЕ СРАБАТЫВАНИЕ: кнопка активации только что отпущена!
+		if (!(PrimaryGamepad.InputState.buttons & currentWheelActivationBtn) && PrimaryGamepad.Motion.WheelActive) {
+			PrimaryGamepad.Motion.WheelActive = false;
 
-				if (fabs(MotionAxisX) < PrimaryGamepad.KMEmu.SteeringWheelDeadZone) {
-					PrimaryGamepad.KMEmu.MaxLeftAxisX = 0.0f;
-					PrimaryGamepad.KMEmu.MaxRightAxisX = 0.0f;
+			float MotionLength = sqrtf(PrimaryGamepad.Motion.WheelAccumX * PrimaryGamepad.Motion.WheelAccumX + PrimaryGamepad.Motion.WheelAccumY * PrimaryGamepad.Motion.WheelAccumY);
+			WORD xboxButtonToPress = 0;
+			Button* kbmButtonToPress = nullptr;
+
+			if (MotionLength < PrimaryGamepad.Motion.MotionWheelButtonsDeadZone) {
+				xboxButtonToPress = CurrentXboxProfile.WheelDefault;
+				kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelDefault;
+			}
+			else {
+				float MotionWheelAngle = atan2f(PrimaryGamepad.Motion.WheelAccumY, PrimaryGamepad.Motion.WheelAccumX) * 57.29578f;
+				bool advancedMode = (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) ? PrimaryGamepad.ButtonsStates.WheelAdvancedMode : CurrentXboxProfile.WheelAdvancedMode;
+
+				if (!advancedMode) {
+					if (fabs(MotionWheelAngle) < 25.f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelUp;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelUp;
+					}
+					else if (MotionWheelAngle > 45.f && MotionWheelAngle < 135.f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelLeft;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelLeft;
+					}
+					else if (MotionWheelAngle < -45.f && MotionWheelAngle > -135.f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelRight;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelRight;
+					}
+					else if (MotionWheelAngle > 165.f || MotionWheelAngle < -165.f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelDown;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelDown;
+					}
 				}
 				else {
-
-					// Left
-					if (MotionAxisX < -PrimaryGamepad.KMEmu.SteeringWheelDeadZone) {
-						// Update the maximum
-						if (MotionAxisX < PrimaryGamepad.KMEmu.MaxLeftAxisX) PrimaryGamepad.KMEmu.MaxLeftAxisX = MotionAxisX;
-
-						// Retention of at least 95% of the peak
-						if (MotionAxisX <= PrimaryGamepad.KMEmu.MaxLeftAxisX * (1.0f - PrimaryGamepad.KMEmu.SteeringWheelReleaseThreshold))
-							if (PrimaryGamepad.KMEmu.SteeringWheelUseDPAD)
-								PrimaryGamepad.InputState.buttons |= JSMASK_LEFT;
-							else
-								PrimaryGamepad.InputState.stickLX = -1.0f;
+					if (MotionWheelAngle >= -22.5f && MotionWheelAngle < 22.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelUp;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelUp;
 					}
-
-					// Right
-					if (MotionAxisX > PrimaryGamepad.KMEmu.SteeringWheelDeadZone) {
-						if (MotionAxisX > PrimaryGamepad.KMEmu.MaxRightAxisX) PrimaryGamepad.KMEmu.MaxRightAxisX = MotionAxisX;
-
-						if (MotionAxisX >= PrimaryGamepad.KMEmu.MaxRightAxisX * (1.0f - PrimaryGamepad.KMEmu.SteeringWheelReleaseThreshold)) {
-							if (PrimaryGamepad.KMEmu.SteeringWheelUseDPAD)
-								PrimaryGamepad.InputState.buttons |= JSMASK_RIGHT;
-							else
-								PrimaryGamepad.InputState.stickLX = 1.0f;
-						}
+					else if (MotionWheelAngle >= 22.5f && MotionWheelAngle < 67.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelUpLeft;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelUpLeft;
+					}
+					else if (MotionWheelAngle >= 67.5f && MotionWheelAngle < 112.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelLeft;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelLeft;
+					}
+					else if (MotionWheelAngle >= 112.5f && MotionWheelAngle < 157.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelDownLeft;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelDownLeft;
+					}
+					else if (MotionWheelAngle >= 157.5f || MotionWheelAngle < -157.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelDown;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelDown;
+					}
+					else if (MotionWheelAngle >= -157.5f && MotionWheelAngle < -112.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelDownRight;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelDownRight;
+					}
+					else if (MotionWheelAngle >= -112.5f && MotionWheelAngle < -67.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelRight;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelRight;
+					}
+					else if (MotionWheelAngle >= -67.5f && MotionWheelAngle < -22.5f) {
+						xboxButtonToPress = CurrentXboxProfile.WheelUpRight;
+						kbmButtonToPress = &PrimaryGamepad.ButtonsStates.WheelUpRight;
 					}
 				}
 			}
 
-			//KeyPress(PrimaryGamepad.ButtonsStates.LeftTrigger.KeyCode, DontResetInputState && PrimaryGamepad.InputState.lTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey, &PrimaryGamepad.ButtonsStates.LeftTrigger, true);
-			//KeyPress(PrimaryGamepad.ButtonsStates.RightTrigger.KeyCode, DontResetInputState && PrimaryGamepad.InputState.rTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey, &PrimaryGamepad.ButtonsStates.RightTrigger, true);
-
-			// Same - JSMASK_CAPTURE 0x020000 - JSMASK_TOUCHPAD_CLICK 0x020000
-			/*if (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4)
-				KeyPress(PrimaryGamepad.ButtonsStates.Back.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_SHARE, &PrimaryGamepad.ButtonsStates.Back, true);
-			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS || PrimaryGamepad.ControllerType == NINTENDO_JOYCONS)
-				KeyPress(PrimaryGamepad.ButtonsStates.Back.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE, &PrimaryGamepad.ButtonsStates.Back, true);
-			
-			KeyPress(PrimaryGamepad.ButtonsStates.Start.KeyCode, DontResetInputState && (PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS || PrimaryGamepad.InputState.buttons & JSMASK_HOME), &PrimaryGamepad.ButtonsStates.Start, true);*/
-
-			/*KeyPress(PrimaryGamepad.ButtonsStates.LeftBumper.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_L, &PrimaryGamepad.ButtonsStates.LeftBumper, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.RightBumper.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_R, &PrimaryGamepad.ButtonsStates.RightBumper, true);
-
-			//@015  Разделене BACK START для SONY и Nintendo
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4) {
-				KeyPress(PrimaryGamepad.ButtonsStates.Back.KeyCode, DontResetInputState && (PrimaryGamepad.InputState.buttons & JSMASK_SHARE), &PrimaryGamepad.ButtonsStates.Back, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.Start.KeyCode, DontResetInputState && (PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS), &PrimaryGamepad.ButtonsStates.Start, true);
-			}
-			else {
-				KeyPress(PrimaryGamepad.ButtonsStates.Back.KeyCode, DontResetInputState && (PrimaryGamepad.InputState.buttons & JSMASK_MINUS), &PrimaryGamepad.ButtonsStates.Back, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.Start.KeyCode, DontResetInputState && (PrimaryGamepad.InputState.buttons & JSMASK_PLUS), &PrimaryGamepad.ButtonsStates.Start, true);
+			// Взводим честное удержание на 50 мс для Xbox
+			if (xboxButtonToPress != 0 && AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
+				PrimaryGamepad.Motion.WheelXboxHoldButton = xboxButtonToPress;
+				PrimaryGamepad.Motion.WheelXboxHoldTimer = static_cast<int>(roundf(0.050f / loopDeltaTime)) + 1;
 			}
 
-			if (PrimaryGamepad.ButtonsStates.DPADAdvancedMode == false) { // Regular mode  ↑ → ↓ ←
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUp.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP, &PrimaryGamepad.ButtonsStates.DPADUp, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDown.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN, &PrimaryGamepad.ButtonsStates.DPADDown, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_LEFT, &PrimaryGamepad.ButtonsStates.DPADLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT, &PrimaryGamepad.ButtonsStates.DPADRight, true);
-
+			// Взводим честное удержание на 50 мс для KBM
+			if (kbmButtonToPress && kbmButtonToPress->KeyCode != 0) {
+				activeWheelKbmBtn = kbmButtonToPress;
+				wheelKbmHoldTimer = static_cast<int>(roundf(0.050f / loopDeltaTime)) + 1;
+				KeyPress(activeWheelKbmBtn->KeyCode, true, activeWheelKbmBtn);
 			}
-			else { // Advanced mode ↑ ↗ → ↘ ↓ ↙ ← ↖ for switching in retro games
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUp.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && !(PrimaryGamepad.InputState.buttons & JSMASK_LEFT) && !(PrimaryGamepad.InputState.buttons & JSMASK_RIGHT), &PrimaryGamepad.ButtonsStates.DPADUp, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_LEFT && !(PrimaryGamepad.InputState.buttons & JSMASK_UP) && !(PrimaryGamepad.InputState.buttons & JSMASK_DOWN), &PrimaryGamepad.ButtonsStates.DPADLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT && !(PrimaryGamepad.InputState.buttons & JSMASK_UP) && !(PrimaryGamepad.InputState.buttons & JSMASK_DOWN), &PrimaryGamepad.ButtonsStates.DPADRight, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDown.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && !(PrimaryGamepad.InputState.buttons & JSMASK_LEFT) && !(PrimaryGamepad.InputState.buttons & JSMASK_RIGHT), &PrimaryGamepad.ButtonsStates.DPADDown, true);
+		}
 
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUpLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && PrimaryGamepad.InputState.buttons & JSMASK_LEFT, &PrimaryGamepad.ButtonsStates.DPADUpLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUpRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT, &PrimaryGamepad.ButtonsStates.DPADUpRight, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDownLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && PrimaryGamepad.InputState.buttons & JSMASK_LEFT, &PrimaryGamepad.ButtonsStates.DPADDownLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDownRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT, &PrimaryGamepad.ButtonsStates.DPADDownRight, true);
+		// 4. Удержание и плавный сброс кнопки Xbox
+		if (PrimaryGamepad.Motion.WheelXboxHoldTimer > 0) {
+			if (AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
+				report.wButtons |= PrimaryGamepad.Motion.WheelXboxHoldButton;
 			}
+			PrimaryGamepad.Motion.WheelXboxHoldTimer--;
+		}
+		else {
+			PrimaryGamepad.Motion.WheelXboxHoldButton = 0;
+		}
 
-			KeyPress(PrimaryGamepad.ButtonsStates.Y.KeyCode, DontResetInputState &&  PrimaryGamepad.InputState.buttons & JSMASK_N, &PrimaryGamepad.ButtonsStates.Y, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.A.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_S, &PrimaryGamepad.ButtonsStates.A, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.X.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_W, &PrimaryGamepad.ButtonsStates.X, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.B.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_E, &PrimaryGamepad.ButtonsStates.B, true);
-
-			KeyPress(PrimaryGamepad.ButtonsStates.LeftStick.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_LCLICK, &PrimaryGamepad.ButtonsStates.LeftStick, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.RightStick.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_RCLICK, &PrimaryGamepad.ButtonsStates.RightStick, true);*/
-
-			//@071
-
-			bool isLeftTriggerPressed = (PrimaryGamepad.InputState.lTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey) || ((PrimaryGamepad.InputState.buttons & JSMASK_ZL) != 0);
-			bool isRightTriggerPressed = (PrimaryGamepad.InputState.rTrigger > PrimaryGamepad.KMEmu.TriggerValuePressKey) || ((PrimaryGamepad.InputState.buttons & JSMASK_ZR) != 0);
-
-			ProcessSmartButton(isLeftTriggerPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.LeftTrigger, DontResetInputState, PrimaryGamepad.Trackers.ZL, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton(isRightTriggerPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.RightTrigger, DontResetInputState, PrimaryGamepad.Trackers.ZR, sleepMs, AppStatus.LongPressTimeOut);
-
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_L) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.LeftBumper, DontResetInputState, PrimaryGamepad.Trackers.L, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_R) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.RightBumper, DontResetInputState, PrimaryGamepad.Trackers.R, sleepMs, AppStatus.LongPressTimeOut);
-
-			//@015  Разделене BACK START для SONY и Nintendo
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE || PrimaryGamepad.ControllerType == SONY_DUALSHOCK4) {
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_SHARE) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Back, DontResetInputState, PrimaryGamepad.Trackers.Back, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_OPTIONS) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Start, DontResetInputState, PrimaryGamepad.Trackers.Start, sleepMs, AppStatus.LongPressTimeOut);
+		// 5. Удержание и плавный сброс клавиши KBM
+		if (wheelKbmHoldTimer > 0) {
+			wheelKbmHoldTimer--;
+			if (wheelKbmHoldTimer == 0 && activeWheelKbmBtn) {
+				KeyPress(activeWheelKbmBtn->KeyCode, false, activeWheelKbmBtn);
+				activeWheelKbmBtn = nullptr;
 			}
-			else {
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_MINUS) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Back, DontResetInputState, PrimaryGamepad.Trackers.Back, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_PLUS) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Start, DontResetInputState, PrimaryGamepad.Trackers.Start, sleepMs, AppStatus.LongPressTimeOut);
-			}
+		}
 
-			if (PrimaryGamepad.ButtonsStates.DPADAdvancedMode == false) { // Regular mode  ^ > v <
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_UP) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DPADUp, DontResetInputState, PrimaryGamepad.Trackers.DPADUp, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_DOWN) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DPADDown, DontResetInputState, PrimaryGamepad.Trackers.DPADDown, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_LEFT) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DPADLeft, DontResetInputState, PrimaryGamepad.Trackers.DPADLeft, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_RIGHT) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DPADRight, DontResetInputState, PrimaryGamepad.Trackers.DPADRight, sleepMs, AppStatus.LongPressTimeOut);
-			}
-			else { // Advanced mode ^ ? > ? v ? < ? for switching in retro games
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUp.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && !(PrimaryGamepad.InputState.buttons & JSMASK_LEFT) && !(PrimaryGamepad.InputState.buttons & JSMASK_RIGHT), &PrimaryGamepad.ButtonsStates.DPADUp, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_LEFT && !(PrimaryGamepad.InputState.buttons & JSMASK_UP) && !(PrimaryGamepad.InputState.buttons & JSMASK_DOWN), &PrimaryGamepad.ButtonsStates.DPADLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT && !(PrimaryGamepad.InputState.buttons & JSMASK_UP) && !(PrimaryGamepad.InputState.buttons & JSMASK_DOWN), &PrimaryGamepad.ButtonsStates.DPADRight, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDown.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && !(PrimaryGamepad.InputState.buttons & JSMASK_LEFT) && !(PrimaryGamepad.InputState.buttons & JSMASK_RIGHT), &PrimaryGamepad.ButtonsStates.DPADDown, true);
+		//@087 New KEYBOARD & MOUSE (Стики, жесты, кнопки Wheel)
 
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUpLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && PrimaryGamepad.InputState.buttons & JSMASK_LEFT, &PrimaryGamepad.ButtonsStates.DPADUpLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADUpRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_UP && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT, &PrimaryGamepad.ButtonsStates.DPADUpRight, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDownLeft.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && PrimaryGamepad.InputState.buttons & JSMASK_LEFT, &PrimaryGamepad.ButtonsStates.DPADDownLeft, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DPADDownRight.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_DOWN && PrimaryGamepad.InputState.buttons & JSMASK_RIGHT, &PrimaryGamepad.ButtonsStates.DPADDownRight, true);
-			}
+		if (kbmAllowed) {
+			KMStickMode(PrimaryGamepad, true, DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX),
+				DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY), PrimaryGamepad.KMEmu.LeftStickMode, loopDeltaTime);
+			KMStickMode(PrimaryGamepad, false, DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX),
+				DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY), PrimaryGamepad.KMEmu.RightStickMode, loopDeltaTime);
 
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_N) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.Y, DontResetInputState, PrimaryGamepad.Trackers.Y, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_S) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.A, DontResetInputState, PrimaryGamepad.Trackers.A, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_W) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.X, DontResetInputState, PrimaryGamepad.Trackers.X, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_E) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.B, DontResetInputState, PrimaryGamepad.Trackers.B, sleepMs, AppStatus.LongPressTimeOut);
-
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_LCLICK) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.LeftStick, DontResetInputState, PrimaryGamepad.Trackers.L3, sleepMs, AppStatus.LongPressTimeOut);
-			ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_RCLICK) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.RightStick, DontResetInputState, PrimaryGamepad.Trackers.R3, sleepMs, AppStatus.LongPressTimeOut);
-
-			// Aditional buttons
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_FNL) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DSEdgeL4, DontResetInputState, PrimaryGamepad.Trackers.DSEdgeL4, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_FNR) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.DSEdgeR4, DontResetInputState, PrimaryGamepad.Trackers.DSEdgeR4, sleepMs, AppStatus.LongPressTimeOut);
-			}
-			else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_SL) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.JCSL, DontResetInputState, PrimaryGamepad.Trackers.JCSL, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_SR) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.JCSR, DontResetInputState, PrimaryGamepad.Trackers.JCSR, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton((PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				//ProcessSmartButton(allowHomeSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);	//@072
-				//ProcessSmartButton(allowCaptureSolo, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-				// Клавиатурный маппинг HOME и CAPTURE: чистый сырой инпут без задержек комбо
-				bool isHomePhysPressed = (PrimaryGamepad.InputState.buttons & JSMASK_HOME) != 0;
-				bool isCapPhysPressed = (PrimaryGamepad.InputState.buttons & JSMASK_CAPTURE) != 0;
-
-				ProcessSmartButton(isHomePhysPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.HOME, DontResetInputState, PrimaryGamepad.Trackers.HOME, sleepMs, AppStatus.LongPressTimeOut);
-				ProcessSmartButton(isCapPhysPressed, 0, 0, nullptr, &PrimaryGamepad.ButtonsStates.CAPTURE, DontResetInputState, PrimaryGamepad.Trackers.CAPTURE, sleepMs, AppStatus.LongPressTimeOut);
-			}
-
-			KMStickMode(PrimaryGamepad, DontResetInputState, true, DeadZoneAxis(PrimaryGamepad.InputState.stickLX, PrimaryGamepad.Sticks.DeadZoneLeftX), DeadZoneAxis(PrimaryGamepad.InputState.stickLY, PrimaryGamepad.Sticks.DeadZoneLeftY), PrimaryGamepad.KMEmu.LeftStickMode);
-			KMStickMode(PrimaryGamepad, DontResetInputState, false, DeadZoneAxis(PrimaryGamepad.InputState.stickRX, PrimaryGamepad.Sticks.DeadZoneRightX), DeadZoneAxis(PrimaryGamepad.InputState.stickRY, PrimaryGamepad.Sticks.DeadZoneRightY), PrimaryGamepad.KMEmu.RightStickMode);
-
-			// Aditional buttons
-			if (PrimaryGamepad.ControllerType == SONY_DUALSENSE) { // Edge
-				KeyPress(PrimaryGamepad.ButtonsStates.DSEdgeL4.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_FNL, &PrimaryGamepad.ButtonsStates.DSEdgeL4, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.DSEdgeR4.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_FNR, &PrimaryGamepad.ButtonsStates.DSEdgeR4, true);
-			} else if (PrimaryGamepad.ControllerType == NINTENDO_JOYCONS) {
-				KeyPress(PrimaryGamepad.ButtonsStates.JCSL.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_SL, &PrimaryGamepad.ButtonsStates.JCSL, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.JCSR.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons & JSMASK_SR, &PrimaryGamepad.ButtonsStates.JCSR, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.HOME.KeyCode, DontResetInputState && PrimaryGamepad.InputState.buttons&JSMASK_HOME, &PrimaryGamepad.ButtonsStates.HOME, true);
-				KeyPress(PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode, DontResetInputState&&PrimaryGamepad.InputState.buttons&JSMASK_CAPTURE, &PrimaryGamepad.ButtonsStates.CAPTURE, true);//@016
-			}
-
-			//@017 УНИВЕРСАЛЬНЫЙ БЛОК WHEEL Для Xbox и KM + WheelWheelXboxHoldTimer  для  SleepTimeOut<15
-			int currentWheelActivationBtn = (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) ? PrimaryGamepad.ButtonsStates.WheelActivationGamepadButton.KeyCode : CurrentXboxProfile.WheelActivationButton;
-
-			// Сброс
-			PrimaryGamepad.ButtonsStates.WheelDefault.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelUp.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelDown.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelLeft.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelRight.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelUpLeft.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelUpRight.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelDownLeft.IsPressed = false;
-			PrimaryGamepad.ButtonsStates.WheelDownRight.IsPressed = false;
-
-			if (currentWheelActivationBtn != 0 && (PrimaryGamepad.InputState.buttons & currentWheelActivationBtn)) {
-				if (PrimaryGamepad.Motion.WheelCounter == 0) {
-					PrimaryGamepad.Motion.WheelCounter = AppStatus.SkipPollTimeOut;
-					PrimaryGamepad.Motion.WheelActive = true;
-					PrimaryGamepad.Motion.WheelAccumX = 0.0f;
-					PrimaryGamepad.Motion.WheelAccumY = 0.0f;
-				}
-				if (AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
-					report.wButtons &= ~CurrentXboxProfile.WheelDefault;
-				}
-			}
-
-			if (!(PrimaryGamepad.InputState.buttons & currentWheelActivationBtn) && PrimaryGamepad.Motion.WheelCounter > 0) {
-				if (PrimaryGamepad.Motion.WheelCounter == 1) {
-					float MotionLength = sqrtf(PrimaryGamepad.Motion.WheelAccumX * PrimaryGamepad.Motion.WheelAccumX + PrimaryGamepad.Motion.WheelAccumY * PrimaryGamepad.Motion.WheelAccumY);
-
-					WORD xboxButtonToPress = 0; // Сюда собираем нужную кнопку Xbox
-
-					if (MotionLength < PrimaryGamepad.Motion.MotionWheelButtonsDeadZone) {
-						xboxButtonToPress = CurrentXboxProfile.WheelDefault;
-						PrimaryGamepad.ButtonsStates.WheelDefault.IsPressed = true;
-					}
-					else {
-						float MotionWheelAngle = atan2f(PrimaryGamepad.Motion.WheelAccumY, PrimaryGamepad.Motion.WheelAccumX) * 57.29578f;
-						bool advancedMode = (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) ? PrimaryGamepad.ButtonsStates.WheelAdvancedMode : CurrentXboxProfile.WheelAdvancedMode;
-
-						if (!advancedMode) {
-							if (fabs(MotionWheelAngle) < 25.f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelUp;
-								PrimaryGamepad.ButtonsStates.WheelUp.IsPressed = true;
-							}
-							else if (MotionWheelAngle > 45.f && MotionWheelAngle < 135.f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelLeft;
-								PrimaryGamepad.ButtonsStates.WheelLeft.IsPressed = true;
-							}
-							else if (MotionWheelAngle < -45.f && MotionWheelAngle > -135.f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelRight;
-								PrimaryGamepad.ButtonsStates.WheelRight.IsPressed = true;
-							}
-							else if (MotionWheelAngle > 165.f || MotionWheelAngle < -165.f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelDown;
-								PrimaryGamepad.ButtonsStates.WheelDown.IsPressed = true;
-							}
-						}
-						else {
-							if (MotionWheelAngle >= -22.5f && MotionWheelAngle < 22.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelUp;
-								PrimaryGamepad.ButtonsStates.WheelUp.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= 22.5f && MotionWheelAngle < 67.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelUpLeft;
-								PrimaryGamepad.ButtonsStates.WheelUpLeft.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= 67.5f && MotionWheelAngle < 112.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelLeft;
-								PrimaryGamepad.ButtonsStates.WheelLeft.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= 112.5f && MotionWheelAngle < 157.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelDownLeft;
-								PrimaryGamepad.ButtonsStates.WheelDownLeft.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= 157.5f || MotionWheelAngle < -157.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelDown;
-								PrimaryGamepad.ButtonsStates.WheelDown.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= -157.5f && MotionWheelAngle < -112.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelDownRight;
-								PrimaryGamepad.ButtonsStates.WheelDownRight.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= -112.5f && MotionWheelAngle < -67.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelRight;
-								PrimaryGamepad.ButtonsStates.WheelRight.IsPressed = true;
-							}
-							else if (MotionWheelAngle >= -67.5f && MotionWheelAngle < -22.5f) {
-								xboxButtonToPress = CurrentXboxProfile.WheelUpRight;
-								PrimaryGamepad.ButtonsStates.WheelUpRight.IsPressed = true;
-							}
-						}
-					}
-
-					// Если нужно нажать кнопку Xbox, задаем её и запускаем таймер, "33"мс - 2 кадра для обработки при 60fps, для подстраховки - увеличить
-					if (xboxButtonToPress != 0 && AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
-						PrimaryGamepad.Motion.WheelXboxHoldButton = xboxButtonToPress; //кладем кнопку  в "память"
-						PrimaryGamepad.Motion.WheelXboxHoldTimer = (33 / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut)) + 1;  //мс в циклы, поодстраховка + 1
-					}
-
-					PrimaryGamepad.Motion.WheelActive = false;
-				}
-				PrimaryGamepad.Motion.WheelCounter--;
-			}
-
-			// таймер удержания кнопки Xbox
-			if (PrimaryGamepad.Motion.WheelXboxHoldTimer > 0) {	//if >0, идет процесс удержания кнопки.
-				if (AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
-					report.wButtons |= PrimaryGamepad.Motion.WheelXboxHoldButton;  //добавляем нашу кнопку к уже нажатым
-				}
-				PrimaryGamepad.Motion.WheelXboxHoldTimer--;
-			}
-			else {
-				PrimaryGamepad.Motion.WheelXboxHoldButton = 0;
-			}
-
-			if (PrimaryGamepad.Motion.WheelActive) {
-				PrimaryGamepad.Motion.WheelAccumX += velocityX * AppStatus.FrameTime;
-				PrimaryGamepad.Motion.WheelAccumY += velocityY * AppStatus.FrameTime;
-			}
-
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelDefault.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelDefault.IsPressed, &PrimaryGamepad.ButtonsStates.WheelDefault, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelUp.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelUp.IsPressed, &PrimaryGamepad.ButtonsStates.WheelUp, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelUpLeft.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelUpLeft.IsPressed, &PrimaryGamepad.ButtonsStates.WheelUpLeft, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelUpRight.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelUpRight.IsPressed, &PrimaryGamepad.ButtonsStates.WheelUpRight, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelDown.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelDown.IsPressed, &PrimaryGamepad.ButtonsStates.WheelDown, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelDownLeft.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelDownLeft.IsPressed, &PrimaryGamepad.ButtonsStates.WheelDownLeft, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelDownRight.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelDownRight.IsPressed, &PrimaryGamepad.ButtonsStates.WheelDownRight, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelLeft.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelLeft.IsPressed, &PrimaryGamepad.ButtonsStates.WheelLeft, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.WheelRight.KeyCode, DontResetInputState && PrimaryGamepad.ButtonsStates.WheelRight.IsPressed, &PrimaryGamepad.ButtonsStates.WheelRight, true);
-			KeyPress(PrimaryGamepad.ButtonsStates.MeleeGesture.KeyCode, DontResetInputState && (PrimaryGamepad.Motion.GestureXTimer > 0), &PrimaryGamepad.ButtonsStates.MeleeGesture, true);	//@043
-			KeyPress(PrimaryGamepad.ButtonsStates.AutoSprint.KeyCode, DontResetInputState && isAutoSprintTriggered, &PrimaryGamepad.ButtonsStates.AutoSprint, true);	//@055
+			// Системные жесты
+			KeyPress(PrimaryGamepad.ButtonsStates.MeleeGesture.KeyCode, (PrimaryGamepad.Motion.GestureXTimer > 0), &PrimaryGamepad.ButtonsStates.MeleeGesture);
+			KeyPress(PrimaryGamepad.ButtonsStates.AutoSprint.KeyCode, isAutoSprintTriggered, &PrimaryGamepad.ButtonsStates.AutoSprint);
 		}
 
 		// After releasing all the buttons you can click on screenshots, so it's here / После отпускания всех кнопок можно нажимать скриншоты, поэтому это здесь
@@ -4979,7 +4818,7 @@ int main(int argc, char **argv)
 		else {
 			KeyPress(AppStatus.ScreenShotKey, IsScreenshotPressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
 			KeyPress(VK_GAMEBAR_RECORD, IsRecordPressed, &PrimaryGamepad.ButtonsStates.Record, false);
-		}*/
+		}
 
 		// Скриншоты вызываются ТОЛЬКО если на Capture НЕ назначен пользовательский маппинг клавиатуры/мыши!
 		bool hasCustomCaptureMapping = (PrimaryGamepad.ButtonsStates.CAPTURE.KeyCode != 0);
@@ -4991,19 +4830,16 @@ int main(int argc, char **argv)
 				KeyPress(AppStatus.ScreenShotKey, IsScreenshotPressed, &PrimaryGamepad.ButtonsStates.Screenshot, false);
 				KeyPress(VK_GAMEBAR_RECORD, IsRecordPressed, &PrimaryGamepad.ButtonsStates.Record, false);
 			}
-		}
+		}*/
 
-#pragma warning(push)
-#pragma warning(disable: 4244)
+//#pragma warning(pop)
+//#pragma warning(push)
+//#pragma warning(disable: 4244)
 
+		//@087 Updated secondary without KBM and fixed indeted axis
 		if (AppStatus.SecondaryGamepadEnabled && SecondaryGamepad.DeviceIndex != -1) {
 			if (AppStatus.GamepadEmulationMode != EmuKeyboardAndMouse) {
-				report2.sThumbLX = SecondaryGamepad.Sticks.InvertLeftX == false ? DeadZoneAxis(SecondaryGamepad.InputState.stickLX, SecondaryGamepad.Sticks.DeadZoneLeftX) * 32767 : DeadZoneAxis(-SecondaryGamepad.InputState.stickLX, SecondaryGamepad.Sticks.DeadZoneLeftX) * 32767;
-				report2.sThumbLY = SecondaryGamepad.Sticks.InvertLeftY == false ? DeadZoneAxis(SecondaryGamepad.InputState.stickLY, SecondaryGamepad.Sticks.DeadZoneLeftY) * 32767 : DeadZoneAxis(-SecondaryGamepad.InputState.stickLY, SecondaryGamepad.Sticks.DeadZoneLeftY) * 32767;	//была ошибка: "InvertLeftX"
-				report2.sThumbRX = SecondaryGamepad.Sticks.InvertRightX == false ? DeadZoneAxis(SecondaryGamepad.InputState.stickRX, SecondaryGamepad.Sticks.DeadZoneRightX) * 32767 : DeadZoneAxis(-SecondaryGamepad.InputState.stickRX, SecondaryGamepad.Sticks.DeadZoneRightX) * 32767;
-				report2.sThumbRY = SecondaryGamepad.Sticks.InvertRightY == false ? DeadZoneAxis(SecondaryGamepad.InputState.stickRY, SecondaryGamepad.Sticks.DeadZoneRightY) * 32767 : DeadZoneAxis(-SecondaryGamepad.InputState.stickRY, SecondaryGamepad.Sticks.DeadZoneRightY) * 32767;
-
-				//@041+042 Считываем значения осей второго контроллера
+				// Опрос стиков
 				float s_lx = DeadZoneAxis(SecondaryGamepad.InputState.stickLX, SecondaryGamepad.Sticks.DeadZoneLeftX);
 				float s_ly = DeadZoneAxis(SecondaryGamepad.InputState.stickLY, SecondaryGamepad.Sticks.DeadZoneLeftY);
 				float s_rx = DeadZoneAxis(SecondaryGamepad.InputState.stickRX, SecondaryGamepad.Sticks.DeadZoneRightX);
@@ -5011,117 +4847,54 @@ int main(int argc, char **argv)
 
 				if (SecondaryGamepad.Sticks.InvertLeftXY) {
 					std::swap(s_lx, s_ly);
-					//s_lx = -s_lx; // Инвертируем новую ось X (бывшую Y)
 				}
 				if (SecondaryGamepad.Sticks.InvertRightXY) {
 					std::swap(s_rx, s_ry);
-					//s_rx = -s_rx; // Инвертируем новую ось X (бывшую Y)
 					s_ry = -s_ry;
 				}
 
-				report2.sThumbLX = SecondaryGamepad.Sticks.InvertLeftX == false ? s_lx * 32767 : -s_lx * 32767;
-				report2.sThumbLY = SecondaryGamepad.Sticks.InvertLeftX == false ? s_ly * 32767 : -s_ly * 32767;
-				report2.sThumbRX = SecondaryGamepad.Sticks.InvertRightX == false ? s_rx * 32767 : -s_rx * 32767;
-				report2.sThumbRY = SecondaryGamepad.Sticks.InvertRightY == false ? s_ry * 32767 : -s_ry * 32767;
+				report2.sThumbLX = static_cast<SHORT>((SecondaryGamepad.Sticks.InvertLeftX ? -s_lx : s_lx) * 32767.0f);
+				report2.sThumbLY = static_cast<SHORT>((SecondaryGamepad.Sticks.InvertLeftY ? -s_ly : s_ly) * 32767.0f); // Поправлена опечатка r57zone!
+				report2.sThumbRX = static_cast<SHORT>((SecondaryGamepad.Sticks.InvertRightX ? -s_rx : s_rx) * 32767.0f);
+				report2.sThumbRY = static_cast<SHORT>((SecondaryGamepad.Sticks.InvertRightY ? -s_ry : s_ry) * 32767.0f);
 
-				report2.bLeftTrigger = DeadZoneAxis(SecondaryGamepad.InputState.lTrigger, SecondaryGamepad.Triggers.DeadZoneLeft) * 255;
-				report2.bRightTrigger = DeadZoneAxis(SecondaryGamepad.InputState.rTrigger, SecondaryGamepad.Triggers.DeadZoneRight) * 255;
+				report2.bLeftTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(DeadZoneAxis(SecondaryGamepad.InputState.lTrigger, SecondaryGamepad.Triggers.DeadZoneLeft) * 255.0f), 0, 255));
+				report2.bRightTrigger = static_cast<BYTE>(std::clamp(static_cast<int>(DeadZoneAxis(SecondaryGamepad.InputState.rTrigger, SecondaryGamepad.Triggers.DeadZoneRight) * 255.0f), 0, 255));
 
-#pragma warning(pop)
+				// Кнопки
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_L) ? XINPUT_GAMEPAD_LEFT_SHOULDER : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_R) ? XINPUT_GAMEPAD_RIGHT_SHOULDER : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_LCLICK) ? XINPUT_GAMEPAD_LEFT_THUMB : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_RCLICK) ? XINPUT_GAMEPAD_RIGHT_THUMB : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_UP) ? XINPUT_GAMEPAD_DPAD_UP : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_DOWN) ? XINPUT_GAMEPAD_DPAD_DOWN : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_LEFT) ? XINPUT_GAMEPAD_DPAD_LEFT : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_RIGHT) ? XINPUT_GAMEPAD_DPAD_RIGHT : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_N) ? XINPUT_GAMEPAD_Y : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_W) ? XINPUT_GAMEPAD_X : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_S) ? XINPUT_GAMEPAD_A : 0;
+				report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_E) ? XINPUT_GAMEPAD_B : 0;
 
-				if (!(SecondaryGamepad.InputState.buttons & JSMASK_PS && SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE && SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE)) { // During special functions, nothing is pressed in the game
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_L ? XINPUT_GAMEPAD_LEFT_SHOULDER : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_R ? XINPUT_GAMEPAD_RIGHT_SHOULDER : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_LCLICK ? XINPUT_GAMEPAD_LEFT_THUMB : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_RCLICK ? XINPUT_GAMEPAD_RIGHT_THUMB : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_UP ? XINPUT_GAMEPAD_DPAD_UP : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_DOWN ? XINPUT_GAMEPAD_DPAD_DOWN : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_LEFT ? XINPUT_GAMEPAD_DPAD_LEFT : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_RIGHT ? XINPUT_GAMEPAD_DPAD_RIGHT : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_N ? XINPUT_GAMEPAD_Y : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_W ? XINPUT_GAMEPAD_X : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_S ? XINPUT_GAMEPAD_A : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_E ? XINPUT_GAMEPAD_B : 0;
-					if (SecondaryGamepad.ControllerType == NINTENDO_JOYCONS) {		//@042
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_SL ? CurrentXboxProfile.JCSL : 0;
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_SR ? CurrentXboxProfile.JCSR : 0;
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_HOME ? CurrentXboxProfile.HOME : 0;
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE ? CurrentXboxProfile.CAPTURE : 0;
-					}
+				if (SecondaryGamepad.ControllerType == NINTENDO_JOYCONS) {
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_SL) ? CurrentXboxProfile.JCSL : 0;
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_SR) ? CurrentXboxProfile.JCSR : 0;
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_HOME) ? CurrentXboxProfile.HOME : 0;
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE) ? CurrentXboxProfile.CAPTURE : 0;
 				}
 
 				if (JslGetControllerType(SecondaryGamepad.DeviceIndex) == JS_TYPE_DS || JslGetControllerType(SecondaryGamepad.DeviceIndex) == JS_TYPE_DS4) {
 					if (!(SecondaryGamepad.InputState.buttons & JSMASK_PS)) {
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_SHARE ? XINPUT_GAMEPAD_BACK : 0;
-						report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_OPTIONS ? XINPUT_GAMEPAD_START : 0;
-					}
-
-					if (AppStatus.SkipPollCount == 0 && (SecondaryGamepad.InputState.buttons & JSMASK_PS && SecondaryGamepad.InputState.buttons & JSMASK_L))
-					{
-						if (SecondaryGamepad.OutState.LEDBrightness == SecondaryGamepad.DefaultLEDBrightness)
-							SecondaryGamepad.OutState.LEDBrightness = 255;
-						else
-							SecondaryGamepad.OutState.LEDBrightness = SecondaryGamepad.DefaultLEDBrightness;
-						GamepadSetState(SecondaryGamepad);
-						AppStatus.SkipPollCount = AppStatus.SkipPollTimeOut;
+						report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_SHARE) ? XINPUT_GAMEPAD_BACK : 0;
+						report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_OPTIONS) ? XINPUT_GAMEPAD_START : 0;
 					}
 				}
 				else if (JslGetControllerType(SecondaryGamepad.DeviceIndex) == JS_TYPE_PRO_CONTROLLER || JslGetControllerType(SecondaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_LEFT || JslGetControllerType(SecondaryGamepad.DeviceIndex) == JS_TYPE_JOYCON_RIGHT) {
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_MINUS ? XINPUT_GAMEPAD_BACK : 0;
-					report2.wButtons |= SecondaryGamepad.InputState.buttons & JSMASK_PLUS ? XINPUT_GAMEPAD_START : 0;
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_MINUS) ? XINPUT_GAMEPAD_BACK : 0;
+					report2.wButtons |= (SecondaryGamepad.InputState.buttons & JSMASK_PLUS) ? XINPUT_GAMEPAD_START : 0;
 				}
 
 				if (SecondaryGamepad.RumbleSkipCounter > 0)
 					SecondaryGamepad.RumbleSkipCounter--;
-			}
-			// Secondary gamepad keyboard & mouse
-			else {
-				KeyPress(SecondaryGamepad.ButtonsStates.LeftTrigger.KeyCode, DontResetInputState && SecondaryGamepad.InputState.lTrigger > SecondaryGamepad.KMEmu.TriggerValuePressKey, &SecondaryGamepad.ButtonsStates.LeftTrigger, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.RightTrigger.KeyCode, DontResetInputState && SecondaryGamepad.InputState.rTrigger > SecondaryGamepad.KMEmu.TriggerValuePressKey, &SecondaryGamepad.ButtonsStates.RightTrigger, true);
-
-				KeyPress(SecondaryGamepad.ButtonsStates.LeftBumper.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_L, &SecondaryGamepad.ButtonsStates.LeftBumper, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.RightBumper.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_R, &SecondaryGamepad.ButtonsStates.RightBumper, true);
-
-				KeyPress(SecondaryGamepad.ButtonsStates.Back.KeyCode, DontResetInputState && (SecondaryGamepad.InputState.buttons & JSMASK_SHARE || SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE), &SecondaryGamepad.ButtonsStates.Back, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.Start.KeyCode, DontResetInputState && (SecondaryGamepad.InputState.buttons & JSMASK_OPTIONS || SecondaryGamepad.InputState.buttons & JSMASK_HOME), &SecondaryGamepad.ButtonsStates.Start, true);
-
-				if (SecondaryGamepad.ButtonsStates.DPADAdvancedMode == false) { // Regular mode  ↑ → ↓ ←
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADUp.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_UP, &SecondaryGamepad.ButtonsStates.DPADUp, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADDown.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_DOWN, &SecondaryGamepad.ButtonsStates.DPADDown, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADLeft.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_LEFT, &SecondaryGamepad.ButtonsStates.DPADLeft, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADRight.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_RIGHT, &SecondaryGamepad.ButtonsStates.DPADRight, true);
-
-				}
-				else { // Advanced mode ↑ ↗ → ↘ ↓ ↙ ← ↖ for switching in retro games
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADUp.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_UP && !(SecondaryGamepad.InputState.buttons & JSMASK_LEFT) && !(SecondaryGamepad.InputState.buttons & JSMASK_RIGHT), &SecondaryGamepad.ButtonsStates.DPADUp, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADLeft.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_LEFT && !(SecondaryGamepad.InputState.buttons & JSMASK_UP) && !(SecondaryGamepad.InputState.buttons & JSMASK_DOWN), &SecondaryGamepad.ButtonsStates.DPADLeft, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADRight.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_RIGHT && !(SecondaryGamepad.InputState.buttons & JSMASK_UP) && !(SecondaryGamepad.InputState.buttons & JSMASK_DOWN), &SecondaryGamepad.ButtonsStates.DPADRight, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADDown.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_DOWN && !(SecondaryGamepad.InputState.buttons & JSMASK_LEFT) && !(SecondaryGamepad.InputState.buttons & JSMASK_RIGHT), &SecondaryGamepad.ButtonsStates.DPADDown, true);
-
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADUpLeft.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_UP && SecondaryGamepad.InputState.buttons & JSMASK_LEFT, &SecondaryGamepad.ButtonsStates.DPADUpLeft, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADUpRight.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_UP && SecondaryGamepad.InputState.buttons & JSMASK_RIGHT, &SecondaryGamepad.ButtonsStates.DPADUpRight, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADDownLeft.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_DOWN && SecondaryGamepad.InputState.buttons & JSMASK_LEFT, &SecondaryGamepad.ButtonsStates.DPADDownLeft, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.DPADDownRight.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_DOWN && SecondaryGamepad.InputState.buttons & JSMASK_RIGHT, &SecondaryGamepad.ButtonsStates.DPADDownRight, true);
-				}
-
-				KeyPress(SecondaryGamepad.ButtonsStates.Y.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_N, &SecondaryGamepad.ButtonsStates.Y, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.A.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_S, &SecondaryGamepad.ButtonsStates.A, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.X.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_W, &SecondaryGamepad.ButtonsStates.X, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.B.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_E, &SecondaryGamepad.ButtonsStates.B, true);
-
-				KeyPress(SecondaryGamepad.ButtonsStates.LeftStick.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_LCLICK, &SecondaryGamepad.ButtonsStates.LeftStick, true);
-				KeyPress(SecondaryGamepad.ButtonsStates.RightStick.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_RCLICK, &SecondaryGamepad.ButtonsStates.RightStick, true);
-
-				KMStickMode(SecondaryGamepad, DontResetInputState, true, DeadZoneAxis(SecondaryGamepad.InputState.stickLX, SecondaryGamepad.Sticks.DeadZoneLeftX), DeadZoneAxis(SecondaryGamepad.InputState.stickLY, SecondaryGamepad.Sticks.DeadZoneLeftY), SecondaryGamepad.KMEmu.LeftStickMode);
-				KMStickMode(SecondaryGamepad, DontResetInputState, false, DeadZoneAxis(SecondaryGamepad.InputState.stickRX, SecondaryGamepad.Sticks.DeadZoneRightX), DeadZoneAxis(SecondaryGamepad.InputState.stickRY, SecondaryGamepad.Sticks.DeadZoneRightY), SecondaryGamepad.KMEmu.RightStickMode);
-
-				if (SecondaryGamepad.ControllerType == NINTENDO_JOYCONS) {	//@042
-					KeyPress(SecondaryGamepad.ButtonsStates.JCSL.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_SL, &SecondaryGamepad.ButtonsStates.JCSL, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.JCSR.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_SR, &SecondaryGamepad.ButtonsStates.JCSR, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.HOME.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_HOME, &SecondaryGamepad.ButtonsStates.HOME, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.CAPTURE.KeyCode, DontResetInputState && SecondaryGamepad.InputState.buttons & JSMASK_CAPTURE, &SecondaryGamepad.ButtonsStates.CAPTURE, true);
-					KeyPress(SecondaryGamepad.ButtonsStates.MeleeGesture.KeyCode, DontResetInputState && (SecondaryGamepad.Motion.GestureXTimer > 0), &SecondaryGamepad.ButtonsStates.MeleeGesture, true);	//@043
-				}
 			}
 		}
 
@@ -5133,10 +4906,10 @@ int main(int argc, char **argv)
 
 		if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse) { // Temporary hack(Vigem always, no removal)
 			XUSB_REPORT_INIT(&report);
-			report.sThumbLX = 1; // Maybe the crash is due to power saving? temporary test
+			//report.sThumbLX = 1; // Maybe the crash is due to power saving? temporary test
 			if (AppStatus.SecondaryGamepadEnabled) {
 				XUSB_REPORT_INIT(&report2);
-				report2.sThumbLX = 1; // Maybe the crash is due to power saving? temporary test
+				//report2.sThumbLX = 1; // Maybe the crash is due to power saving? temporary test
 			}
 		}
 		/*ret = vigem_target_x360_update(client, x360, report);
@@ -5188,97 +4961,6 @@ int main(int argc, char **argv)
 
 		if (AppStatus.SkipPollCount > 0) AppStatus.SkipPollCount--;
 
-		//@060 ТЕЛЕМЕТРИЯ в OSD AHK
-		// Вычисляем частоту эмулятора во float (например, 1000.0 / 4 мс = 250.0 Гц)
-		/*float loopHz = 1000.0f / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
-
-		//@067 точная частота обновления OSD
-		float targetOsdHz = 33.3f;
-
-		// Округляем до ближайшего целого количества пропускаемых кадров
-		int maxSkip = static_cast<int>(roundf(loopHz / targetOsdHz));
-		if (maxSkip < 1) maxSkip = 1;
-
-		static int telemetrySkipCount = 0;
-		telemetrySkipCount++;
-
-		if (telemetrySkipCount >= maxSkip) {
-			telemetrySkipCount = 0;
-
-			if (pTelemetry && PrimaryGamepad.DeviceIndex != -1) {
-				int aimingHandle = PrimaryGamepad.DeviceIndex;
-				if (PrimaryGamepad.DeviceIndex2 != -1 && !AppStatus.GyroFromLeft) {
-					aimingHandle = PrimaryGamepad.DeviceIndex2;
-				}
-
-				JSL_AUTO_CALIBRATION autoCal = JslGetAutoCalibrationStatus(aimingHandle);
-				float bx, by, bz;
-				JslGetCalibrationOffset(aimingHandle, bx, by, bz);
-
-				float shakiness = 0.0f, minDeltaAccel = 0.0f;
-				JslGetAccelerometerTelemetry(aimingHandle, shakiness, minDeltaAccel);
-
-				float angularVelocity = JslGetAngularVelocity(aimingHandle);
-
-				pTelemetry[0] = autoCal.confidence;
-				pTelemetry[1] = autoCal.isSteady ? 1.0f : 0.0f;
-				pTelemetry[2] = bx;
-				pTelemetry[3] = by;
-				pTelemetry[4] = JslGetPollRate(PrimaryGamepad.DeviceIndex);
-				pTelemetry[5] = PrimaryGamepad.DeviceIndex2 != -1 ? JslGetPollRate(PrimaryGamepad.DeviceIndex2) : 0.0f;
-				pTelemetry[6] = JslGetBattery(PrimaryGamepad.DeviceIndex);
-				pTelemetry[7] = PrimaryGamepad.DeviceIndex2 != -1 ? JslGetBattery(PrimaryGamepad.DeviceIndex2) : -1.0f;
-				pTelemetry[8] = (float)JslGetControllerType(PrimaryGamepad.DeviceIndex);
-				pTelemetry[9] = PrimaryGamepad.DeviceIndex2 != -1 ? (float)JslGetControllerType(PrimaryGamepad.DeviceIndex2) : 0.0f;
-				pTelemetry[10] = shakiness;
-				pTelemetry[11] = minDeltaAccel;
-				pTelemetry[12] = angularVelocity;
-
-				//@075 Нативный RTSS Direct OSD
-				if (AppStatus.OsdType == 1 && AppStatus.IsOsdActive) {
-					static float peakAngularVel = 0.0f;
-					static ULONGLONG peakTimestamp = 0;
-					ULONGLONG nowMs = GetTickCount64();
-
-					if (angularVelocity >= peakAngularVel) {
-						peakAngularVel = angularVelocity;
-						peakTimestamp = nowMs;
-					}
-					else if (nowMs - peakTimestamp > 800) {
-						peakAngularVel = angularVelocity;
-					}
-
-					char rtssBuf[1024];
-					sprintf_s(rtssBuf, sizeof(rtssBuf),
-						"<P=%d,%d><C=FF9F00>LT  : %-6d | RT   : %-6d\n"
-						"LS X: %-6d | Y    : %-6d\n"
-						"RS X: %-6d | Y    : %-6d\n"
-						"<C=555555>------------------------------\n"
-						"<C=00FFFF>Calib: %4.0f%% | Steady: %s\n"
-						"BiasX: %5.2f | BiasY: %5.2f\n"
-						//"Gyro : %4.0f deg/s | Peak: %4.0f deg/s\n"
-						"Gyro:%4.0f\xB0/s | Peak:%4.0f\xB0/s\n"
-						"Shake: %5.3f | MinAc: %5.3f\n"
-						"<C=555555>------------------------------\n"
-						"<C=00FF00>%s: %3.0fHz | Bat: %3.0f%%%s",
-						AppStatus.OsdPosX, AppStatus.OsdPosY,
-						report.bLeftTrigger, report.bRightTrigger,
-						report.sThumbLX, report.sThumbLY,
-						report.sThumbRX, report.sThumbRY,
-						autoCal.confidence * 100.0f,
-						autoCal.isSteady ? "YES" : "NO ",
-						bx, by,
-						angularVelocity, peakAngularVel,
-						shakiness, minDeltaAccel,
-						GetDevShortName(PrimaryGamepad.ControllerType),
-						pTelemetry[4], pTelemetry[6],
-						(PrimaryGamepad.DeviceIndex2 != -1) ? "\n<C=00FF00>Joy-Con R" : ""
-					);
-
-					UpdateRTSS(rtssBuf);
-				}
-			}
-		}*/
 		//@076 СЕРВИСНЫЙ КОНТУР 33.3 Гц (Slow Path: Телеметрия, автокалибровка (чтоб не дёргал часто mutex), Диагностика)
 		float loopHz = 1000.0f / (AppStatus.SleepTimeOut == 0 ? 1 : AppStatus.SleepTimeOut);
 		float targetServiceHz = 33.3f;
@@ -5324,12 +5006,18 @@ int main(int argc, char **argv)
 				}
 				wasSteadyAndConfident = isSteadyAndConfident;
 
-				// --- Сервис 3: Запись телеметрии (AHK Shared Memory + RTSS Direct) ---
+				// Сервис 3: Запись телеметрии (AHK Shared Memory + RTSS Direct)
 				float bx, by, bz;
 				JslGetCalibrationOffset(aimingHandle, bx, by, bz);
 				float shakiness = 0.0f, minDeltaAccel = 0.0f;
 				JslGetAccelerometerTelemetry(aimingHandle, shakiness, minDeltaAccel);
 				float angularVelocity = JslGetAngularVelocity(aimingHandle);
+
+				//@089 Формируем чистое имя активного профиля без ".ini"
+				std::string profName = g_isDesktopMode ? "Desktop" : XboxProfiles[XboxProfileIndex];
+				if (profName.length() > 4 && profName.substr(profName.length() - 4) == ".ini") {
+					profName = profName.substr(0, profName.length() - 4);
+				}
 
 				if (pTelemetry) {
 					pTelemetry[0] = autoCal.confidence;
@@ -5345,6 +5033,8 @@ int main(int argc, char **argv)
 					pTelemetry[10] = shakiness;
 					pTelemetry[11] = minDeltaAccel;
 					pTelemetry[12] = angularVelocity;
+				
+					strcpy_s((char*)(pTelemetry + 16), 64, profName.c_str()); //@089 Запись имени профиля в байт со смещением 64 (pTelemetry + 16 в float)
 				}
 
 				if (AppStatus.OsdType == 1 && AppStatus.IsOsdActive) {
@@ -5382,7 +5072,9 @@ int main(int argc, char **argv)
 						"Gyro:%4.0f\xB0/s | Peak:%4.0f\xB0/s\n"
 						"Shake: %5.3f | MinAc: %5.3f\n"
 						"<C=555555>------------------------------\n"
-						"<C=00FF00>%-9s: %3.0fHz | Bat: %3.0f%%%s",
+						//"<C=00FF00>%-9s: %3.0fHz | Bat: %3.0f%%%s",
+						"<C=00FF00>%-9s: %3.0fHz | Bat: %3.0f%%%s\n"
+						"<C=FFFF00> Profile  : %s",				//@089
 						AppStatus.OsdPosX, AppStatus.OsdPosY,
 						report.bLeftTrigger, report.bRightTrigger,
 						report.sThumbLX, report.sThumbRX,
@@ -5392,10 +5084,12 @@ int main(int argc, char **argv)
 						bx, by,
 						angularVelocity, peakAngularVel,
 						shakiness, minDeltaAccel,
-						GetJslDevName(PrimaryGamepad.ControllerType),
+						GetJslDevName(PrimaryGamepad.DeviceIndex),
 						pTelemetry ? pTelemetry[4] : JslGetPollRate(PrimaryGamepad.DeviceIndex),
 						pTelemetry ? pTelemetry[6] : JslGetBattery(PrimaryGamepad.DeviceIndex),
-						dev2Buf
+						//dev2Buf
+						dev2Buf,
+						profName.c_str()	//@089
 					);
 
 					UpdateRTSS(rtssBuf);
@@ -5423,8 +5117,10 @@ int main(int argc, char **argv)
 
 	// Reset keyboard motion driving
 	if (AppStatus.GamepadEmulationMode == EmuKeyboardAndMouse && PrimaryGamepad.GamepadActionMode == MotionDrivingMode) {
-		KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADLeft, true);
-		KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADRight, true);
+		//KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADLeft, true);
+		//KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADRight, true);
+		KeyPress(PrimaryGamepad.ButtonsStates.DPADLeft.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADLeft);		//@087
+		KeyPress(PrimaryGamepad.ButtonsStates.DPADRight.KeyCode, false, &PrimaryGamepad.ButtonsStates.DPADRight);
 	}
 
 	// Reset adaptive triggers
@@ -5460,19 +5156,6 @@ int main(int argc, char **argv)
 	vigem_disconnect(client);
 	vigem_free(client);
 
-	/*if (AppStatus.SecondaryGamepadEnabled) {
-		vigem_target_x360_unregister_notification(x3602);
-		vigem_target_remove(client2, x3602);
-		vigem_target_free(x3602);
-
-		vigem_disconnect(client2);
-		vigem_free(client2);
-		if (pTelemetry) UnmapViewOfFile(pTelemetry); //060
-		if (hMapFile) CloseHandle(hMapFile);
-		if (pTelemetryAIDA) UnmapViewOfFile(pTelemetryAIDA);
-		if (hMapFileAIDA) CloseHandle(hMapFileAIDA);
-	}*/
-
 	// Очистка второго таргета ViGEm
 	if (AppStatus.SecondaryGamepadEnabled && x3602) {
 		vigem_target_remove(client2, x3602);
@@ -5491,5 +5174,6 @@ int main(int argc, char **argv)
 		CloseRTSS();
 	}
 
+	ReleaseAllKbmKeys(PrimaryGamepad); //@087
 	return 0;
 }

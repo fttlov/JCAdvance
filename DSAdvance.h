@@ -80,6 +80,7 @@
 #define XINPUT_GAMEPAD_RIGHT_STICK_RIGHT 0x2000000
 
 #define XINPUT_GAMEPAD_EMPTY            0xFFFFFFFF //@134 Fake button, no input
+#define KBM_MUTE                        0xFFFF // Маркер тишины для LongPress KBM
 
 // Modes
 #define EmuGamepadDisabled				2
@@ -137,6 +138,12 @@
 
 
 #define VK_NUMPAD_ENTER					522
+#define VK_TASK_MANAGER					523 // Ctrl + Shift + Esc
+#define VK_NEW_TAB						524 // Ctrl + T
+#define VK_CLOSE_TAB					525 // Ctrl + W
+#define VK_REOPEN_TAB					526 // Ctrl + Shift + T
+#define VK_UNDO							527 // Ctrl + Z
+#define VK_ALT_TAB						528 // Alt + Tab
 #define VK_START_MENU					521
 #define VK_HIDE_APPS					506
 #define VK_SWITCH_APP					507
@@ -148,11 +155,14 @@
 #define VK_STEAM_SCREENSHOT				513
 #define VK_MULTI_SCREENSHOT				514
 #define VK_FULLSCREEN					515
-#define VK_FULLSCREEN_PLUS				516
+//#define VK_FULLSCREEN_PLUS			516
 #define VK_CHANGE_LANGUAGE				517
 #define VK_CUT							518
 #define VK_COPY							519
 #define VK_PASTE						520
+#define VK_RUN_CUSTOM_EXE				532 // Запуск пользовательского приложения / скрипта
+#define VK_KILL_CUSTOM_EXE				533 // Завершение процесса кастомного приложения
+#define VK_JC_KEYBOARD					534 // Запуск нативной клавиатуры Keyboard.exe
 
 #define TOUCHPAD_LEFT_AREA				0.33
 #define TOUCHPAD_RIGHT_AREA				0.67
@@ -254,12 +264,13 @@ struct InputOutState {
 	unsigned char MicLED;
 };
 
-struct Button {
-	bool PressedOnce = false;
-	bool UnpressedOnce = false;
+struct Button {	//Update for //@143
+	//bool PressedOnce = false;
+	//bool UnpressedOnce = false;
 	int KeyCode = 0;
-	int LongKeyCode = 0; //@134
-	bool IsPressed = false; // for Motion wheel
+	int LongKeyCode = 0;
+	bool isDown = false;    // Честное состояние: нажата клавиша в ОС или нет
+	bool IsPressed = false; // Для совместимости с Motion Wheel
 };
 
 //@134 Выносим трекер сюда, чтобы его видели все функции!
@@ -761,6 +772,9 @@ struct _CurrentXboxProfile {
 	std::vector<int> RightStickCycleModes = { 0, 1, 2 }; // Допустимые режимы для хоткея (можно менять в профиле например = 0,2)
 	int RightStickCycleIndex = 0;                        // Текущий шаг в списке
 
+	std::string RunExePath = ""; //@143 Путь к кастомному приложению из [SETTINGS] RunExe
+	std::string KillExeName = ""; // Имя процесса для аварийного завершения из [SETTINGS] KillExe
+
 	// Motion wheel
 	int WheelActivationButton = 0;
 	unsigned int WheelDefault = 0;
@@ -810,7 +824,7 @@ struct _CurrentXboxProfile {
 };
 _CurrentXboxProfile CurrentXboxProfile;
 
-void MousePress(int MouseBtn, bool ButtonPressed, Button* ButtonState) {
+/*void MousePress(int MouseBtn, bool ButtonPressed, Button* ButtonState) {
 	if (ButtonPressed) {
 		ButtonState->UnpressedOnce = true;
 		if (ButtonState->PressedOnce == false) {
@@ -853,9 +867,9 @@ void SendKeyScan(WORD scanCode, bool pressed, bool extended = false) {
 // Get scan code via VK / Получить scan-код по VK
 WORD VkToScan(WORD vk) {
 	return (WORD)MapVirtualKey(vk, MAPVK_VK_TO_VSC);
-}
+}*/
 
-// Check if a key is extended (EXTENDEDKEY flag required) / Проверка, расширенная ли клавиша (нужен флаг EXTENDEDKEY)
+//@143 Updated
 inline bool IsExtendedKey(WORD vk) {
 	switch (vk) {
 	case VK_UP:
@@ -871,14 +885,21 @@ inline bool IsExtendedKey(WORD vk) {
 	case VK_DIVIDE:
 	case VK_NUMLOCK:
 	case VK_RCONTROL:
-	case VK_RMENU:   // Right Alt
+	case VK_RMENU:    // Right Alt
+	case VK_LWIN:     // Win Left (Критично для Win+D, Win+Tab, Win+Space!)
+	case VK_RWIN:     // Win Right
+	case VK_APPS:     // Context menu
+	case VK_SNAPSHOT: // PrintScreen (Критично для Gamebar скриншота!)
+	case VK_VOLUME_MUTE:
+	case VK_VOLUME_DOWN:
+	case VK_VOLUME_UP:
 		return true;
 	default:
 		return false;
 	}
 }
 
-inline void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool SendInputAPI) {
+/*inline void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool SendInputAPI) {
 	if (KeyCode == 0) return;
 	else if (KeyCode == VK_MOUSE_LEFT || KeyCode == VK_MOUSE_MIDDLE ||
 		KeyCode == VK_MOUSE_RIGHT || KeyCode == VK_MOUSE_WHEEL_UP ||
@@ -1050,6 +1071,150 @@ inline void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState, bool 
 		ButtonState->UnpressedOnce = false;
 		ButtonState->PressedOnce = false;
 	}
+}*/
+
+//@143 New KBM
+inline void MousePress(int MouseBtn, bool ButtonPressed, Button* ButtonState) {
+	if (ButtonPressed == ButtonState->isDown) return;
+	ButtonState->isDown = ButtonPressed;
+
+	DWORD flag = 0;
+	if (MouseBtn == VK_MOUSE_LEFT)        flag = ButtonPressed ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_LEFTUP;
+	else if (MouseBtn == VK_MOUSE_RIGHT)  flag = ButtonPressed ? MOUSEEVENTF_RIGHTDOWN : MOUSEEVENTF_RIGHTUP;
+	else if (MouseBtn == VK_MOUSE_MIDDLE) flag = ButtonPressed ? MOUSEEVENTF_MIDDLEDOWN : MOUSEEVENTF_MIDDLEUP;
+	else if (ButtonPressed) {
+		if (MouseBtn == VK_MOUSE_WHEEL_UP)   mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
+		else if (MouseBtn == VK_MOUSE_WHEEL_DOWN) mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
+		ButtonState->isDown = false; // Колесо мыши — импульсное событие
+		return;
+	}
+
+	if (flag) mouse_event(flag, 0, 0, 0, 0);
+}
+
+inline void KeyPress(int KeyCode, bool ButtonPressed, Button* ButtonState) {
+	if (KeyCode == 0 || KeyCode == KBM_MUTE || !ButtonState) return;
+	if (KeyCode >= VK_MOUSE_LEFT && KeyCode <= VK_MOUSE_WHEEL_DOWN) {
+		MousePress(KeyCode, ButtonPressed, ButtonState);
+		return;
+	}
+
+	if (ButtonPressed == ButtonState->isDown) return;
+	ButtonState->isDown = ButtonPressed;
+
+	// 1. ИГРОВОЙ КОНТУР: Обычные клавиши (WASD, Enter, цифры, пробел, медиа)
+	// Работает через низкоуровневый SendInput со сканкодами — максимальный отклик в играх
+	auto MakeGameKey = [](WORD vk, bool down) -> INPUT {
+		INPUT in = { 0 };
+		in.type = INPUT_KEYBOARD;
+		WORD scan = (WORD)MapVirtualKey(vk, MAPVK_VK_TO_VSC);
+
+		if (scan != 0) {
+			in.ki.wScan = scan;
+			in.ki.dwFlags = KEYEVENTF_SCANCODE; // Аппаратный сканкод для 3D-движков
+		}
+		else {
+			in.ki.wVk = vk; // Для кнопок громкости и мультимедиа
+		}
+
+		if (!down) in.ki.dwFlags |= KEYEVENTF_KEYUP;
+		if (IsExtendedKey(vk)) in.ki.dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		return in;
+	};
+
+	if (KeyCode < 500 || KeyCode == VK_NUMPAD_ENTER) {
+		WORD vk = (KeyCode == VK_NUMPAD_ENTER) ? VK_RETURN : (WORD)KeyCode;
+		INPUT in = MakeGameKey(vk, ButtonPressed);
+		SendInput(1, &in, sizeof(INPUT));
+		return;
+	}
+
+	// 2. СИСТЕМНЫЙ КОНТУР: Универсальный хелпер комбо-макросов (Ctrl, Alt, Shift, Win + буквы)
+	// МЕХАНИКА РАБОТЫ ХЕЛПЕРА:
+	// - Использует системный keybd_event с фиктивным сканкодом 0x45 (наследие r57zone).
+	//   Это заставляет Windows интерпретировать комбинацию на уровне глобального состояния клавиатуры, например
+	//   полностью блокируя драйвер русской раскладки (kbdru.dll) от подмены сочетаний на буквы "я, ч, с, м".
+	// - При зажатии кнопки (pressed=true): последовательно нажимает клавиши от модификаторов к целевой букве.
+	// - При отпускании кнопки (pressed=false): автоматически отпускает клавиши в строго обратном порядке,
+	//   что полностью исключает залипание модификаторов (Ctrl, Alt, Shift, Win) в Windows.
+	// - Обход списка выполнен через константные указатели без аллокаций памяти (Zero Allocation / 0 байт RAM).
+	auto SendMacroCombo = [](bool pressed, std::initializer_list<WORD> keys) {
+		if (pressed) {
+			for (WORD vk : keys) {
+				DWORD flags = IsExtendedKey(vk) ? KEYEVENTF_EXTENDEDKEY : 0;
+				keybd_event((BYTE)vk, 0x45, flags, 0);
+			}
+		}
+		else {
+			for (const WORD* it = keys.end(); it != keys.begin(); ) {
+				--it;
+				DWORD flags = KEYEVENTF_KEYUP | (IsExtendedKey(*it) ? KEYEVENTF_EXTENDEDKEY : 0);
+				keybd_event((BYTE)*it, 0x45, flags, 0);
+			}
+		}
+	};
+
+	switch (KeyCode) {
+		// Буфер обмена (Работает на любом языке мира: русском, английском и др.)
+	case VK_COPY:           SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'C' }); break;
+	case VK_PASTE:          SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'V' }); break;
+	case VK_CUT:            SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'X' }); break;
+	case VK_UNDO:           SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'Z' }); break;
+
+		// Вкладки браузера
+	case VK_NEW_TAB:        SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'T' }); break;
+	case VK_CLOSE_TAB:      SendMacroCombo(ButtonPressed, { VK_LCONTROL, 'W' }); break;
+	case VK_REOPEN_TAB:     SendMacroCombo(ButtonPressed, { VK_LCONTROL, VK_LSHIFT, 'T' }); break;
+
+		// Управление окнами и системой
+	case VK_TASK_MANAGER:   SendMacroCombo(ButtonPressed, { VK_LCONTROL, VK_LSHIFT, VK_ESCAPE }); break;
+	case VK_CLOSE_APP:      SendMacroCombo(ButtonPressed, { VK_LMENU, VK_F4 }); break;
+	case VK_HIDE_APPS:      SendMacroCombo(ButtonPressed, { VK_LWIN, 'D' }); break;
+	case VK_SWITCH_APP:     SendMacroCombo(ButtonPressed, { VK_LWIN, VK_TAB }); break;
+	case VK_ALT_TAB:        SendMacroCombo(ButtonPressed, { VK_LMENU, VK_TAB }); break;
+	case VK_START_MENU:     SendMacroCombo(ButtonPressed, { VK_LWIN }); break;
+	case VK_FULLSCREEN:     SendMacroCombo(ButtonPressed, { VK_LMENU, VK_RETURN }); break;
+	case VK_CHANGE_LANGUAGE:SendMacroCombo(ButtonPressed, { VK_LWIN, VK_SPACE }); break;
+	case VK_DISPLAY_KEYBOARD:SendMacroCombo(ButtonPressed, { VK_LWIN, VK_LCONTROL, 'O' }); break;
+
+		// Скриншоты и Gamebar
+	case VK_GAMEBAR:        SendMacroCombo(ButtonPressed, { VK_LWIN, 'G' }); break;
+	case VK_GAMEBAR_SCREENSHOT: SendMacroCombo(ButtonPressed, { VK_LWIN, VK_LMENU, VK_SNAPSHOT }); break;
+	case VK_GAMEBAR_RECORD: SendMacroCombo(ButtonPressed, { VK_LWIN, VK_LMENU, 'R' }); break;
+	case VK_STEAM_SCREENSHOT:
+	{
+		WORD scrKey = (AppStatus.SteamScrKey != 0) ? (WORD)AppStatus.SteamScrKey : VK_F12;
+		SendMacroCombo(ButtonPressed, { scrKey });
+	}
+	break;
+
+	// Кастомные приложения и нативная клавиатура JCAdvance
+	case VK_RUN_CUSTOM_EXE:
+		if (ButtonPressed && !CurrentXboxProfile.RunExePath.empty()) {
+			ShellExecuteA(NULL, "open", CurrentXboxProfile.RunExePath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+		}
+		break;
+	case VK_KILL_CUSTOM_EXE:
+		if (ButtonPressed && !CurrentXboxProfile.KillExeName.empty()) {
+			std::string exeName = CurrentXboxProfile.KillExeName;
+			size_t slashPos = exeName.find_last_of("\\/");
+			if (slashPos != std::string::npos) exeName = exeName.substr(slashPos + 1);
+
+			std::thread([exeName]() {
+				std::string killCmd = "taskkill /IM \"" + exeName + "\" /F > nul 2>&1";
+				system(killCmd.c_str());
+				Beep(500, 300);
+			}).detach();
+		}
+		break;
+	case VK_JC_KEYBOARD:
+		if (ButtonPressed) {
+			ShellExecuteA(NULL, "open", "Keyboard.exe", NULL, NULL, SW_SHOWNORMAL);
+		}
+		break;
+
+	default: break;
+	}
 }
 
 inline bool IsHotkeyTriggered(int gamepadHotkey, WORD kbdMod, WORD kbdKey) {	//@136
@@ -1083,14 +1248,14 @@ inline bool IsHotkeyTriggered(int gamepadHotkey, WORD kbdMod, WORD kbdKey) {	//@
 		}
 	}*/
 
-	//@??? 2. Проверка геймпада (с поддержкой AND [+] и OR [/ \ |])
+	//@??? 2. Проверка геймпада (с поддержкой AND [+] и OR [/])
 	bool gamepadPressed = false;
 	if (gamepadHotkey != 0 && AppStatus.JoyconChangeModesWithButton == 0) {
 		bool isOrMode = (gamepadHotkey & 0x80000000) != 0;
 		unsigned int rawMask = gamepadHotkey & ~0x80000000;
 
 		if (isOrMode) {
-			// Режим "ИЛИ" (/ \ |): сработает при нажатии ЛЮБОЙ из кнопок именно в этом кадре
+			// Режим "ИЛИ" (/): сработает при нажатии ЛЮБОЙ из кнопок именно в этом кадре
 			if ((AppStatus.JustPressedButtons & rawMask) != 0) {
 				gamepadPressed = true;
 			}
@@ -1115,7 +1280,7 @@ inline bool IsHotkeyTriggered(int gamepadHotkey, WORD kbdMod, WORD kbdKey) {	//@
 	return false;
 }
 
-inline void ProcessSmartButton(bool isPhysicallyPressed, //@134
+/*inline void ProcessSmartButton(bool isPhysicallyPressed, //@134
 	unsigned int shortXboxBind, unsigned int longXboxBind, DWORD* outXboxButtons,
 	Button* kbmButtonState, bool DontResetInputState,
 	SmartButtonTracker &tracker, int frameTimeMs, int longPressTimeoutMs)
@@ -1173,6 +1338,208 @@ inline void ProcessSmartButton(bool isPhysicallyPressed, //@134
 	if (kbmButtonState && kbmButtonState->KeyCode != 0) {
 		KeyPress(kbmButtonState->KeyCode, DontResetInputState && isVirtualTapActive, kbmButtonState, true);
 	}
+}*/
+
+inline void ProcessSmartButton(bool isPhysicallyPressed,
+	unsigned int shortXboxBind, unsigned int longXboxBind, DWORD* outXboxButtons,
+	Button* kbmButtonState, SmartButtonTracker &tracker, int frameTimeMs, int longPressTimeoutMs)
+{
+	// MUTE (XINPUT_GAMEPAD_EMPTY или KBM_MUTE) — это полноценное долгое нажатие!
+	bool hasXboxLong = (longXboxBind != 0);
+	bool hasKbmLong = (kbmButtonState != nullptr && kbmButtonState->LongKeyCode != 0);
+	bool hasAnyLong = hasXboxLong || hasKbmLong;
+
+	// 1. БЫСТРЫЙ ПУТЬ: Долгого нажатия нет вообще
+	if (!hasAnyLong) {
+		if (outXboxButtons && isPhysicallyPressed && shortXboxBind != 0 && shortXboxBind != XINPUT_GAMEPAD_EMPTY) {
+			*outXboxButtons |= shortXboxBind;
+		}
+		if (kbmButtonState && kbmButtonState->KeyCode != 0 && kbmButtonState->KeyCode != KBM_MUTE) {
+			KeyPress(kbmButtonState->KeyCode, isPhysicallyPressed, kbmButtonState);
+		}
+		return;
+	}
+
+	// 2. ОБЩИЙ ФИЗИЧЕСКИЙ ТАЙМЕР УДЕРЖАНИЯ КНОПКИ
+	const int VIRTUAL_TAP_MS = 50;
+
+	if (isPhysicallyPressed) {
+		if (!tracker.longFired) {
+			tracker.holdTimer += frameTimeMs;
+			if (tracker.holdTimer >= longPressTimeoutMs) {
+				tracker.longFired = true;
+			}
+		}
+	}
+	else {
+		// Кнопку отпустили
+		if (tracker.holdTimer > 0 && !tracker.longFired) {
+			tracker.tapTimer = VIRTUAL_TAP_MS;
+		}
+		if (tracker.longFired && hasKbmLong && kbmButtonState && kbmButtonState->LongKeyCode != KBM_MUTE) {
+			KeyPress(kbmButtonState->LongKeyCode, false, &tracker.longKbmState);
+		}
+		tracker.holdTimer = 0;
+		tracker.longFired = false;
+	}
+
+	bool isVirtualTapActive = (tracker.tapTimer > 0);
+	if (isVirtualTapActive) {
+		tracker.tapTimer -= frameTimeMs;
+	}
+
+	// 3. НЕЗАВИСИМЫЙ КАНАЛ XBOX
+	if (outXboxButtons) {
+		if (hasXboxLong) {
+			// Если сработал LongPress и это НЕ MUTE — зажимаем кнопку
+			if (tracker.longFired) {
+				if (longXboxBind != 0 && longXboxBind != XINPUT_GAMEPAD_EMPTY) {
+					*outXboxButtons |= longXboxBind;
+				}
+			}
+			// При быстром тапе — отстреливаем 50 мс короткой кнопки
+			else if (isVirtualTapActive) {
+				if (shortXboxBind != 0 && shortXboxBind != XINPUT_GAMEPAD_EMPTY) {
+					*outXboxButtons |= shortXboxBind;
+				}
+			}
+		}
+		else {
+			// Долгого нажатия нет: честное удержание
+			if (isPhysicallyPressed && shortXboxBind != 0 && shortXboxBind != XINPUT_GAMEPAD_EMPTY) {
+				*outXboxButtons |= shortXboxBind;
+			}
+		}
+	}
+
+	// 4. НЕЗАВИСИМЫЙ КАНАЛ KEYBOARD & MOUSE
+	if (kbmButtonState) {
+		if (hasKbmLong) {
+			// Долгое нажатие (KeyDown при удержании, KeyUp при физическом отпускании)
+			if (tracker.longFired) {
+				if (kbmButtonState->LongKeyCode != 0 && kbmButtonState->LongKeyCode != KBM_MUTE) {
+					KeyPress(kbmButtonState->LongKeyCode, true, &tracker.longKbmState);
+				}
+			}
+
+			// Короткий тап: честный 50-мс импульс (KeyDown пока тикает tapTimer, KeyUp когда таймер истёк)
+			if (kbmButtonState->KeyCode != 0 && kbmButtonState->KeyCode != KBM_MUTE) {
+				KeyPress(kbmButtonState->KeyCode, isVirtualTapActive, kbmButtonState);
+			}
+		}
+		else {
+			// Долгого нажатия нет: честное удержание 1-в-1
+			if (kbmButtonState->KeyCode != 0 && kbmButtonState->KeyCode != KBM_MUTE) {
+				KeyPress(kbmButtonState->KeyCode, isPhysicallyPressed, kbmButtonState);
+			}
+		}
+	}
+}
+
+// Глобальный сброс всех зажатых виртуальных клавиш (при смене профилей / дисконнекте)
+/*inline void ReleaseAllKbmKeys(AdvancedGamepad& Gamepad) {
+	auto SafeRelease = [](Button& btn) {
+		if (btn.isDown && btn.KeyCode != 0) KeyPress(btn.KeyCode, false, &btn);
+	};
+	SafeRelease(Gamepad.ButtonsStates.LeftBumper);
+	SafeRelease(Gamepad.ButtonsStates.RightBumper);
+	SafeRelease(Gamepad.ButtonsStates.LeftTrigger);
+	SafeRelease(Gamepad.ButtonsStates.RightTrigger);
+	SafeRelease(Gamepad.ButtonsStates.Back);
+	SafeRelease(Gamepad.ButtonsStates.Start);
+	SafeRelease(Gamepad.ButtonsStates.A);
+	SafeRelease(Gamepad.ButtonsStates.B);
+	SafeRelease(Gamepad.ButtonsStates.X);
+	SafeRelease(Gamepad.ButtonsStates.Y);
+	SafeRelease(Gamepad.ButtonsStates.DPADUp);
+	SafeRelease(Gamepad.ButtonsStates.DPADDown);
+	SafeRelease(Gamepad.ButtonsStates.DPADLeft);
+	SafeRelease(Gamepad.ButtonsStates.DPADRight);
+	SafeRelease(Gamepad.ButtonsStates.LeftStick);
+	SafeRelease(Gamepad.ButtonsStates.RightStick);
+	SafeRelease(Gamepad.ButtonsStates.JCSL);
+	SafeRelease(Gamepad.ButtonsStates.JCSR);
+	SafeRelease(Gamepad.ButtonsStates.HOME);
+	SafeRelease(Gamepad.ButtonsStates.CAPTURE);
+	SafeRelease(Gamepad.ButtonsStates.DSEdgeL4);
+	SafeRelease(Gamepad.ButtonsStates.DSEdgeR4);
+	SafeRelease(Gamepad.ButtonsStates.Up);
+	SafeRelease(Gamepad.ButtonsStates.Down);
+	SafeRelease(Gamepad.ButtonsStates.Left);
+	SafeRelease(Gamepad.ButtonsStates.Right);
+	SafeRelease(Gamepad.ButtonsStates.LeftStickUp);
+	SafeRelease(Gamepad.ButtonsStates.LeftStickDown);
+	SafeRelease(Gamepad.ButtonsStates.LeftStickLeft);
+	SafeRelease(Gamepad.ButtonsStates.LeftStickRight);
+	SafeRelease(Gamepad.ButtonsStates.RightStickUp);
+	SafeRelease(Gamepad.ButtonsStates.RightStickDown);
+	SafeRelease(Gamepad.ButtonsStates.RightStickLeft);
+	SafeRelease(Gamepad.ButtonsStates.RightStickRight);
+	SafeRelease(Gamepad.ButtonsStates.MeleeGesture);
+	SafeRelease(Gamepad.ButtonsStates.AutoSprint);
+}*/
+
+//@143 Глобальный сброс всех зажатых виртуальных клавиш (Regular + LongPress) и таймеров трекеров
+inline void ReleaseAllKbmKeys(AdvancedGamepad& Gamepad) {
+	// Сброс Smart-кнопок: отпускает и короткую клавишу, и LongPress, и обнуляет таймеры
+	auto ResetSmartButton = [](Button& btn, SmartButtonTracker& tracker) {
+		if (btn.isDown && btn.KeyCode != 0 && btn.KeyCode != KBM_MUTE) {
+			KeyPress(btn.KeyCode, false, &btn);
+		}
+		if (tracker.longKbmState.isDown && btn.LongKeyCode != 0 && btn.LongKeyCode != KBM_MUTE) {
+			KeyPress(btn.LongKeyCode, false, &tracker.longKbmState);
+		}
+		tracker.holdTimer = 0;
+		tracker.longFired = false;
+		tracker.tapTimer = 0;
+	};
+
+	// Сброс простых кнопок (стики, жесты)
+	auto SafeReleaseSimple = [](Button& btn) {
+		if (btn.isDown && btn.KeyCode != 0 && btn.KeyCode != KBM_MUTE) {
+			KeyPress(btn.KeyCode, false, &btn);
+		}
+	};
+
+	// 1. Сброс всех Smart кнопок вместе с их LongPress состояниями
+	ResetSmartButton(Gamepad.ButtonsStates.LeftBumper, Gamepad.Trackers.L);
+	ResetSmartButton(Gamepad.ButtonsStates.RightBumper, Gamepad.Trackers.R);
+	ResetSmartButton(Gamepad.ButtonsStates.LeftTrigger, Gamepad.Trackers.ZL);
+	ResetSmartButton(Gamepad.ButtonsStates.RightTrigger, Gamepad.Trackers.ZR);
+	ResetSmartButton(Gamepad.ButtonsStates.Back, Gamepad.Trackers.Back);
+	ResetSmartButton(Gamepad.ButtonsStates.Start, Gamepad.Trackers.Start);
+	ResetSmartButton(Gamepad.ButtonsStates.A, Gamepad.Trackers.A);
+	ResetSmartButton(Gamepad.ButtonsStates.B, Gamepad.Trackers.B);
+	ResetSmartButton(Gamepad.ButtonsStates.X, Gamepad.Trackers.X);
+	ResetSmartButton(Gamepad.ButtonsStates.Y, Gamepad.Trackers.Y);
+	ResetSmartButton(Gamepad.ButtonsStates.DPADUp, Gamepad.Trackers.DPADUp);
+	ResetSmartButton(Gamepad.ButtonsStates.DPADDown, Gamepad.Trackers.DPADDown);
+	ResetSmartButton(Gamepad.ButtonsStates.DPADLeft, Gamepad.Trackers.DPADLeft);
+	ResetSmartButton(Gamepad.ButtonsStates.DPADRight, Gamepad.Trackers.DPADRight);
+	ResetSmartButton(Gamepad.ButtonsStates.LeftStick, Gamepad.Trackers.L3);
+	ResetSmartButton(Gamepad.ButtonsStates.RightStick, Gamepad.Trackers.R3);
+	ResetSmartButton(Gamepad.ButtonsStates.JCSL, Gamepad.Trackers.JCSL);
+	ResetSmartButton(Gamepad.ButtonsStates.JCSR, Gamepad.Trackers.JCSR);
+	ResetSmartButton(Gamepad.ButtonsStates.HOME, Gamepad.Trackers.HOME);
+	ResetSmartButton(Gamepad.ButtonsStates.CAPTURE, Gamepad.Trackers.CAPTURE);
+	ResetSmartButton(Gamepad.ButtonsStates.DSEdgeL4, Gamepad.Trackers.DSEdgeL4);
+	ResetSmartButton(Gamepad.ButtonsStates.DSEdgeR4, Gamepad.Trackers.DSEdgeR4);
+
+	// 2. Сброс простых кнопок стиков и системных жестов
+	SafeReleaseSimple(Gamepad.ButtonsStates.Up);
+	SafeReleaseSimple(Gamepad.ButtonsStates.Down);
+	SafeReleaseSimple(Gamepad.ButtonsStates.Left);
+	SafeReleaseSimple(Gamepad.ButtonsStates.Right);
+	SafeReleaseSimple(Gamepad.ButtonsStates.LeftStickUp);
+	SafeReleaseSimple(Gamepad.ButtonsStates.LeftStickDown);
+	SafeReleaseSimple(Gamepad.ButtonsStates.LeftStickLeft);
+	SafeReleaseSimple(Gamepad.ButtonsStates.LeftStickRight);
+	SafeReleaseSimple(Gamepad.ButtonsStates.RightStickUp);
+	SafeReleaseSimple(Gamepad.ButtonsStates.RightStickDown);
+	SafeReleaseSimple(Gamepad.ButtonsStates.RightStickLeft);
+	SafeReleaseSimple(Gamepad.ButtonsStates.RightStickRight);
+	SafeReleaseSimple(Gamepad.ButtonsStates.MeleeGesture);
+	SafeReleaseSimple(Gamepad.ButtonsStates.AutoSprint);
 }
 
 inline int KeyNameToKeyCode(std::string KeyName) {
@@ -1180,6 +1547,7 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 
 	std::unordered_map<std::string, int> KeyMap = {
 		{"NONE", 0},
+		{"MUTE", KBM_MUTE},	//@134
 		{"MOUSE-LEFT", VK_MOUSE_LEFT},
 		{"MOUSE-RIGHT", VK_MOUSE_RIGHT},
 		{"MOUSE-MIDDLE", VK_MOUSE_MIDDLE},
@@ -1300,6 +1668,12 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 		{"END", VK_END},
 		{"PAGE-UP", VK_PRIOR},
 		{"PAGE-DOWN", VK_NEXT},
+		{ "PAGEUP", VK_PRIOR },
+		{ "PGUP", VK_PRIOR },
+		{ "PAGE-DOWN", VK_NEXT },
+		{ "PAGEDOWN", VK_NEXT },
+		{ "PGDN", VK_NEXT },
+		{ "PGDOWN", VK_NEXT },
 
 		{"UP", VK_UP},
 		{"DOWN", VK_DOWN},
@@ -1329,19 +1703,32 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 		{"VOLUME-UP", VK_VOLUME_UP2},
 		{"VOLUME-DOWN", VK_VOLUME_DOWN2},
 		{"VOLUME-MUTE", VK_VOLUME_MUTE2},
-		{"HIDE-APPS", VK_HIDE_APPS},
-		{"SWITCH-APP", VK_SWITCH_APP},
-		{"CLOSE-APP", VK_CLOSE_APP},
-		{"DISPLAY-KEYBOARD", VK_DISPLAY_KEYBOARD},
-		{"GAMEBAR", VK_GAMEBAR},
-		{"GAMEBAR-SCREENSHOT", VK_GAMEBAR_SCREENSHOT},
-		{"GAMEBAR-RECORD", VK_GAMEBAR_RECORD},
-		{"FULLSCREEN", VK_FULLSCREEN},
-		{"FULLSCREEN-PLUS", VK_FULLSCREEN_PLUS},
-		{"CHANGE-LANGUAGE", VK_CHANGE_LANGUAGE},
-		{"CUT", VK_CUT},
-		{"COPY", VK_COPY },
-		{"PASTE", VK_PASTE},
+		{ "OSK_KEYBOARD", VK_DISPLAY_KEYBOARD },	//OSK
+		{ "JC-KEYBOARD", VK_JC_KEYBOARD },		//@144 Custom JC_keyboard
+		{"JC_KEYBOARD", VK_JC_KEYBOARD},
+		{ "DESKTOP", VK_HIDE_APPS },
+		{ "ALT-F4", VK_CLOSE_APP },
+		{ "WIN-TAB", VK_SWITCH_APP },
+		{ "TASK-VIEW", VK_SWITCH_APP },
+		{ "START", VK_START_MENU },
+		{ "ALT-TAB", VK_ALT_TAB },
+		{ "TASK-MGR", VK_TASK_MANAGER },
+		{ "CHANGE-LANG", VK_CHANGE_LANGUAGE },
+		{ "CUT", VK_CUT },
+		{ "COPY", VK_COPY },
+		{ "PASTE", VK_PASTE },
+		{ "UNDO", VK_UNDO },
+		{ "NEW-TAB", VK_NEW_TAB },
+		{ "CLOSE-TAB", VK_CLOSE_TAB },
+		{ "REOPEN-TAB", VK_REOPEN_TAB },
+		{ "FULLSCREEN", VK_FULLSCREEN },
+		//{ "FULLSCREEN+", VK_FULLSCREEN_PLUS },
+		{ "STEAM-SCSHOT", VK_STEAM_SCREENSHOT },
+		{ "GAMEBAR", VK_GAMEBAR },
+		{ "GAMEBAR-SCSHOT", VK_GAMEBAR_SCREENSHOT },
+		{ "GAMEBAR-RECORD", VK_GAMEBAR_RECORD },
+		{ "RUN-EXE", VK_RUN_CUSTOM_EXE },
+		{ "KILL-EXE", VK_KILL_CUSTOM_EXE },
 
 		// Special
 		{"WASD", WASDStickMode},
@@ -1352,10 +1739,10 @@ inline int KeyNameToKeyCode(std::string KeyName) {
 		{"MOUSE-WHEEL", MouseWheelStickMode},
 
 		// Media
-		{"MEDIA-NEXT-TRACK", VK_MEDIA_NEXT_TRACK},
-		{"MEDIA-PREV-TRACK", VK_MEDIA_PREV_TRACK},
-		{"MEDIA-STOP", VK_MEDIA_STOP},
-		{"MEDIA-PLAY-PAUSE", VK_MEDIA_PLAY_PAUSE},
+		{"NEXT-TRACK", VK_MEDIA_NEXT_TRACK},
+		{"PREV-TRACK", VK_MEDIA_PREV_TRACK},
+		{"STOP_TRACK", VK_MEDIA_STOP},
+		{"PLAY-PAUSE", VK_MEDIA_PLAY_PAUSE},
 
 		// Browser
 		{"BROWSER-BACK", VK_BROWSER_BACK},
@@ -1416,17 +1803,17 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 	std::transform(KeyName.begin(), KeyName.end(), KeyName.begin(), ::toupper);
 
 	std::unordered_map<std::string, int> KeyMap = {
-		{"NONE", 0},
+		{"NONE", 0},	//For All
 		{"MUTE", 0xFFFFFFFF},
 		{"UP", JSMASK_UP},
 		{"DOWN", JSMASK_DOWN},
 		{"LEFT", JSMASK_LEFT},
 		{"RIGHT", JSMASK_RIGHT},
-		//{"PS", JSMASK_PS},
+		{"L3", JSMASK_LCLICK},
+		{"R3", JSMASK_RCLICK},	//End For All
+		//{"PS", JSMASK_PS},	//Sony
 		{"SHARE", JSMASK_SHARE},
 		{"OPTIONS", JSMASK_OPTIONS},
-		{"L3", JSMASK_LCLICK},
-		{"R3", JSMASK_RCLICK},
 		{"L1", JSMASK_L},
 		{"R1", JSMASK_R},
 		{"CROSS", JSMASK_S}, // A
@@ -1437,7 +1824,7 @@ inline int SonyNintendoKeyNameToJoyShockKeyCode(std::string KeyName) {
 		{"R2", JSMASK_ZR},
 		{"L4", JSMASK_FNL},
 		{"R4", JSMASK_FNR},
-		{"L", JSMASK_L},	//@110 Нет L1 R1 у joycon
+		{"L", JSMASK_L},	//@110 Nintendo
 		{"R", JSMASK_R},
 		{"ZL", JSMASK_ZL},
 		{"ZR", JSMASK_ZR},
