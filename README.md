@@ -323,6 +323,68 @@ All profile-specific settings have been relocated from the global `config.ini` i
 
 In original DSAdvance, there was a strict separation between Xbox profiles (in `XboxProfile`) and Keyboard/Mouse profiles (`KMProfile`), making hybrid emulation impossible. JCAdvance consolidates everything into unified profiles under `XboxProfiles` with full management inside `Config.exe`. You can still hot-swap profiles on the fly via hotkeys (profile switch persists for the active session).
 
+### ⚠️ Desktop Mode (PC Control)
+
+A dedicated **Desktop Mode** (via the `Desktop.ini` profile) has been added to the emulator, transforming your gamepad into a comfortable couch PC remote control without requiring a physical mouse or keyboard.
+
+#### Key Features:
+
+* **Instant Toggle Hotkey:** Toggle the mode on or off instantly with a single combination: **`Home/PS + Left/Right`** (or **`Alt + Left/Right`**). The emulator automatically remembers your active game profile, switches to Desktop Mode, and seamlessly returns to your game profile upon exit.
+* **Profile Carousel Isolation:** The `Desktop.ini` file resides in the `XboxProfiles\` folder and can be edited via the configurator, but it is **excluded from regular game profile cycling** via **`Home/PS + DPAD Up/Down`** or **`Alt + Up/Down`**.
+* **Automatic Gyro Handshake:** Entering Desktop Mode arms the gyroscope immediately without requiring manual activation. By default, hold **Y / Square** to control the gyro mouse cursor.
+* **Full Config.exe Integration:** Fully customizable through the Config.exe GUI editor just like all other profiles.
+* **Special Commands & Aliases:** For convenient PC navigation, special commands and macro aliases can be mapped to gamepad buttons under the Joy-Con and Sony tabs in the configurator.
+* **JC Keyboard:** A custom-built on-screen virtual keyboard designed specifically for JCAdvance and Desktop Mode — an alternative to Windows TabTip. All keyboard parameters are stored in `config.ini` under the `[KEYBOARD]` section, with primary settings exposed in the Settings tab of the configurator.
+
+<details>
+<summary><b>📋 List of all available commands and aliases (click to expand)</b></summary>
+
+#### 🖥️ Window & System Management:
+* **`START`** — Windows Key (Open / close the Start menu).
+* **`DESKTOP`** — Minimize all windows / Show desktop (`Win + D`).
+* **`TASK-MGR`** — Emergency launch of Windows Task Manager (`Ctrl + Shift + Esc`).
+* **`ALT-F4`** — Force close the active window or program (`Alt + F4`).
+* **`ALT-TAB`** — Quick switch to the previous active window (`Alt + Tab`).
+* **`WIN-TAB`** — Task View / virtual desktop manager (`Win + Tab`).
+* **`FULLSCREEN`** — Toggle fullscreen mode in video players and games (`Alt + Enter`).
+* **`CHANGE-LANG`** — Universal Windows keyboard input language switch (`Win + Space`).
+* **`JC-KEYBOARD`** — Toggle the custom native JCAdvance touch keyboard (`Keyboard.exe`). Operates as a switch: first press opens, second press closes.
+* **`OSK-KEYBOARD`** — Legacy Windows On-Screen Keyboard (`Win + Ctrl + O`).
+
+#### 📋 Clipboard Operations (Works across any Windows language layout):
+* **`COPY`** — Copy selected text or files to clipboard (`Ctrl + C`).
+* **`PASTE`** — Paste clipboard contents (`Ctrl + V`).
+* **`CUT`** — Cut selected text or items (`Ctrl + X`).
+* **`UNDO`** — Undo the last action / restore deleted text (`Ctrl + Z`).
+
+#### 🌐 Browser & Tab Navigation:
+* **`NEW-TAB`** — Open a new browser tab (`Ctrl + T`).
+* **`CLOSE-TAB`** — Close the current active tab (`Ctrl + W`).
+* **`BROWSER-BACK`** — History navigation: Go back to the previous page.
+* **`BROWSER-FORWARD`** — History navigation: Go forward to the next page.
+* **`BROWSER-REFRESH`** — Refresh the current webpage (`F5`).
+
+#### 🔊 Volume & Media Controls:
+* **`VOLUME-UP`** — Increase master Windows audio volume.
+* **`VOLUME-DOWN`** — Decrease master Windows audio volume.
+* **`VOLUME-MUTE`** — Instantly mute / unmute master audio.
+* **`PLAY-PAUSE`** — Play / Pause media in media players and YouTube.
+* **`STOP_TRACK`** — Stop media playback.
+* **`NEXT-TRACK`** — Next track or video in playlist.
+* **`PREV-TRACK`** — Previous track or video.
+
+#### 🎮 Gaming & Screen Capture:
+* **`STEAM-SCSHOT`** — Take a screenshot in the Steam client (`F12`).
+* **`GAMEBAR`** — Open Xbox Gamebar overlay (`Win + G`).
+* **`GAMEBAR-SCSHOT`** — Take a screenshot via Xbox Gamebar (`Win + Alt + PrtScn`).
+* **`GAMEBAR-RECORD`** — Start or stop video recording via Xbox Gamebar (`Win + Alt + R`).
+
+#### 🚀 Custom Application Launch & Termination:
+* **`RUN-EXE`** — Launch any external application, utility, shortcut (`.lnk`), or script defined in `[SETTINGS] RunExe = ...`.
+* **`KILL-EXE`** — Asynchronously terminate a frozen process defined in `[SETTINGS] KillExe = ...` in the background with an audio confirmation beep.
+
+</details>    
+    
 </details>
 
 <details>
