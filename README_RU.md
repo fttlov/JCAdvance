@@ -912,8 +912,9 @@ $$\text{Горизонтальная доминирует} \implies |rx| > |ry|$
   * `PosX` / `PosY` — Текущие координаты 
 
   <table align="center">
-    Управление по умолчанию:<br>
     <tr>
+      Управление по умолчанию:<br>
+      
       <td><img src="https://raw.githubusercontent.com/fttlov/JCAdvance_test/refs/heads/main/Icon/Desktop_Gamepad5.png" width="525" alt="Кнопки по умолчанию"></td>
     </tr>
   </table>
