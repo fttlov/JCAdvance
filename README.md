@@ -868,7 +868,9 @@ A dedicated **Desktop Mode** (via the `Desktop.ini` profile) has been added to t
   * `ScaleFactor` — Overall UI scale (minimum: 0.40).
   * `PosX` / `PosY` — Saved screen coordinates.  
 
-Default control:<br>
+
+<div align="center">Default control:<br> </div>
+
 
   <table align="center">
     <tr>
