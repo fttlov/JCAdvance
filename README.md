@@ -81,7 +81,7 @@
 - Radial Anti-Deadzone for hardware analog sticks/triggers and optional for Gyro Stick
 - Response curve shaping (Linearity) for physical sticks/triggers and virtual Steering Wheel in Driving mode
 - Reworked Driving Mode: eliminated extreme-angle steering flips, added on-the-fly wheel re-centering button
-- DirectInput DualShock 4 emulation option instead of XInput Xbox 360 (Nintendo controllers only) for classic PC games
+- DualShock 4 dinput emulation option instead of xinput Xbox 360 (Nintendo controllers only) for classic PC games
 - (Experimental) Support for external DirectInput steering wheels and pedal sets (see [technical info](#tech-info))
 
 </details>
