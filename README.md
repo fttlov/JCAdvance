@@ -861,7 +861,12 @@ A dedicated **Desktop Mode** (via the `Desktop.ini` profile) has been added to t
 * **Automatic Gyro Handshake:** Entering Desktop Mode arms the gyroscope immediately without requiring manual activation. By default, hold **Y / Square** to control the gyro mouse cursor.
 * **Full Config.exe Integration:** Fully customizable through the Config.exe GUI editor just like all other profiles.
 * **Special Commands & Aliases:** For convenient PC navigation, special commands and macro aliases can be mapped to gamepad buttons under the Joy-Con and Sony tabs in the configurator.
-* **JC Keyboard:** A custom-built on-screen virtual keyboard designed specifically for JCAdvance and Desktop Mode — an alternative to Windows TabTip. All keyboard parameters are stored in `config.ini` under the `[KEYBOARD]` section, with primary settings exposed in the Settings tab of the configurator.
+* **JC Keyboard:** A custom-built on-screen virtual keyboard designed specifically for JCAdvance and Desktop Mode — an alternative to Windows TabTip. All keyboard parameters are stored in `config.ini` under the `[KEYBOARD]`:<br>
+  * `KeyWidth` — Button width (default: 48; 33 matches Windows TabTip).
+  * `Opacity` — Window transparency level (default: 230).
+  * `FontSize` — Font size for character labels.
+  * `ScaleFactor` — Overall UI scale (minimum: 0.40).
+  * `PosX` / `PosY` — Saved screen coordinates.  
 
 Default control:<br>
 
