@@ -22,7 +22,14 @@ Global JslKeys := [
 ]
 
 Global KbmKeys := [
-    "NONE", "MUTE", "MOUSE-LEFT", "MOUSE-RIGHT", "MOUSE-MIDDLE", "MOUSE-WHEEL-UP", "MOUSE-WHEEL-DOWN",
+    "NONE", "MUTE",
+    "VOLUME-UP", "VOLUME-DOWN", "VOLUME-MUTE",
+    "ALT-TAB", "WIN-TAB", "START", "DESKTOP", "FULLSCREEN", "ALT-F4", "TASK-MGR", "RUN-EXE", "KILL-EXE",
+    "JC-KEYBOARD", "OSK-KEYBOARD", "CHANGE-LANG", "COPY", "PASTE", "CUT", "UNDO",
+	"NEXT-TRACK", "PREV-TRACK", "STOP_TRACK", "PLAY-PAUSE",
+	"BROWSER-BACK", "BROWSER-FORWARD", "BROWSER-REFRESH", "NEW-TAB", "CLOSE-TAB",
+    "STEAM-SCSHOT", "GAMEBAR", "GAMEBAR-SCSHOT", "GAMEBAR-RECORD",
+    "MOUSE-LEFT", "MOUSE-RIGHT", "MOUSE-MIDDLE", "MOUSE-WHEEL-UP", "MOUSE-WHEEL-DOWN",
     "ESCAPE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
     "~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=",
     "TAB", "CAPS-LOCK", "SHIFT", "LSHIFT", "RSHIFT", "CTRL", "LCTRL", "RCTRL",
@@ -50,6 +57,8 @@ Global CtrlSettings := Map()
 Global CtrlExtraXbox := Map()
 Global CtrlXboxLabels := Map()
 Global LastHoveredLabelKey := ""
+Global LastHoveredOriginalText := ""
+Global PadBridgeReady := false
 
 Global JslConnected := false
 Global JslDevHandles := Buffer(16, 0)
@@ -87,8 +96,16 @@ Global JslBtnList_Joycon := [
 ; ==============================================================================
 Global ConfigIni := "config.ini"
 Global hModule := DllCall("LoadLibrary", "Str", A_ScriptDir "\JoyShockLibrary.dll", "Ptr")
+;Global CurrentLang := "English"
+;try CurrentLang := IniRead(A_ScriptDir "\" ConfigIni, "ConfigGUI", "Language", "English")
+
+; Переводим локализацию на кэширование в памяти (Map)
+; Инициализация кэша при старте:
 Global CurrentLang := "English"
 try CurrentLang := IniRead(A_ScriptDir "\" ConfigIni, "ConfigGUI", "Language", "English")
+
+Global LangMap := Map()
+LoadLanguageCache()
 
 ; Читаем активный профиль из config.ini (по умолчанию default.ini)
 Global ActiveProfile := "default.ini"
@@ -169,6 +186,7 @@ LoadFullKbm(ctrl, *) {
     }
 }
 
+/*
 T(str) {
     global CurrentLang
     if (!IsSet(CurrentLang) || CurrentLang == "English")
@@ -180,6 +198,38 @@ T(str) {
     
     translated := IniRead(A_ScriptDir "\Language\" CurrentLang ".ini", "Config", keyStr, str)
     return StrReplace(translated, "\n", "`n")
+}
+*/
+
+; Добавление загрузчика и оптимизация T(str)
+LoadLanguageCache() {
+    global CurrentLang, LangMap
+    LangMap.Clear()
+    if (!IsSet(CurrentLang) || CurrentLang == "English")
+        return
+    try {
+        sec := IniRead(A_ScriptDir "\Language\" CurrentLang ".ini", "Config")
+        Loop Parse sec, "`n", "`r" {
+            pos := InStr(A_LoopField, "=")
+            if (pos > 1) {
+                k := SubStr(A_LoopField, 1, pos - 1)
+                v := SubStr(A_LoopField, pos + 1)
+                LangMap[k] := StrReplace(v, "\n", "`n")
+            }
+        }
+    }
+}
+
+T(str) {
+    global CurrentLang, LangMap
+    if (!IsSet(CurrentLang) || CurrentLang == "English")
+        return str
+        
+    keyStr := StrReplace(str, "`r`n", "\n")
+    keyStr := StrReplace(keyStr, "`n", "\n")
+    keyStr := StrReplace(keyStr, "`r", "\n")
+    
+    return LangMap.Has(keyStr) ? LangMap[keyStr] : str
 }
 
 ; Принудительно включаем режим IE11 (HTML5 Canvas) для встроенного браузера
@@ -366,8 +416,10 @@ MainGui.Add("Text", "x15 y80 w810 Center", T("Xbox Buttons Mapping"))
 ;MainGui.SetFont("Bold")
 MainGui.Add("Text", "x340 y150 w120 +Right", T("Action Layer¹") ":")
 ;MainGui.SetFont("Norm")
-radModeDefault := MainGui.Add("Radio", "x340 y178 Checked1", T("Regular"))
-radModeHold := MainGui.Add("Radio", "x425 y178", T("LongPress"))
+;radModeDefault := MainGui.Add("Radio", "x340 y178 Checked1", T("Regular"))
+;radModeHold := MainGui.Add("Radio", "x425 y178", T("LongPress"))
+radModeDefault := MainGui.Add("Radio", "x340 y178 Checked1", T("Regular")), radModeDefault.IgnoreUnsaved := true
+radModeHold := MainGui.Add("Radio", "x425 y178", T("LongPress")), radModeHold.IgnoreUnsaved := true
 radModeDefault.OnEvent("Click", (*) => SwitchXboxLayer("Default"))
 radModeHold.OnEvent("Click", (*) => SwitchXboxLayer("TapHold"))
 
@@ -422,13 +474,13 @@ wbPad.Silent := true
 
 ; --- ОПРЕДЕЛЕНИЕ КНОПОК ПОД ТЕКУЩИЙ LAYOUT ---
 if (Layout == "Sony") {
-    XboxMapLeft  := ["L2", "L1", "SHARE", "L3", "UP", "DOWN", "LEFT", "RIGHT"]
+    XboxMapLeft  := ["L2", "L1", "SHARE", "L3", "UP", "LEFT", "RIGHT", "DOWN"]
     XboxMapRight := ["R2", "R1", "OPTIONS", "R3", "TRIANGLE", "SQUARE", "CIRCLE", "CROSS"]
     ExtraButtonsLeft  := ["L4"]
     ExtraButtonsRight := ["R4"]
 } else {
-    XboxMapLeft  := ["ZL", "L", "MINUS", "L3", "UP", "DOWN", "LEFT", "RIGHT"]
-    XboxMapRight := ["ZR", "R", "PLUS", "R3", "X", "Y", "B", "A"]
+    XboxMapLeft  := ["ZL", "L", "MINUS", "L3", "UP", "LEFT", "RIGHT", "DOWN"]
+    XboxMapRight := ["ZR", "R", "PLUS", "R3", "X", "Y", "A", "B"]
     ExtraButtonsLeft  := ["SL", "CAPTURE"]
     ExtraButtonsRight := ["SR", "HOME"]
 }
@@ -526,10 +578,6 @@ for key in ExtraButtonsRight {
     yExtra += 35
 }
 
-
-;MainGui.Add("Text", "x255 y660 cRed", T("*Action Layer"))
-;MainGui.Add("Text", "x+0 w820", T(": Setting a Long Press converts the standard button into a Tap"))
-
 ; --- СНОСКА ВНИЗУ ---
 ;MainGui.SetFont("cRed Bold q5", "Segoe UI")
 MainGui.Add("Text", "x15 y610 w142 cRed", T("¹ Action Layer:"))
@@ -550,8 +598,8 @@ if (Layout == "Nintendo") {
     ;MainGui.SetFont("Bold")
     MainGui.Add("Text", "x235 y80 w100 +Right", T("Action Layer") ":")
     ;MainGui.SetFont("Norm")
-    radJcModeDefault := MainGui.Add("Radio", "x385 y80 Checked1", T("Regular"))
-    radJcModeHold := MainGui.Add("Radio", "x510 y80", T("LongPress"))
+	radJcModeDefault := MainGui.Add("Radio", "x385 y80 Checked1", T("Regular")), radJcModeDefault.IgnoreUnsaved := true
+    radJcModeHold := MainGui.Add("Radio", "x510 y80", T("LongPress")), radJcModeHold.IgnoreUnsaved := true
     radJcModeDefault.OnEvent("Click", (*) => SwitchJoyConLayer("Default"))
     radJcModeHold.OnEvent("Click", (*) => SwitchJoyConLayer("TapHold"))
 
@@ -580,11 +628,11 @@ if (Layout == "Nintendo") {
     }
 
     ; Картинки по бокам
-    MainGui.Add("Picture", "x15 y120 w100 h-1", A_ScriptDir "\Icons\joycon_left.png")
-    MainGui.Add("Picture", "x720 y120 w100 h-1", A_ScriptDir "\Icons\joycon_right.png")
+    MainGui.Add("Picture", "x20 y120 w100 h-1", A_ScriptDir "\Icons\joycon_left.png")
+    MainGui.Add("Picture", "x725 y120 w100 h-1", A_ScriptDir "\Icons\joycon_right.png")
 
     ; --- ЛЕВАЯ КОЛОНКА JOY-CON ---
-    JcMapLeft := ["ZL", "L", "MINUS", "L3", "UP", "DOWN", "LEFT", "RIGHT", "SL", "CAPTURE"]
+    JcMapLeft := ["ZL", "L", "MINUS", "L3", "UP", "LEFT", "RIGHT", "DOWN", "SL", "CAPTURE"]
     yPosLeft := 115
     for key in JcMapLeft {
         val := SavedJoyConMap_Tap.Has(key) ? SavedJoyConMap_Tap[key] : "NONE"
@@ -629,7 +677,7 @@ if (Layout == "Nintendo") {
 
     ; --- РЕЖИМЫ СТИКОВ (Analog Sticks directions emulation) ---
     MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-    MainGui.Add("GroupBox", "x55 y470 w720 h215 Center Section", T("Analog Sticks modes to emulate KB/M"))
+    MainGui.Add("GroupBox", "x20 y470 w800 h215 Center Section", T("Analog Sticks modes to emulate KB/M"))
     MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
     StickModes := ["NONE", "WASD", "ARROWS", "MOUSE-LOOK", "MOUSE-WHEEL", "NUMPAD-ARROWS", "CUSTOM-BUTTONS"]
@@ -676,84 +724,95 @@ if (Layout == "Nintendo") {
     MainGui.Add("Text", "x660 y538 w70", ":RS-UP")
     MainGui.SetFont("Norm")
 
-    ; ROW 3: DOWN
-    valLS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-DOWN", "NONE")
-    MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x120 y574 w60 +Right", "LS-DOWN:")
-    MainGui.SetFont("Norm")
-    initD := (valLS_D != "" && valLS_D != "NONE") ? ["NONE", valLS_D] : ["NONE"]
-    ddlLS_D := MainGui.Add("ComboBox", "x190 y572 w140 Choose1", initD)
-    SetDdlValue(ddlLS_D, valLS_D)
-    ddlLS_D.OnEvent("Focus", LoadFullKbm)
-    CtrlSettings["LS-DOWN"] := {type: "txt", ctrl: ddlLS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSD := MainGui.Add("Button", "x340 y572 w50 h24", "Bind")
-    btnLSD.OnEvent("Click", BindKbm.Bind(ddlLS_D))
-
-    valRS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-DOWN", "NONE")
-    btnRSD := MainGui.Add("Button", "x450 y570 w50 h24", "Bind")
-    initRD := (valRS_D != "" && valRS_D != "NONE") ? ["NONE", valRS_D] : ["NONE"]
-    ddlRS_D := MainGui.Add("ComboBox", "x510 y572 w140 Choose1", initRD)
-    SetDdlValue(ddlRS_D, valRS_D)
-    ddlRS_D.OnEvent("Focus", LoadFullKbm)
-    CtrlSettings["RS-DOWN"] := {type: "txt", ctrl: ddlRS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnRSD.OnEvent("Click", BindKbm.Bind(ddlRS_D))
-    MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x660 y572 w70", ":RS-DOWN")
-    MainGui.SetFont("Norm")
-
-    ; ROW 4: LEFT
+    ; ROW 3: LEFT
     valLS_L := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-LEFT", "NONE")
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x120 y609 w60 +Right", "LS-LEFT:")
+    MainGui.Add("Text", "x120 y574 w60 +Right", "LS-LEFT:")
     MainGui.SetFont("Norm")
     initL := (valLS_L != "" && valLS_L != "NONE") ? ["NONE", valLS_L] : ["NONE"]
-    ddlLS_L := MainGui.Add("ComboBox", "x190 y607 w140 Choose1", initL)
+    ddlLS_L := MainGui.Add("ComboBox", "x190 y572 w140 Choose1", initL)
     SetDdlValue(ddlLS_L, valLS_L)
     ddlLS_L.OnEvent("Focus", LoadFullKbm)
     CtrlSettings["LS-LEFT"] := {type: "txt", ctrl: ddlLS_L, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSL := MainGui.Add("Button", "x340 y605 w50 h24", "Bind")
+    btnLSL := MainGui.Add("Button", "x340 y572 w50 h24", "Bind")
     btnLSL.OnEvent("Click", BindKbm.Bind(ddlLS_L))
 
     valRS_L := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-LEFT", "NONE")
-    btnRSL := MainGui.Add("Button", "x450 y605 w50 h24", "Bind")
+    btnRSL := MainGui.Add("Button", "x450 y570 w50 h24", "Bind")
     initRL := (valRS_L != "" && valRS_L != "NONE") ? ["NONE", valRS_L] : ["NONE"]
-    ddlRS_L := MainGui.Add("ComboBox", "x510 y607 w140 Choose1", initRL)
+    ddlRS_L := MainGui.Add("ComboBox", "x510 y572 w140 Choose1", initRL)
     SetDdlValue(ddlRS_L, valRS_L)
     ddlRS_L.OnEvent("Focus", LoadFullKbm)
     CtrlSettings["RS-LEFT"] := {type: "txt", ctrl: ddlRS_L, file: XboxIni, sec: "KEYBOARD-MOUSE"}
     btnRSL.OnEvent("Click", BindKbm.Bind(ddlRS_L))
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x660 y607 w70", ":RS-LEFT")
+    MainGui.Add("Text", "x660 y572 w70", ":RS-LEFT")
     MainGui.SetFont("Norm")
 
-    ; ROW 5: RIGHT
+    ; ROW 4: RIGHT
     valLS_R := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-RIGHT", "NONE")
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x120 y645 w60 +Right", "LS-RIGHT:")
+    MainGui.Add("Text", "x120 y609 w60 +Right", "LS-RIGHT:")
     MainGui.SetFont("Norm")
     initR := (valLS_R != "" && valLS_R != "NONE") ? ["NONE", valLS_R] : ["NONE"]
-    ddlLS_R := MainGui.Add("ComboBox", "x190 y642 w140 Choose1", initR)
+    ddlLS_R := MainGui.Add("ComboBox", "x190 y607 w140 Choose1", initR)
     SetDdlValue(ddlLS_R, valLS_R)
     ddlLS_R.OnEvent("Focus", LoadFullKbm)
     CtrlSettings["LS-RIGHT"] := {type: "txt", ctrl: ddlLS_R, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSR := MainGui.Add("Button", "x340 y640 w50 h24", "Bind")
+    btnLSR := MainGui.Add("Button", "x340 y605 w50 h24", "Bind")
     btnLSR.OnEvent("Click", BindKbm.Bind(ddlLS_R))
 
     valRS_R := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-RIGHT", "NONE")
-    btnRSR := MainGui.Add("Button", "x450 y640 w50 h24", "Bind")
+    btnRSR := MainGui.Add("Button", "x450 y605 w50 h24", "Bind")
     initRR := (valRS_R != "" && valRS_R != "NONE") ? ["NONE", valRS_R] : ["NONE"]
-    ddlRS_R := MainGui.Add("ComboBox", "x510 y642 w140 Choose1", initRR)
+    ddlRS_R := MainGui.Add("ComboBox", "x510 y607 w140 Choose1", initRR)
     SetDdlValue(ddlRS_R, valRS_R)
     ddlRS_R.OnEvent("Focus", LoadFullKbm)
     CtrlSettings["RS-RIGHT"] := {type: "txt", ctrl: ddlRS_R, file: XboxIni, sec: "KEYBOARD-MOUSE"}
     btnRSR.OnEvent("Click", BindKbm.Bind(ddlRS_R))
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x660 y643 w70", ":RS-RIGHT")
+    MainGui.Add("Text", "x660 y607 w70", ":RS-RIGHT")
+    MainGui.SetFont("Norm")
+
+    ; ROW 5: DOWN
+    valLS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-DOWN", "NONE")
+    MainGui.SetFont("Bold")
+    MainGui.Add("Text", "x120 y645 w60 +Right", "LS-DOWN:")
+    MainGui.SetFont("Norm")
+    initD := (valLS_D != "" && valLS_D != "NONE") ? ["NONE", valLS_D] : ["NONE"]
+    ddlLS_D := MainGui.Add("ComboBox", "x190 y642 w140 Choose1", initD)
+    SetDdlValue(ddlLS_D, valLS_D)
+    ddlLS_D.OnEvent("Focus", LoadFullKbm)
+    CtrlSettings["LS-DOWN"] := {type: "txt", ctrl: ddlLS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
+    btnLSD := MainGui.Add("Button", "x340 y640 w50 h24", "Bind")
+    btnLSD.OnEvent("Click", BindKbm.Bind(ddlLS_D))
+
+    valRS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-DOWN", "NONE")
+    btnRSD := MainGui.Add("Button", "x450 y640 w50 h24", "Bind")
+    initRD := (valRS_D != "" && valRS_D != "NONE") ? ["NONE", valRS_D] : ["NONE"]
+    ddlRS_D := MainGui.Add("ComboBox", "x510 y642 w140 Choose1", initRD)
+    SetDdlValue(ddlRS_D, valRS_D)
+    ddlRS_D.OnEvent("Focus", LoadFullKbm)
+    CtrlSettings["RS-DOWN"] := {type: "txt", ctrl: ddlRS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
+    btnRSD.OnEvent("Click", BindKbm.Bind(ddlRS_D))
+    MainGui.SetFont("Bold")
+    MainGui.Add("Text", "x660 y643 w70", ":RS-DOWN")
+	ToggleStickGroup(modeCtrl, ctrls) {
+        isCustom := (modeCtrl.Text == "CUSTOM-BUTTONS")
+        for c in ctrls
+            c.Enabled := isCustom
+    }
+
+    lsCtrls := [ddlLS_U, btnLSU, ddlLS_L, btnLSL, ddlLS_R, btnLSR, ddlLS_D, btnLSD]
+    rsCtrls := [ddlRS_U, btnRSU, ddlRS_L, btnRSL, ddlRS_R, btnRSR, ddlRS_D, btnRSD]
+
+    ddlLSM.OnEvent("Change", (*) => ToggleStickGroup(ddlLSM, lsCtrls))
+    ddlRSM.OnEvent("Change", (*) => ToggleStickGroup(ddlRSM, rsCtrls))
+
+    ToggleStickGroup(ddlLSM, lsCtrls)
+    ToggleStickGroup(ddlRSM, rsCtrls)
     MainGui.SetFont("Norm")
 }
-
-;yPos += 5
-;MainGui.Add("Text", "x110 y" yPos " w830 cBlue", T("*Also you can configure Analog Sticks directions to emulate Keyboard keys and Mouse in XboxProfiles\*.ini"))
 
 ; =========================================
 ; TAB 2.1: SONY
@@ -766,8 +825,10 @@ if (Layout == "Sony") {
 	;MainGui.SetFont("Bold")
     MainGui.Add("Text", "x340 y125 w120 +Right", T("Action Layer") ":")
     ;MainGui.SetFont("Norm")
-    radSonyModeDefault := MainGui.Add("Radio", "x340 y160 Checked1", T("Regular"))
-    radSonyModeHold := MainGui.Add("Radio", "x420 y160", T("LongPress"))
+    ;radSonyModeDefault := MainGui.Add("Radio", "x340 y160 Checked1", T("Regular"))
+    ;radSonyModeHold := MainGui.Add("Radio", "x420 y160", T("LongPress"))
+	radSonyModeDefault := MainGui.Add("Radio", "x340 y160 Checked1", T("Regular")), radSonyModeDefault.IgnoreUnsaved := true
+    radSonyModeHold := MainGui.Add("Radio", "x420 y160", T("LongPress")), radSonyModeHold.IgnoreUnsaved := true
     radSonyModeDefault.OnEvent("Click", (*) => SwitchSonyLayer("Default"))
     radSonyModeHold.OnEvent("Click", (*) => SwitchSonyLayer("TapHold"))
 
@@ -798,7 +859,7 @@ if (Layout == "Sony") {
     MainGui.Add("Picture", "x290 y200 w250 h-1", A_ScriptDir "\Icons\Sony.png")
 
     ; --- ЛЕВАЯ КОЛОНКА SONY ---
-    SonyMapLeft := ["L2", "L1", "SHARE", "L3", "UP", "DOWN", "LEFT", "RIGHT", "L4"]
+    SonyMapLeft := ["L2", "L1", "SHARE", "L3", "UP", "LEFT", "RIGHT", "DOWN", "L4"]
     yPosSonyL := 125
     for key in SonyMapLeft {
         val := SavedSonyMap_Tap.Has(key) ? SavedSonyMap_Tap[key] : "NONE"
@@ -897,67 +958,81 @@ if (Layout == "Sony") {
     MainGui.Add("Text", "x740 y540 w70", ":RS-UP")
     MainGui.SetFont("Norm")
 
-    ; ROW 3: DOWN
-    valLS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-DOWN", "NONE")
-    MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x30 y575 w60 +Right", "LS-DOWN:")
-    MainGui.SetFont("Norm")
-    ddlLS_D := MainGui.Add("ComboBox", "x100 y570 w120 Choose1", KbmKeys)
-    SetDdlValue(ddlLS_D, valLS_D)
-    CtrlSettings["LS-DOWN"] := {type: "txt", ctrl: ddlLS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSD := MainGui.Add("Button", "x230 y570 w50 h24", "Bind")
-    btnLSD.OnEvent("Click", BindKbm.Bind(ddlLS_D))
-
-    valRS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-DOWN", "NONE")
-    btnRSD := MainGui.Add("Button", "x550 y570 w50 h24", "Bind")
-    ddlRS_D := MainGui.Add("ComboBox", "x610 y570 w120 Choose1", KbmKeys)
-    SetDdlValue(ddlRS_D, valRS_D)
-    CtrlSettings["RS-DOWN"] := {type: "txt", ctrl: ddlRS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnRSD.OnEvent("Click", BindKbm.Bind(ddlRS_D))
-    MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x740 y575 w70", ":RS-DOWN")
-    MainGui.SetFont("Norm")
-
-    ; ROW 4: LEFT
+    ; ROW 3: LEFT
     valLS_L := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-LEFT", "NONE")
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x30 y610 w60 +Right", "LS-LEFT:")
+    MainGui.Add("Text", "x30 y575 w60 +Right", "LS-LEFT:")
     MainGui.SetFont("Norm")
-    ddlLS_L := MainGui.Add("ComboBox", "x100 y605 w120 Choose1", KbmKeys)
+    ddlLS_L := MainGui.Add("ComboBox", "x100 y570 w120 Choose1", KbmKeys)
     SetDdlValue(ddlLS_L, valLS_L)
     CtrlSettings["LS-LEFT"] := {type: "txt", ctrl: ddlLS_L, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSL := MainGui.Add("Button", "x230 y605 w50 h24", "Bind")
+    btnLSL := MainGui.Add("Button", "x230 y570 w50 h24", "Bind")
     btnLSL.OnEvent("Click", BindKbm.Bind(ddlLS_L))
 
     valRS_L := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-LEFT", "NONE")
-    btnRSL := MainGui.Add("Button", "x550 y605 w50 h24", "Bind")
-    ddlRS_L := MainGui.Add("ComboBox", "x610 y605 w120 Choose1", KbmKeys)
+    btnRSL := MainGui.Add("Button", "x550 y570 w50 h24", "Bind")
+    ddlRS_L := MainGui.Add("ComboBox", "x610 y570 w120 Choose1", KbmKeys)
     SetDdlValue(ddlRS_L, valRS_L)
     CtrlSettings["RS-LEFT"] := {type: "txt", ctrl: ddlRS_L, file: XboxIni, sec: "KEYBOARD-MOUSE"}
     btnRSL.OnEvent("Click", BindKbm.Bind(ddlRS_L))
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x740 y610 w70", ":RS-LEFT")
+    MainGui.Add("Text", "x740 y575 w70", ":RS-LEFT")
     MainGui.SetFont("Norm")
 
-    ; ROW 5: RIGHT
+    ; ROW 4: RIGHT
     valLS_R := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-RIGHT", "NONE")
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x30 y645 w60 +Right", "LS-RIGHT:")
+    MainGui.Add("Text", "x30 y610 w60 +Right", "LS-RIGHT:")
     MainGui.SetFont("Norm")
-    ddlLS_R := MainGui.Add("ComboBox", "x100 y640 w120 Choose1", KbmKeys)
+    ddlLS_R := MainGui.Add("ComboBox", "x100 y605 w120 Choose1", KbmKeys)
     SetDdlValue(ddlLS_R, valLS_R)
     CtrlSettings["LS-RIGHT"] := {type: "txt", ctrl: ddlLS_R, file: XboxIni, sec: "KEYBOARD-MOUSE"}
-    btnLSR := MainGui.Add("Button", "x230 y640 w50 h24", "Bind")
+    btnLSR := MainGui.Add("Button", "x230 y605 w50 h24", "Bind")
     btnLSR.OnEvent("Click", BindKbm.Bind(ddlLS_R))
 
     valRS_R := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-RIGHT", "NONE")
-    btnRSR := MainGui.Add("Button", "x550 y640 w50 h24", "Bind")
-    ddlRS_R := MainGui.Add("ComboBox", "x610 y640 w120 Choose1", KbmKeys)
+    btnRSR := MainGui.Add("Button", "x550 y605 w50 h24", "Bind")
+    ddlRS_R := MainGui.Add("ComboBox", "x610 y605 w120 Choose1", KbmKeys)
     SetDdlValue(ddlRS_R, valRS_R)
     CtrlSettings["RS-RIGHT"] := {type: "txt", ctrl: ddlRS_R, file: XboxIni, sec: "KEYBOARD-MOUSE"}
     btnRSR.OnEvent("Click", BindKbm.Bind(ddlRS_R))
     MainGui.SetFont("Bold")
-    MainGui.Add("Text", "x740 y645 w70", ":RS-RIGHT")
+    MainGui.Add("Text", "x740 y610 w70", ":RS-RIGHT")
+    MainGui.SetFont("Norm")
+
+    ; ROW 5: DOWN
+    valLS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "LS-DOWN", "NONE")
+    MainGui.SetFont("Bold")
+    MainGui.Add("Text", "x30 y645 w60 +Right", "LS-DOWN:")
+    MainGui.SetFont("Norm")
+    ddlLS_D := MainGui.Add("ComboBox", "x100 y640 w120 Choose1", KbmKeys)
+    SetDdlValue(ddlLS_D, valLS_D)
+    CtrlSettings["LS-DOWN"] := {type: "txt", ctrl: ddlLS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
+    btnLSD := MainGui.Add("Button", "x230 y640 w50 h24", "Bind")
+    btnLSD.OnEvent("Click", BindKbm.Bind(ddlLS_D))
+
+    valRS_D := IniRead(A_ScriptDir "\" XboxIni, "KEYBOARD-MOUSE", "RS-DOWN", "NONE")
+    btnRSD := MainGui.Add("Button", "x550 y640 w50 h24", "Bind")
+    ddlRS_D := MainGui.Add("ComboBox", "x610 y640 w120 Choose1", KbmKeys)
+    SetDdlValue(ddlRS_D, valRS_D)
+    CtrlSettings["RS-DOWN"] := {type: "txt", ctrl: ddlRS_D, file: XboxIni, sec: "KEYBOARD-MOUSE"}
+    btnRSD.OnEvent("Click", BindKbm.Bind(ddlRS_D))
+    MainGui.SetFont("Bold")
+    MainGui.Add("Text", "x740 y645 w70", ":RS-DOWN")
+	ToggleStickGroupSony(modeCtrl, ctrls) {
+        isCustom := (modeCtrl.Text == "CUSTOM-BUTTONS")
+        for c in ctrls
+            c.Enabled := isCustom
+    }
+
+    lsCtrlsSony := [ddlLS_U, btnLSU, ddlLS_L, btnLSL, ddlLS_R, btnLSR, ddlLS_D, btnLSD]
+    rsCtrlsSony := [ddlRS_U, btnRSU, ddlRS_L, btnRSL, ddlRS_R, btnRSR, ddlRS_D, btnRSD]
+
+    ddlLSM.OnEvent("Change", (*) => ToggleStickGroupSony(ddlLSM, lsCtrlsSony))
+    ddlRSM.OnEvent("Change", (*) => ToggleStickGroupSony(ddlRSM, rsCtrlsSony))
+
+    ToggleStickGroupSony(ddlLSM, lsCtrlsSony)
+    ToggleStickGroupSony(ddlRSM, rsCtrlsSony)
     MainGui.SetFont("Norm")
 }
 
@@ -1270,7 +1345,7 @@ AddHotkey(ConfigIni, "SETTINGS", "OSDKey", T("On-Screen Display (On/Off):"), Kbm
 
 MainGui.Add("Text", "x25 y+12 w100 cGreen", T("Pro Tip:"))
 MainGui.Add("Text", "x25 y+1 w820", T("- Save a button: bind 'Aiming Button' to a key with 'LongPress' MUTE. Tap for in-game action, hold for Motion control with NO delay"))
-MainGui.Add("Text", "x25 y+3 w820", T("- Use '+' for two-button gamepad combination (R+HOME). Use '/' or '\' to assign multiple buttons to one hotkey (R\HOME)"))
+MainGui.Add("Text", "x25 y+3 w820", T("- Use '+' for two-button gamepad combination (R+HOME). Use '/' to assign multiple buttons to one hotkey (R/HOME)"))
 MainGui.Add("Text", "x25 y+3 w820", T("- If your hand tires quickly, bind Gyro Activation Button to non-aiming Joy-Con to prevent muscle tension"))
 
 MainGui.Add("Text", "x25 y+2 w820 cRed", T("¹ Manual Software Recalibration:"))
@@ -1283,15 +1358,13 @@ MainGui.Add("Text", "x25 y+3 w820", T("- Accelerometer: use only on a flat surfa
 Tabs.UseTab("Gyro")
 
 ; --- Группа 1: Поведение и общие настройки ---
-
-; --- Группа 1: Поведение и общие настройки ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
 MainGui.Add("GroupBox", "x215 y50 w410 h275 Center Section", T("Behavior and Settings"))
 MainGui.SetFont("cDefault Norm " GuiFontSize " q5", "Segoe UI")
 
 ; 8-й параметр (210) = ширина текста, 9-й параметр (140) = ширина выпадающего списка
 AddMappedDropdown(XboxIni, "SETTINGS", "AimingMode", T("Default Gyro Emulation:"), [T("Stick"), T("Mouse")], Map(T("Stick"), "0", T("Mouse"), "1"), "xs+25 ys+45", 220, 60)
-AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Hold Control Button to:"), [T("Pause Aim"), T("Aim")], Map(T("Pause Aim"), "0", T("Aim"), "1"), "xs+25 y+11", 220, 125)
+AddMappedDropdown(XboxIni, "SETTINGS", "AimingByPressingMode", T("Hold Gyro Control Button to:"), [T("Pause Aim"), T("Aim")], Map(T("Pause Aim"), "0", T("Aim"), "1"), "xs+25 y+11", 220, 125)
 AddMappedDropdown(ConfigIni, "Motion", "GyroFromLeft", T("Gyro data in combined mode from:"), [T("Right Joy-Con"), T("Left Joy-Con")], Map(T("Right Joy-Con"), "0", T("Left Joy-Con"), "1"), "xs+25 y+11", 220, 125)
 AddMappedDropdown(ConfigIni, "SETTINGS", "SleepTimeOut", T("Polling rate (33.3 Hz for example):"), ["33.3 Hz", "66.7 Hz", "125 Hz", "250 Hz", "500 Hz"], Map("33.3 Hz", "30", "66.7 Hz", "15", "125 Hz", "8", "250 Hz", "4", "500 Hz", "2"), "xs+25 y+11", 220, 65)
 
@@ -1315,11 +1388,11 @@ CtrlSettings[ConfigIni "_Motion_Tightening"] := {type: "edt", ctrl: edtTight, fi
 AddInput(ConfigIni, "Motion", "RatchetDelayTime", T("Control Button Release Delay³ :"), "150", "xs+25 y+8", 220, 50, true, "0-999")
 MainGui.Add("Text", "xs+315 yp+3 w40", T("(ms)"))
 
-; --- Сноски и примечания (внизу вкладки) ---
+; Сноски и примечания (внизу вкладки)
 MainGui.Add("Text", "x15 y359 w280 cRed", "¹ Gyro Motion Space (by Jibb Smart):")
 MainGui.Add("Text", "x25 y+1 w820", T("This setting controls how gyroscope data from hand movements is processed and translated into cursor or stick input."))
 
-; --- Выделяем "For two-handed controllers" ---
+; Выделяем "For two-handed controllers"
 MainGui.SetFont("bold")
 MainGui.Add("Text", "x25 y+10", T("For two-handed") " ")
 MainGui.SetFont("norm")
@@ -1328,7 +1401,7 @@ MainGui.Add("Text", "x+0 w820", T("controllers, the difference only affects hori
 MainGui.Add("Text", "x25 y+7 w820", T("0 — Turn the controller like a car steering wheel (Roll, gyroscope only mode)"))
 MainGui.Add("Text", "x25 y+3 w820", T("2 — Twist the controller like tank steering levers (Yaw, gyroscope + accelerometer)"))
 
-; --- Выделяем "For Joy-Cons" ---
+; Выделяем "For Joy-Cons"
 MainGui.SetFont("bold")
 MainGui.Add("Text", "x25 y+10", T("For Joy-Con.") " ")
 MainGui.SetFont("norm")
@@ -1553,23 +1626,6 @@ for k, v in LSModeMap {
 }
 ddlLSMode.Text := selectedTextLS
 
-/*valRSMode := IniRead(A_ScriptDir "\" XboxIni, "SETTINGS", "RightStickMode", "0")
-MainGui.Add("Text", "xs+130 y+10 w135", T("Right Stick Mode") ":")
-ddlRSMode := MainGui.Add("DropDownList", "x+10 yp-3 w110 Choose1", [T("standard"), T("as triggers"), T("as buttons")])
-RSModeMap := Map(T("standard"), "0", T("as triggers"), "1", T("as buttons"), "2")
-CtrlSettings["RightStickMode"] := {type: "mapped_ddl", ctrl: ddlRSMode, file: XboxIni, sec: "SETTINGS", valMap: RSModeMap}
-
-; Синхронизация текущего значения RightStickMode
-selectedText := T("standard")
-for k, v in RSModeMap {
-    if (v == valRSMode) {
-        selectedText := k
-        break
-    }
-}
-
-ddlRSMode.Text := selectedText*/
-
 ; --- Режимы правого стика (стартовый + переключение по хоткею) ---
 valRSMode := IniRead(A_ScriptDir "\" XboxIni, "SETTINGS", "RightStickMode", "0")
 valRSAvail := IniRead(A_ScriptDir "\" XboxIni, "SETTINGS", "RightStickAvailableModes", "0, 1, 2")
@@ -1668,7 +1724,7 @@ MainGui.Add("Text", "x25 y+1 w490", T("100: Higher sensitivity near the center f
 MainGui.Add("Text", "x15 y+2 w800 cRed", T("² Left Stick Mode:"))
 MainGui.Add("Text", "x25 y+0 w820", T("'AutoSprintButton' held down when stick direction in: 1 - front hemisphere (45 degrees); 2 - all directions"))
 
-; Наглядная мини-плашка кривых справа от Linearity
+; мини-плашка кривых справа от Linearity
 MainGui.Add("Picture", "x415 y575 w260 h75", A_ScriptDir "\Icons\linearity.png")
 
 ; =========================================
@@ -1726,11 +1782,11 @@ Tabs.UseTab("Profiles")
 
 ; --- ГРУППА 1: Управление и загрузка профилей ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x125 y120 w610 h200 Center Section cBlue", T("Manage Profiles"))
+MainGui.Add("GroupBox", "x125 y60 w610 h200 Center Section cBlue", T("Manage Profiles"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-;MainGui.Add("Text", "xs+95 ys+60 w560", T("Current Active Profile: ") ActiveProfile)
-MainGui.Add("Text", "xs+25 ys+60", T("Current Active Profile: "))
+;MainGui.Add("Text", "xs+95 ys+60 w560", T("Current Active Profile:") ActiveProfile)
+MainGui.Add("Text", "xs+25 ys+60", T("Current Active Profile:") " ")
 MainGui.Add("Text", "x+5 yp w400", ActiveProfile).SetFont("Bold")
 MainGui.Add("Text", "xs+25 y+20 w560", T("Select Profile:"))
 
@@ -1756,7 +1812,7 @@ LoadProfileEvent(selectedProfile) {
 
 ; --- ГРУППА 2: Создание и клонирование профилей ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "xs y+95 w610 h175 Center Section cBlue", T("Create Profile:"))
+MainGui.Add("GroupBox", "xs y+80 w610 h175 Center Section cBlue", T("Create Profile:"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
 MainGui.Add("Text", "xs+25 ys+60 w560", T("Enter Name for the New Profile:"))
@@ -1858,7 +1914,7 @@ AddToggle(ConfigIni, "SecondaryGamepad", "InvertRightStickY", T("Invert Stick Y"
 ;MainGui.SetFont("cRed Bold q5", "Segoe UI")
 MainGui.Add("Text", "x25 y648 w800 cRed", T("Note:"))
 ;MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
-MainGui.Add("Text", "x25 y+3 w800", T("The second gamepad supports only the basic features of the XBOX/DS4 virtual controller"))
+MainGui.Add("Text", "x25 y+3 w800", T("The second gamepad supports only the basic features of the XBOX virtual controller"))
 
 ; =========================================
 ; TAB 11: SETTINGS
@@ -1866,10 +1922,10 @@ MainGui.Add("Text", "x25 y+3 w800", T("The second gamepad supports only the basi
 Tabs.UseTab("Settings")
 
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y+20 w480 h148 Center Section cBlue", T("General Settings"))
+MainGui.Add("GroupBox", "x175 y50 w480 h124 Center Section cBlue", T("General Settings"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-MainGui.Add("Text", "xs+125 ys+38 w85", T("Layout:"))
+MainGui.Add("Text", "xs+125 ys+30 w90", T("Layout:"))
 chkNintendo := (Layout == "Nintendo") ? " Checked1" : ""
 chkSony := (Layout == "Sony") ? " Checked1" : ""
 radNintendo := MainGui.Add("Radio", "x+0 yp" chkNintendo, "Nintendo")
@@ -1892,7 +1948,7 @@ SetLayout(value, *) {
     Reload()
 }
 
-AddMappedDropdown(ConfigIni, "Gamepad", "EmulatedController", T("Emulated Controller¹:"), ["XBOX", "DS4"], Map("XBOX", "XBOX", "DS4", "DS4"), "xs+125 ys+68", 150, 55)
+AddMappedDropdown(ConfigIni, "Gamepad", "EmulatedController", T("Emulated Controller¹:"), ["XBOX", "DS4"], Map("XBOX", "XBOX", "DS4", "DS4"), "xs+125 ys+60", 155, 55)
 
 if (Layout == "Sony") {
     ctrlEmu := CtrlSettings[ConfigIni "_Gamepad_EmulatedController"].ctrl
@@ -1905,7 +1961,7 @@ Loop Files, A_ScriptDir "\Language\*.ini", "F" {
     LanguagesList.Push(StrReplace(A_LoopFileName, ".ini", ""))
 }
 
-MainGui.Add("Text", "xs+125 ys+100 w75", T("Language:"))
+MainGui.Add("Text", "xs+125 ys+90 w80", T("Language:"))
 LangDdl := MainGui.Add("DropDownList", "x+10 yp-3 w130", LanguagesList)
 LangDdl.Text := CurrentLang
 LangDdl.OnEvent("Change", (ctrl, *) => ChangeLanguageEvent(ctrl.Text))
@@ -1917,19 +1973,22 @@ ChangeLanguageEvent(selectedLang) {
 
 ; --- Группа 2: Misc Settings ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y+48 w480 Center h200 Section", T("Misc"))
+MainGui.Add("GroupBox", "x175 y+30 w480 Center h242 Section", T("Misc"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength:"), , "xs+125 ys+35", 165, 50)
-MainGui.Add("Text", "xs+360 ys+34", T("(%)"))
-AddInput(ConfigIni, "Gamepad", "LongPressTimeOut", T("LongPress Button delay:"), , "xs+125 ys+65", 165, 50, true, "0-999")
-MainGui.Add("Text", "xs+360 ys+63", T("(ms)"))
+AddInput(ConfigIni, "Gamepad", "RumbleStrength", T("Rumble strength:"), , "xs+125 ys+25", 167, 50)
+MainGui.Add("Text", "xs+360 ys+25", T("(%)"))
+AddInput(ConfigIni, "Gamepad", "LongPressTimeOut", T("LongPress Button delay:"), , "xs+125 ys+55", 167, 50, true, "0-999")
+MainGui.Add("Text", "xs+360 ys+55", T("(ms)"))
 
-AddMappedDropdown(ConfigIni, "SETTINGS", "OsdType", T("OSD Type:"), [T("AHK"), T("RTSS")], Map(T("AHK"), "0", T("RTSS"), "1"), "xs+125 ys+97", 165, 50)
+AddInput(ConfigIni, "KEYBOARD", "Opacity", T("Keyboard Opacity:"), , "xs+125 ys+85", 167, 50, true, "0-255")
+AddInput(ConfigIni, "KEYBOARD", "KeyWidth", T("Keyboard Button Width:"), , "xs+125 ys+115", 167, 50, true, "0-255")
+
+AddMappedDropdown(ConfigIni, "SETTINGS", "OsdType", T("OSD Type:"), [T("AHK"), T("RTSS")], Map(T("AHK"), "0", T("RTSS"), "1"), "xs+125 ys+145", 167, 50)
 
 
-AddInput(ConfigIni, "SETTINGS", "OsdPosX", T("RTSS OSD Pos X:"), "20", "xs+125 ys+125", 165, 50, true, "0-4000")
-AddInput(ConfigIni, "SETTINGS", "OsdPosY", T("RTSS OSD Pos Y:"), "20", "xs+125 ys+155", 165, 50, true, "0-4000")
+AddInput(ConfigIni, "SETTINGS", "OsdPosX", T("RTSS OSD Pos X:"), "20", "xs+125 ys+175", 167, 50, true, "0-4000")
+AddInput(ConfigIni, "SETTINGS", "OsdPosY", T("RTSS OSD Pos Y:"), "20", "xs+125 ys+205", 167, 50, true, "0-4000")
 
 ToggleOsdPos := (ctrl, *) => (
     isRtss := (ctrl.Text == T("RTSS")),
@@ -1941,19 +2000,30 @@ ToggleOsdPos(CtrlSettings[ConfigIni "_SETTINGS_OsdType"].ctrl)
 
 ; --- Группа 3: Special Settings ---
 MainGui.SetFont("cBlue Bold q5", "Segoe UI")
-MainGui.Add("GroupBox", "x175 y+38 w480 h155 Center Section", T("Special"))
+MainGui.Add("GroupBox", "x175 y+27 w480 h155 Center Section", T("Special"))
 MainGui.SetFont("cDefault Norm s10 q5", "Segoe UI")
 
-MainGui.Add("Text", "xs+65 ys+26 w380", T("While the emulator is running, you can terminate a process `nby the hotkey — for example, a game that has frozen"))
+MainGui.SetFont("Bold")
+MainGui.Add("Text", "xs+40 ys+25", T("RUN-EXE"))
+MainGui.SetFont("Norm")
+MainGui.Add("Text", "x+5 yp", T("Button: run any exe, lnk or bat. Use full path (D:\App.exe)"))
+AddInput(XboxIni, "SETTINGS", "RunExe", T("Path to exe:"), "", "xs+40 ys+55", 85, 305, false)
 
-AddHotkey(ConfigIni, "Settings", "KillHotkey", T("Kill Process by Hotkey:"), KbmKeys, BindKbm, "xs+65 ys+79", 140, 150)
+MainGui.SetFont("Bold")
+MainGui.Add("Text", "xs+40 ys+85", T("KILL-EXE"))
+MainGui.SetFont("Norm")
+MainGui.Add("Text", "x+5 yp", T("Button: kill any app by process name:"))
+AddInput(XboxIni, "SETTINGS", "KillExe", T("Exe name:"), "", "xs+40 ys+115", 85, 305, false)
 
-AddInput(ConfigIni, "Settings", "KillProcessName", T("Exe Name:"), "", "xs+65 y+17", 75, 280, false)
+MainGui.Add("Text", "x17 y589 w120 cGreen", T("Pro Tip:"))
 
-MainGui.Add("Text", "x25 y605 cRed", T("¹ Emulated Controller: "))
-MainGui.Add("Text", "x25 y+5 w820", T("- DS4 Mode for Nintendo controllers only"))
+MainGui.Add("Text", "x25 y+2 w820", T("- Keyboard button widht: 33 - TabTip like, 48 - Standart"))
 
-MainGui.Add("Text", "x25 y+5 w820", T("- For DirectInput games, like Half-Life 2, F.E.A.R., NFS classic series, you can change the controller type to DS4. When you launch JCAdvacne, ‘Wireless Controller’ will appear instead of ‘Xbox 360 Controller’"))
+MainGui.Add("Text", "x25 y+2 w820", T("- Assign RUN-EXE and KILL-EXE to gamepad button in the Joy-Con / Sony tab"))
+
+MainGui.Add("Text", "x17 y+3 cRed", T("¹ Emulated Controller"))
+MainGui.Add("Text", "x+0 w820", T(": For DirectInput games, like Half-Life 2, F.E.A.R., NFS classic series, you can change the controller"))
+MainGui.Add("Text", "x25 y+1 w820", T("type to DS4. When you launch JCAdvacne, ‘Wireless Controller’ will appear instead of ‘Xbox 360 Controller’"))
 
 ; =========================================
 ; GLOBAL BUTTONS & EVENTS
@@ -1972,7 +2042,7 @@ SetUnsaved(ctrl?, info?) {
 for hwnd, ctrl in MainGui {
     cType := ctrl.Type
     
-    if (cType = "Button" || cType = "Tab3" || cType = "Text" || cType = "GroupBox" || cType = "Picture")
+    if (cType = "Button" || cType = "Tab3" || cType = "Text" || cType = "GroupBox" || cType = "Picture" || (ctrl.HasProp("IgnoreUnsaved") && ctrl.IgnoreUnsaved))
         continue
         
     try {
@@ -2494,13 +2564,15 @@ BindGamepad(ddl, *) {
 
     ; Мгновенно открываем окно ожидания нажатия (без ожидания и задержек!)
     bGui := Gui("+AlwaysOnTop -SysMenu +ToolWindow", T("Waiting for input.."))
-    bGui.Add("Text", "w250 h50 Center +0x0200", T("Press any Gamepad button..`n(Timeout: 5 sec)"))
+    bGui.Add("Text", "w250 h50 Center +0x0200", T("Press any Gamepad button.. `n(ESC to cancel)"))
     bGui.Show("NoActivate")
 
     detectedBtn := ""
     timeout := A_TickCount + 5000
     
     Loop {
+        if (A_TickCount > timeout || GetKeyState("Escape", "P"))
+            break
         if (A_TickCount > timeout)
             break
             
@@ -2790,18 +2862,19 @@ UpdateRatio(mode, *) {
 
 ; Опрос геймпадов, взаимодействие с JSL
 PollXboxGamepad() {
-    global hModule, JslConnected, JslDevHandles, JslDevCount, JslLastConnectAttempt, Layout, CtrlXbox, CtrlExtraXbox, wbPad, MainGui, Viewport
+    global hModule, JslConnected, JslDevHandles, JslDevCount, JslLastConnectAttempt, Layout, CtrlXbox, CtrlExtraXbox, wbPad, MainGui, Viewport, PadBridgeReady
     if (hModule == 0)
         return
 
     targetGui := (IsSet(Viewport) && IsObject(Viewport)) ? Viewport : MainGui
 	
-	; Мост AHK -> JS активируется сразу при готовности страницы, даже если геймпад не подключен
-    if (IsSet(wbPad) && IsObject(wbPad)) {
+	; Мост AHK -> JS активируется однократно при первой готовности страницы
+    if (!PadBridgeReady && IsSet(wbPad) && IsObject(wbPad)) {
         try {
             if (wbPad.ReadyState == 4 && wbPad.Document.readyState == "complete") {
                 wbPad.Document.parentWindow.AhkClick := BindFromPadClick
                 wbPad.Document.parentWindow.AhkHover := PadHoverFromHtml
+                PadBridgeReady := true
             }
         }
     }
@@ -2969,14 +3042,14 @@ BindFromPadClick(virtBtn) {
 
     ; Стандартное окно ожидания (как в Hotkeys)
     bGui := Gui("+AlwaysOnTop -SysMenu +ToolWindow", T("Waiting for input.."))
-    bGui.Add("Text", "w250 h50 Center +0x0200", T("Press any Gamepad button..`n(Timeout: 5 sec)"))
+    bGui.Add("Text", "w250 h50 Center +0x0200", T("Press any Gamepad button.. `n(ESC to cancel)"))
     bGui.Show("NoActivate")
 
     detectedBtn := ""
     timeout := A_TickCount + 5000
 
     Loop {
-        if (A_TickCount > timeout)
+        if (A_TickCount > timeout || GetKeyState("Escape", "P"))
             break
 
         Loop JslDevCount {
@@ -3008,12 +3081,14 @@ BindFromPadClick(virtBtn) {
 
 ; Наведение на кнопку в HTML -> фокусировка выпадающего списка в AHK
 PadHoverFromHtml(virtBtn, isHover) {
-    global CtrlXbox, CtrlExtraXbox, CtrlXboxLabels, LastHoveredLabelKey
+    global CtrlXbox, CtrlExtraXbox, CtrlXboxLabels, LastHoveredLabelKey, LastHoveredOriginalText
 
-    ; Снимаем подсветку с предыдущей метки
+    ; Снимаем маркер и подсветку с предыдущей метки
     if (LastHoveredLabelKey != "" && CtrlXboxLabels.Has(LastHoveredLabelKey)) {
+        CtrlXboxLabels[LastHoveredLabelKey].Text := LastHoveredOriginalText
         CtrlXboxLabels[LastHoveredLabelKey].SetFont("cDefault Bold")
         LastHoveredLabelKey := ""
+        LastHoveredOriginalText := ""
     }
 
     if (!isHover || virtBtn == "" || virtBtn == "NONE")
@@ -3040,14 +3115,17 @@ PadHoverFromHtml(virtBtn, isHover) {
         }
     }
 
-    ; Подсвечиваем текстовую метку кнопки ярким синим цветом и даем фокус полю
-    if (targetKey != "") {
-        targetCtrl.Focus()
-        if CtrlXboxLabels.Has(targetKey) {
-            CtrlXboxLabels[targetKey].SetFont("c0969da Bold")
-            LastHoveredLabelKey := targetKey
-        }
-    }
+    ; Подсвечиваем текстовую метку кнопки, добавляем маркер направления и даем фокус полю
+	if (targetKey != "") {
+		targetCtrl.Focus()
+		if CtrlXboxLabels.Has(targetKey) {
+			lbl := CtrlXboxLabels[targetKey]
+			LastHoveredOriginalText := lbl.Text
+			lbl.Text := (SubStr(lbl.Text, 1, 1) == ":") ? (lbl.Text " ◄") : ("► " lbl.Text)
+			lbl.SetFont("c0969da Bold")
+			LastHoveredLabelKey := targetKey
+		}
+	}
 }
 
 ; Наведение мыши на список в AHK -> мягкая подсветка кнопки на геймпаде (WM_MOUSEMOVE)

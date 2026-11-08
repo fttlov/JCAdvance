@@ -34,6 +34,7 @@ global TxtAccel    := Overlay.Add("Text", "w370 c00FFFF y+5", "Shake: 0.000 | Mi
 global TxtLine2    := Overlay.Add("Text", "w370 c555555 y+5", "------------------------------")
 global TxtHW1      := Overlay.Add("Text", "w370 c00FF00 y+5", "Waiting for device...         ")
 global TxtHW2      := Overlay.Add("Text", "w370 c00FF00 y+2", "                              ")
+global TxtProfile  := Overlay.Add("Text", "w370 cFFFF00 y+4", "Profile: -                   ")
 
 WinSetTransColor("111111", Overlay)
 
@@ -190,6 +191,8 @@ WatchXInput() {
             peakVel := angVel
         }
 
+		CurrentProfile := StrGet(pBuf + 64, 64, "CP0")
+
         ; --- 2. Проверка физического отключения контроллера (3 сек) ---
         if (type1 <= 0 || hz1 <= 0) {
             if (NoDeviceTime == 0)
@@ -213,6 +216,8 @@ WatchXInput() {
         else
             StrHW2 := ""
         
+		StrProfile := "Profile: " . CurrentProfile
+		
         if (TxtGyro1.Value !== StrGyro1)
             TxtGyro1.Value := StrGyro1
         if (TxtGyro2.Value !== StrGyro2)
@@ -225,7 +230,7 @@ WatchXInput() {
             TxtHW1.Value := StrHW1
         if (TxtHW2.Value !== StrHW2)
             TxtHW2.Value := StrHW2
-			
-
+		if (TxtProfile.Value !== StrProfile)
+            TxtProfile.Value := StrProfile	
     }
 }
