@@ -522,7 +522,7 @@ JCAdvance supports all 3 standard JSL Gyro Space modes:
 * **1 (World Space)**: Gyroscope + accelerometer. Uses Earth gravity to decouple horizontal (yaw) and vertical (pitch) aiming regardless of controller tilt.<br>
 * **2 (Player Space)**: Gyroscope + accelerometer. Designed for two-handed gamepads.
 
-👌 **New mode added to JoyShockLibrary:**<br>
+❕**New mode added to JoyShockLibrary:**<br>
 
 * **3 (Planar Space):** Relies on the gyroscope and accelerometer. It mathematically projects movement onto a 2D plane, completely ignoring wrist-roll ("screwdriver" effect) at any grip angle, but have a limits for extreme angles; otherwise, the direction of motion reverses. <br>
   Designed specifically for the Joy-Con
