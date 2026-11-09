@@ -65,6 +65,7 @@
 - Action Layers: assign two distinct in-game actions to a single button (tap vs long press)
 - 'MUTE mode' in Action Layers: never sacrifice a physical button for Motion Aiming Control (see [details](#action))
 - Profile Manager: create, duplicate, switch, and delete layout profiles in a dedicated GUI tab<br>
+- Desktop Mode: Full couch PC control using gyro mouse and keyboard aliases (e.g. copy, paste, volume control) 
 - Fully customizable hotkeys for runtime modes with combo/chord support (e.g., `R + HOME`)
 - Dedicated 'Gyro Activation Button' supporting both Hold to Aim and Hold to Pause behaviors
 - Gyro Activation Delay: prevents camera twitches when releasing the gyro button during ratcheting
