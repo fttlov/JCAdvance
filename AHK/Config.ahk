@@ -1717,8 +1717,8 @@ UpdateRSModes(true)
 
 ; --- Сноски и примечания (внизу вкладки) ---
 MainGui.Add("Text", "x15 y557 w120 cRed", T("¹ Linearity"))
-MainGui.Add("Text", "x25 y+0 w490", T("Stick Response Curve:"))
-MainGui.Add("Text", "x25 y+1 w490", T("0: Lower sensitivity near the center for precise aiming"))
+MainGui.Add("Text", "x25 y+0 w490", T("Response Curve:"))
+MainGui.Add("Text", "x25 y+1 w490", T("0: Lower sensitivity near the center for precise control"))
 MainGui.Add("Text", "x25 y+1 w490", T("50: Perfectly linear response 1:1 (Default)"))
 MainGui.Add("Text", "x25 y+1 w490", T("100: Higher sensitivity near the center for instant response"))
 MainGui.Add("Text", "x15 y+2 w800 cRed", T("² Left Stick Mode:"))
