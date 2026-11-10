@@ -747,7 +747,7 @@ Gyro aiming requires an activation button. To avoid sacrificing in-game button f
 
 1. Take any button in the Regular layer that is already used in your game (e.g., Joy-Con `X` for a flashlight or reload).
 2. In `LongPress`, set the same button to **`MUTE`**.
-3. In the **Hotkeys** tab, bind `X` as the `Motion Aiming Button`.
+3. In the **Hotkeys** tab, bind `X` as the `Gyro Control Button`.
 
 **Result:** A quick tap triggers the in-game action (flashlight/relaod), while holding activates Gyro Aiming Button **instantly (with zero lag, bypassing the Threshold 200 ms ratchet timer)** without triggering unwanted in-game button presses.<br>
 Full gyro activation without losing a single gamepad button!
