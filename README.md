@@ -956,7 +956,7 @@ List of all available commands and aliases:<br>
 
 - **Joy-Con Split Mode:** Horizontal individual Joy-Con grip mode with SL/SR/HOME/CAPTURE mapping. Experimental and limited due to lack of inputs.
 
-- **DualShock 4 DirectInput Emulation:** Creates a DirectInput Wireless Controller rather than XInput Xbox 360  for classic PC games like *F.E.A.R.* or *Need for Speed*. (Nintendo controllers only)
+- **DualShock 4 DirectInput Emulation:** Creates a DirectInput Wireless Controller rather than XInput Xbox 360  for classic PC games like *F.E.A.R.* or *Need for Speed* (for Nintendo controllers only)
 
 ### External Pedals
 
