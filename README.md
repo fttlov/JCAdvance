@@ -598,9 +598,7 @@ The configurator uses a unified set of parameters for both gyro-mouse and gyro-s
 
 ⚠️ Gyro mouse speed is completely decoupled from the emulator polling rate.
 
-##### Acceleration and the GyroAccelEnd = 75 °/s Standard
-
-**How acceleration works in practice:**<br>
+**How it works in practice:**<br>
 
 Suppose we have the following settings:
 `MouseSens = 100` <br>
