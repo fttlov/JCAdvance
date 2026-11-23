@@ -656,7 +656,7 @@ Thanks to integration over real elapsed time (`loopDeltaTime`), the total count 
 
 A controller stick differs fundamentally from a mouse: it controls **camera rotation speed** rather than crosshair displacement. As long as the stick is deflected, the camera rotates. Furthermore, game developers typically do not make stick response linear by default — a non-linear response curve is already applied to physical stick travel. Most games also include their own internal stick acceleration settings.
 
-❕ *Recommendation: before configuring parametric acceleration in JCAdvance, try disabling stick acceleration in the game settings, and set the in-game stick sensitivity to maximum.*
+❕ *Recommendation: before configuring parametric acceleration in JCAdvance, try disabling (minimizing) stick acceleration in the game settings, and set the in-game stick sensitivity to maximum.*
 
 #### Gyro Stick Mechanics:
 
