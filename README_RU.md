@@ -728,9 +728,9 @@ JoySens = 100 и GyroAccelEnd = **75 °/с** — это выверенный ф�
   Ниже 1.0 - торможение <br>
   Выше 1.0 - ускорение
 
-Тестовые пресеты для гиро-стик Joy-con:
+Тестовые пресеты гиро-стика для Joy-con:
 
-**Halo MCC** (Скорость стика 10/10, ускорение 1/10, deadzone 0%) <br>
+**Halo CE MCC** (Скорость стика 10/10, ускорение 1/10, deadzone 0%) <br>
 
 Left Stick Antideadzone = 20 <br>
 Left Stick Linearity = 33 <br>
