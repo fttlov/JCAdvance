@@ -684,7 +684,7 @@ To keep the virtual stick held at maximum (32768), the hand must rotate continuo
 
   ⚠️ **Why swinging the hand at 250 °/s is useless:** The stick already hits its ceiling (32768) at a hand speed of 75 °/s. The game technically cannot turn the camera any faster (saturation), and you exhaust your entire available wrist angle in a third of a second.
 
-#### How Acceleration Parameters Work in Practice
+#### How it works in practice:
 
 In gyro-stick mode, acceleration does not attempt to exceed the hardware ceiling (32768), but optimizes the curve progression up to the point of saturation:
 
@@ -698,7 +698,7 @@ In gyro-stick mode, acceleration does not attempt to exceed the hardware ceiling
 
 Test presets for Joy-Con gyro stick:
 
-**Halo MCC** (Stick speed: 10/10, Acceleration: 1/10, deadzone 0%)
+**Halo CE MCC** (Stick speed: 10/10, Acceleration: 1/10, deadzone 0%)
 
 Left Stick Antideadzone = 20 <br>
 Left Stick Linearity = 33 
